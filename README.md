@@ -14,5 +14,5 @@ Project Identity
 
 
 	[Huynh Thien Duc (n25dcat073@student.ptithcm.edu.vn) (htduc1701)]
-	[Pham Viet Hoang (n25dcat076@student.ptithcm.edu.vn) (shin_magic_)]
+	[Pham Viet Hoang (n25dcat076@student.ptithcm.edu.vn) (shinmagicc)]
   	[Dang Quang Huy  (n25dcat079@student.ptithcm.edu.vn) (Kurookani)]
