@@ -1,0 +1,202 @@
+[
+  {
+    "id": "SEC-01",
+    "account": "client_1",
+    "sql": "UPDATE proposals SET status='CONFIRMED' WHERE proposal_id=11",
+    "expected_error": 1142,
+    "actual_error": 1142,
+    "message": "(1142, \"UPDATE command denied to user 'client_1'@'localhost' for table 'proposals'\")",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-02",
+    "account": "report_reader",
+    "sql": "SELECT password_hash FROM users",
+    "expected_error": 1142,
+    "actual_error": 1142,
+    "message": "(1142, \"SELECT command denied to user 'report_reader'@'localhost' for table 'users'\")",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-03",
+    "account": "report_reader",
+    "sql": "SELECT * FROM v_contract_overview",
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-04",
+    "account": "report_reader",
+    "sql": "SELECT * FROM skills",
+    "expected_error": 1142,
+    "actual_error": 1142,
+    "message": "(1142, \"SELECT command denied to user 'report_reader'@'localhost' for table 'skills'\")",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-05",
+    "account": "client_1",
+    "sql": "CALL sp_select_proposal(2,11)",
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Actor does not match authenticated client')",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-06",
+    "account": "client_1",
+    "sql": "CALL sp_select_proposal(1,11)",
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Client does not own job')",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-13",
+    "account": "client_1",
+    "sql": "CALL sp_select_proposal(NULL,11)",
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Actor does not match authenticated client')",
+    "expected_message": "Actor",
+    "passed": true
+  },
+  {
+    "id": "SEC-07",
+    "account": "client_2",
+    "sql": "CALL sp_select_proposal(2,11)",
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-08",
+    "account": "freelancer_4",
+    "sql": "CALL sp_confirm_proposal(4,11)",
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Freelancer cannot confirm this proposal')",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-14",
+    "account": "client_1",
+    "sql": "CALL sp_advance_milestone(NULL,2,'APPROVED')",
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Only owning client may approve')",
+    "expected_message": "Only owning client",
+    "passed": true
+  },
+  {
+    "id": "SEC-15",
+    "account": "client_1",
+    "sql": "CALL sp_add_milestone(NULL,1,'bad',1,NULL)",
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Only owning client may allocate milestones')",
+    "expected_message": "Only owning client",
+    "passed": true
+  },
+  {
+    "id": "SEC-09",
+    "account": "client_1",
+    "sql": "CALL sp_advance_milestone(1,2,'APPROVED')",
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-10",
+    "account": "freelancer_4",
+    "sql": "CALL sp_advance_milestone(4,2,'APPROVED')",
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Only owning client may approve')",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-11",
+    "account": "client_1",
+    "sql": "CALL sp_record_payment(1,2,'PAYPAL','PAID')",
+    "expected_error": 1370,
+    "actual_error": 1370,
+    "message": "(1370, \"execute command denied to user 'client_1'@'localhost' for routine 'mini_upwork.sp_record_payment'\")",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-12",
+    "account": "payment_service",
+    "sql": "CALL sp_record_payment(1,2,'PAYPAL','PAID')",
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-16",
+    "account": "client_1",
+    "sql": "CALL sp_post_job(1,1,'RBAC demo job','Synthetic',100,500,NULL)",
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-17",
+    "account": "freelancer_4",
+    "sql": "CALL sp_submit_proposal(4,9,500,'Synthetic',30)",
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-18",
+    "account": "client_1",
+    "sql": "CALL sp_select_proposal(1,12)",
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-19",
+    "account": "freelancer_4",
+    "sql": "CALL sp_confirm_proposal(4,12)",
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "expected_message": null,
+    "passed": true
+  },
+  {
+    "id": "SEC-20",
+    "account": "client_1",
+    "sql": "CALL sp_add_milestone(1,6,'Demo delivery',500,NULL)",
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "expected_message": null,
+    "passed": true
+  }
+]

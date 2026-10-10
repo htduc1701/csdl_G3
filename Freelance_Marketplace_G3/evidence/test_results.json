@@ -1,0 +1,944 @@
+[
+  {
+    "id": "TC-01",
+    "rule": "BR-02",
+    "sql": [
+      "INSERT INTO freelancers (freelancer_id) VALUES (1)"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-02 subtype must match parent user_type')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-02",
+    "rule": "BR-08",
+    "sql": [
+      "INSERT INTO proposals (job_id,freelancer_id,proposed_amount,cover_letter,estimated_days) VALUES (6,6,900,'duplicate',30)"
+    ],
+    "expected_error": 1062,
+    "actual_error": 1062,
+    "message": "(1062, \"Duplicate entry '6-6' for key 'proposals.uq_proposal_freelancer_job'\")",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-03",
+    "rule": "BR-14",
+    "sql": [
+      "INSERT INTO milestones (contract_id,title,amount) VALUES (1,'excess',1)"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-14 milestone sum exceeds contract')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-04",
+    "rule": "email",
+    "sql": [
+      "INSERT INTO users (email,full_name,password_hash,user_type) VALUES ('DEMO1@example.test','Duplicate','DEMO','CLIENT')"
+    ],
+    "expected_error": 1062,
+    "actual_error": 1062,
+    "message": "(1062, \"Duplicate entry 'DEMO1@example.test' for key 'users.uq_users_email'\")",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-05",
+    "rule": "BR-04",
+    "sql": [
+      "INSERT INTO jobs (client_id,category_id,title,description) VALUES (1,999,'invalid','scope')"
+    ],
+    "expected_error": 1452,
+    "actual_error": 1452,
+    "message": "(1452, 'Cannot add or update a child row: a foreign key constraint fails (`mini_upwork`.`jobs`, CONSTRAINT `fk_jobs_category` FOREIGN KEY (`category_id`) REFERENCES `job_categories` (`category_id`))')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-06",
+    "rule": "positive money",
+    "sql": [
+      "INSERT INTO proposals (job_id,freelancer_id,proposed_amount,cover_letter,estimated_days) VALUES (7,4,0,'invalid',10)"
+    ],
+    "expected_error": 3819,
+    "actual_error": 3819,
+    "message": "(3819, \"Check constraint 'ck_proposal_amount' is violated.\")",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-07",
+    "rule": "dates",
+    "sql": [
+      "INSERT INTO contracts (proposal_id,client_id,freelancer_id,start_date,end_date,total_amount) VALUES (10,3,6,'2026-10-10','2026-10-09',900)"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-11 requires confirmed proposal')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-08",
+    "rule": "dates",
+    "sql": [
+      "UPDATE contracts SET end_date = DATE_SUB(start_date,INTERVAL 1 DAY) WHERE contract_id=1"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-14 contract update invalidates milestones')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-09",
+    "rule": "BR-11",
+    "sql": [
+      "INSERT INTO contracts (proposal_id,client_id,freelancer_id,start_date,total_amount) VALUES (10,3,6,CURRENT_DATE,900)"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-11 requires confirmed proposal')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-10",
+    "rule": "BR-10",
+    "sql": [
+      "UPDATE proposals SET status='CLIENT_ACCEPTED' WHERE proposal_id=11"
+    ],
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-11",
+    "rule": "BR-10",
+    "sql": [
+      "UPDATE proposals SET status='CLIENT_ACCEPTED' WHERE proposal_id=11",
+      "INSERT INTO proposals (job_id,freelancer_id,proposed_amount,cover_letter,estimated_days) VALUES (8,4,1000,'other',30)",
+      "UPDATE proposals SET status='CLIENT_ACCEPTED' WHERE job_id=8 AND freelancer_id=4"
+    ],
+    "expected_error": 1062,
+    "actual_error": 1062,
+    "message": "(1062, \"Duplicate entry '8' for key 'proposals.uq_selected_job'\")",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-12",
+    "rule": "BR-12",
+    "sql": [
+      "UPDATE contracts SET client_id=2 WHERE contract_id=1"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Contract identity and parties are immutable')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-13",
+    "rule": "BR-12",
+    "sql": [
+      "UPDATE contracts SET freelancer_id=6 WHERE contract_id=1"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Contract identity and parties are immutable')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-14",
+    "rule": "BR-11",
+    "sql": [
+      "UPDATE proposals SET status='CONFIRMED' WHERE proposal_id=11"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-11 illegal proposal transition')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-15",
+    "rule": "BR-15",
+    "sql": [
+      "INSERT INTO payments (milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (2,1,4,600,'PAYPAL','PAID')"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-15 payment requires APPROVED active work')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-16",
+    "rule": "BR-16",
+    "sql": [
+      "INSERT INTO payments (milestone_id,payer_id,payee_id,amount,payment_method) VALUES (9,1,4,500,'PAYPAL')"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-16 payment parties or amount mismatch')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-17",
+    "rule": "BR-16",
+    "sql": [
+      "INSERT INTO payments (milestone_id,payer_id,payee_id,amount,payment_method) VALUES (9,3,6,500,'PAYPAL')"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-16 payment parties or amount mismatch')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-18",
+    "rule": "BR-16",
+    "sql": [
+      "INSERT INTO payments (milestone_id,payer_id,payee_id,amount,payment_method) VALUES (9,3,4,499,'PAYPAL')"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-16 payment parties or amount mismatch')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-19",
+    "rule": "one PAID",
+    "sql": [
+      "INSERT INTO payments (milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (1,1,4,400,'PAYPAL','PAID')"
+    ],
+    "expected_error": 1062,
+    "actual_error": 1062,
+    "message": "(1062, \"Duplicate entry '1' for key 'payments.uq_paid_milestone'\")",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-20",
+    "rule": "status",
+    "sql": [
+      "INSERT INTO payments (milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (9,3,4,500,'PAYPAL','REFUNDED')"
+    ],
+    "expected_error": 3819,
+    "actual_error": 3819,
+    "message": "(3819, \"Check constraint 'ck_payment_status' is violated.\")",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-21",
+    "rule": "BR-14 update",
+    "sql": [
+      "UPDATE milestones SET amount=1501 WHERE milestone_id=10"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-14 milestone sum exceeds contract')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-22",
+    "rule": "BR-14 contract decrease",
+    "sql": [
+      "UPDATE contracts SET total_amount=999 WHERE contract_id=1"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-14 contract update invalidates milestones')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-23",
+    "rule": "BR-02 type switch",
+    "sql": [
+      "UPDATE users SET user_type='FREELANCER' WHERE user_id=1"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-02 user identity and subtype are immutable')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-24",
+    "rule": "BR-02 total",
+    "sql": [
+      "DELETE FROM clients WHERE client_id=3"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-02 total specialization requires subtype retention')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-25",
+    "rule": "BR-15 skip approval",
+    "sql": [
+      "UPDATE milestones SET status='APPROVED' WHERE milestone_id=10"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-15 illegal milestone transition')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-26",
+    "rule": "BR-16 method",
+    "sql": [
+      "INSERT INTO payments (milestone_id,payer_id,payee_id,amount,payment_method) VALUES (9,3,4,500,'CASH')"
+    ],
+    "expected_error": 3819,
+    "actual_error": 3819,
+    "message": "(3819, \"Check constraint 'ck_payment_method' is violated.\")",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-27",
+    "rule": "payment terminal",
+    "sql": [
+      "UPDATE payments SET payment_status='FAILED' WHERE payment_id=2"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Terminal payment cannot change status')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-28",
+    "rule": "BR-15 revoke approval",
+    "sql": [
+      "UPDATE milestones SET status='COMPLETED' WHERE milestone_id=1"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-15 illegal milestone transition')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-29",
+    "rule": "payment audit",
+    "sql": [
+      "DELETE FROM payments WHERE payment_id=1"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Payment evidence cannot be deleted')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-30",
+    "rule": "job owner",
+    "sql": [
+      "UPDATE jobs SET client_id=2 WHERE job_id=1"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Job owner identity and creation time are immutable')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TP-01",
+    "rule": "BR-02 valid registration",
+    "sql": [
+      "INSERT INTO users (user_id,email,full_name,password_hash,user_type) VALUES (99,'new@example.test','Synthetic new','DEMO','FREELANCER')"
+    ],
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "check": "SELECT COUNT(*) FROM freelancers WHERE freelancer_id=99",
+    "result": [
+      [
+        1
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "id": "TP-02",
+    "rule": "BR-08 valid proposal",
+    "sql": [
+      "INSERT INTO proposals (job_id,freelancer_id,proposed_amount,cover_letter,estimated_days) VALUES (7,4,500,'valid',20)"
+    ],
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TP-03",
+    "rule": "BR-14 within budget",
+    "sql": [
+      "UPDATE proposals SET status='CONFIRMED' WHERE proposal_id=10",
+      "SELECT contract_id INTO @new_contract FROM contracts WHERE proposal_id=10",
+      "INSERT INTO milestones (contract_id,title,amount) VALUES (@new_contract,'within',900)"
+    ],
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TP-04",
+    "rule": "BR-11 atomic confirmation",
+    "sql": [
+      "UPDATE proposals SET status='CONFIRMED' WHERE proposal_id=10"
+    ],
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "check": "SELECT COUNT(*) FROM contracts WHERE proposal_id=10",
+    "result": [
+      [
+        1
+      ]
+    ],
+    "passed": true
+  },
+  {
+    "id": "TP-05",
+    "rule": "BR-15 and BR-16 successful payment",
+    "sql": [
+      "INSERT INTO payments (milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (9,3,4,500,'PAYPAL','PAID')"
+    ],
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TP-06",
+    "rule": "retry after FAILED",
+    "sql": [
+      "INSERT INTO payments (milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (9,3,4,500,'BANK_TRANSFER','FAILED')"
+    ],
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TP-07",
+    "rule": "pending becomes PAID",
+    "sql": [
+      "UPDATE payments SET payment_status='PAID' WHERE payment_id=4"
+    ],
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TP-08",
+    "rule": "work then approval",
+    "sql": [
+      "UPDATE milestones SET status='APPROVED' WHERE milestone_id=2",
+      "INSERT INTO payments (milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (2,1,4,600,'CREDIT_CARD','PAID')"
+    ],
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TP-09",
+    "rule": "completion only after fully paid",
+    "sql": [
+      "UPDATE milestones SET status='APPROVED' WHERE milestone_id=2",
+      "INSERT INTO payments (milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (2,1,4,600,'CREDIT_CARD','PAID')",
+      "UPDATE contracts SET status='COMPLETED' WHERE contract_id=1"
+    ],
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-31",
+    "rule": "date CHECK isolated",
+    "sql": [
+      "UPDATE proposals SET status='CONFIRMED' WHERE proposal_id=10",
+      "UPDATE contracts SET end_date=DATE_SUB(start_date,INTERVAL 1 DAY) WHERE proposal_id=10"
+    ],
+    "expected_error": 3819,
+    "actual_error": 3819,
+    "message": "(3819, \"Check constraint 'ck_contract_dates' is violated.\")",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-32",
+    "rule": "negative milestone",
+    "sql": [
+      "UPDATE milestones SET amount=-1 WHERE milestone_id=10"
+    ],
+    "expected_error": 3819,
+    "actual_error": 3819,
+    "message": "(3819, \"Check constraint 'ck_milestone_amount' is violated.\")",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-33",
+    "rule": "contract positive",
+    "sql": [
+      "UPDATE contracts SET total_amount=0 WHERE contract_id=1"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-14 contract update invalidates milestones')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-34",
+    "rule": "deadline",
+    "sql": [
+      "UPDATE jobs SET deadline='2026-08-31' WHERE job_id=7"
+    ],
+    "expected_error": 3819,
+    "actual_error": 3819,
+    "message": "(3819, \"Check constraint 'ck_jobs_dates' is violated.\")",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-35",
+    "rule": "milestone due",
+    "sql": [
+      "UPDATE milestones SET due_date='2020-01-01' WHERE milestone_id=10"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Milestone date outside contract')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-36",
+    "rule": "proposal identity",
+    "sql": [
+      "UPDATE proposals SET freelancer_id=5 WHERE proposal_id=10"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Proposal identity is immutable')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-37",
+    "rule": "milestone parent",
+    "sql": [
+      "UPDATE milestones SET contract_id=2 WHERE milestone_id=10"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Milestone identity is immutable')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-38",
+    "rule": "payment update duplicate",
+    "sql": [
+      "UPDATE payments SET payment_status='PAID' WHERE payment_id=1"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Terminal payment cannot change status')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-39",
+    "rule": "payment amount immutable",
+    "sql": [
+      "UPDATE payments SET amount=501 WHERE payment_id=6"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-16 payment parties or amount mismatch')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-40",
+    "rule": "contract completion",
+    "sql": [
+      "UPDATE contracts SET status='COMPLETED' WHERE contract_id=1"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Completion requires fully allocated paid milestones')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-41",
+    "rule": "subtype identity",
+    "sql": [
+      "UPDATE freelancers SET freelancer_id=99 WHERE freelancer_id=4"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-02 subtype identity is immutable')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-42",
+    "rule": "subtype retention",
+    "sql": [
+      "DELETE FROM freelancers WHERE freelancer_id=8"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-02 total specialization requires subtype retention')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-43",
+    "rule": "milestone audit",
+    "sql": [
+      "DELETE FROM milestones WHERE milestone_id=10"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Milestones retained for work and financial audit')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-44",
+    "rule": "BR-11 retention",
+    "sql": [
+      "DELETE FROM contracts WHERE contract_id=1"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-11 confirmed contract must be retained')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-45",
+    "rule": "BR-11 initial offer",
+    "sql": [
+      "INSERT INTO proposals (job_id,freelancer_id,proposed_amount,cover_letter,estimated_days,status) VALUES (7,4,500,'invalid',20,'CONFIRMED')"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Proposal requires OPEN job and initial PENDING status')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-46",
+    "rule": "BR-12 insert mismatch",
+    "sql": [
+      "INSERT INTO contracts (proposal_id,client_id,freelancer_id,start_date,total_amount) VALUES (1,2,4,CURRENT_DATE,1000)"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-12 contract parties or terms mismatch')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TP-10",
+    "rule": "client profile edit",
+    "sql": [
+      "UPDATE clients SET company_name='Demo revised' WHERE client_id=1"
+    ],
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TP-11",
+    "rule": "freelancer profile edit",
+    "sql": [
+      "UPDATE freelancers SET bio='Synthetic profile revision' WHERE freelancer_id=4"
+    ],
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TP-12",
+    "rule": "user edit",
+    "sql": [
+      "UPDATE users SET full_name='Demo name revision' WHERE user_id=1"
+    ],
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-48",
+    "rule": "client subtype identity",
+    "sql": [
+      "UPDATE clients SET client_id=99 WHERE client_id=1"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-02 subtype identity is immutable')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-49",
+    "rule": "client wrong subtype",
+    "sql": [
+      "INSERT INTO clients (client_id) VALUES (4)"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'BR-02 subtype must match parent user_type')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TP-13",
+    "rule": "job mutable scope",
+    "sql": [
+      "UPDATE jobs SET title='Demo revised scope' WHERE job_id=7"
+    ],
+    "expected_error": 0,
+    "actual_error": 0,
+    "message": "accepted",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "TC-47",
+    "rule": "unsupported isolation",
+    "sql": [
+      "UPDATE milestones SET title='revised' WHERE milestone_id=10"
+    ],
+    "expected_error": 1644,
+    "actual_error": 1644,
+    "message": "(1644, 'Milestone budget writes require READ COMMITTED')",
+    "check": null,
+    "result": null,
+    "passed": true
+  },
+  {
+    "id": "CC-01",
+    "rule": "concurrent gate",
+    "sql": [
+      "UPDATE milestones SET amount=1400 WHERE milestone_id=10",
+      "UPDATE milestones SET amount=1601 WHERE milestone_id=10"
+    ],
+    "expected": "second waits then rejects; no invariant violation",
+    "actual": {
+      "error": 1644,
+      "message": "(1644, 'BR-14 milestone sum exceeds contract')"
+    },
+    "blocked": true,
+    "passed": true
+  },
+  {
+    "id": "CC-02",
+    "rule": "concurrent gate",
+    "sql": [
+      "INSERT INTO milestones (contract_id,title,amount) VALUES (9,'race first',600)",
+      "INSERT INTO milestones (contract_id,title,amount) VALUES (9,'race second',600)"
+    ],
+    "expected": "second waits then rejects; no invariant violation",
+    "actual": {
+      "error": 1644,
+      "message": "(1644, 'BR-14 milestone sum exceeds contract')"
+    },
+    "blocked": true,
+    "passed": true
+  },
+  {
+    "id": "CC-04",
+    "rule": "concurrent gate",
+    "sql": [
+      "UPDATE proposals SET status='CLIENT_ACCEPTED' WHERE proposal_id=11",
+      "UPDATE proposals SET status='CLIENT_ACCEPTED' WHERE job_id=8 AND freelancer_id=4"
+    ],
+    "expected": "second waits then rejects; no invariant violation",
+    "actual": {
+      "error": 1062,
+      "message": "(1062, \"Duplicate entry '8' for key 'proposals.uq_selected_job'\")"
+    },
+    "blocked": true,
+    "passed": true
+  },
+  {
+    "id": "CC-03",
+    "rule": "concurrent gate",
+    "sql": [
+      "INSERT INTO payments (milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (9,3,4,500,'PAYPAL','PAID')",
+      "INSERT INTO payments (milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (9,3,4,500,'PAYPAL','PAID')"
+    ],
+    "expected": "second waits then rejects; no invariant violation",
+    "actual": {
+      "error": 1062,
+      "message": "(1062, \"Duplicate entry '9' for key 'payments.uq_paid_milestone'\")"
+    },
+    "blocked": true,
+    "passed": true
+  },
+  {
+    "id": "CC-05",
+    "rule": "concurrent gate",
+    "sql": [
+      "INSERT INTO milestones (contract_id,title,amount) VALUES (10,'exact first',600)",
+      "INSERT INTO milestones (contract_id,title,amount) VALUES (10,'exact second',600)"
+    ],
+    "expected": "second waits then accepts; total within limit",
+    "actual": {
+      "error": 0,
+      "message": "accepted"
+    },
+    "blocked": true,
+    "passed": true
+  },
+  {
+    "id": "INV-milestone_limit",
+    "sql": [
+      "SELECT COUNT(*) FROM (SELECT c.contract_id FROM contracts c JOIN milestones m ON m.contract_id=c.contract_id GROUP BY c.contract_id,c.total_amount HAVING SUM(m.amount)>c.total_amount) t"
+    ],
+    "expected": 0,
+    "actual": 0,
+    "passed": true
+  },
+  {
+    "id": "INV-one_paid",
+    "sql": [
+      "SELECT COUNT(*) FROM (SELECT milestone_id FROM payments WHERE payment_status='PAID' GROUP BY milestone_id HAVING COUNT(*)>1) t"
+    ],
+    "expected": 0,
+    "actual": 0,
+    "passed": true
+  },
+  {
+    "id": "INV-one_selected",
+    "sql": [
+      "SELECT COUNT(*) FROM (SELECT job_id FROM proposals WHERE status IN ('CLIENT_ACCEPTED','CONFIRMED') GROUP BY job_id HAVING COUNT(*)>1) t"
+    ],
+    "expected": 0,
+    "actual": 0,
+    "passed": true
+  },
+  {
+    "id": "INV-total_subtype",
+    "sql": [
+      "SELECT COUNT(*) FROM users u LEFT JOIN clients c ON c.client_id=u.user_id LEFT JOIN freelancers f ON f.freelancer_id=u.user_id WHERE (c.client_id IS NOT NULL)+(f.freelancer_id IS NOT NULL)<>1"
+    ],
+    "expected": 0,
+    "actual": 0,
+    "passed": true
+  },
+  {
+    "id": "INV-confirmed_contract",
+    "sql": [
+      "SELECT COUNT(*) FROM proposals p LEFT JOIN contracts c ON c.proposal_id=p.proposal_id WHERE p.status='CONFIRMED' AND c.contract_id IS NULL"
+    ],
+    "expected": 0,
+    "actual": 0,
+    "passed": true
+  }
+]

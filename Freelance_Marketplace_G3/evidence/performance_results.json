@@ -1,0 +1,257 @@
+{
+  "version": "8.0.42",
+  "jobs": 5000,
+  "proposals": 10000,
+  "warmup": 1,
+  "measured_runs": 30,
+  "results": [
+    {
+      "label": "index_allowed",
+      "sql": "SELECT job_id,budget_max FROM jobs  WHERE status='OPEN' AND budget_max>=4800 ORDER BY budget_max DESC LIMIT 20",
+      "median_ms": 0.18142199996873387,
+      "actual": [
+        [
+          5000,
+          "5000.00"
+        ],
+        [
+          4999,
+          "4999.00"
+        ],
+        [
+          4998,
+          "4998.00"
+        ],
+        [
+          4997,
+          "4997.00"
+        ],
+        [
+          4996,
+          "4996.00"
+        ],
+        [
+          4995,
+          "4995.00"
+        ],
+        [
+          4994,
+          "4994.00"
+        ],
+        [
+          4993,
+          "4993.00"
+        ],
+        [
+          4992,
+          "4992.00"
+        ],
+        [
+          4991,
+          "4991.00"
+        ],
+        [
+          4990,
+          "4990.00"
+        ],
+        [
+          4989,
+          "4989.00"
+        ],
+        [
+          4988,
+          "4988.00"
+        ],
+        [
+          4987,
+          "4987.00"
+        ],
+        [
+          4986,
+          "4986.00"
+        ],
+        [
+          4985,
+          "4985.00"
+        ],
+        [
+          4984,
+          "4984.00"
+        ],
+        [
+          4983,
+          "4983.00"
+        ],
+        [
+          4982,
+          "4982.00"
+        ],
+        [
+          4981,
+          "4981.00"
+        ]
+      ],
+      "explain": {
+        "query_block": {
+          "select_id": 1,
+          "cost_info": {
+            "query_cost": "41.02"
+          },
+          "ordering_operation": {
+            "using_filesort": false,
+            "table": {
+              "table_name": "jobs",
+              "access_type": "range",
+              "possible_keys": [
+                "ix_jobs_status_budget"
+              ],
+              "key": "ix_jobs_status_budget",
+              "used_key_parts": [
+                "status",
+                "budget_max"
+              ],
+              "key_length": "89",
+              "rows_examined_per_scan": 201,
+              "rows_produced_per_join": 201,
+              "filtered": "100.00",
+              "backward_index_scan": true,
+              "using_index": true,
+              "cost_info": {
+                "read_cost": "20.92",
+                "eval_cost": "20.10",
+                "prefix_cost": "41.02",
+                "data_read_per_join": "183K"
+              },
+              "used_columns": [
+                "job_id",
+                "budget_max",
+                "status"
+              ],
+              "attached_condition": "((`mini_upwork_perf`.`jobs`.`status` = 'OPEN') and (`mini_upwork_perf`.`jobs`.`budget_max` >= 4800.00))"
+            }
+          }
+        }
+      },
+      "explain_analyze": "-> Limit: 20 row(s)  (cost=41 rows=20) (actual time=0.0133..0.019 rows=20 loops=1)\n    -> Filter: ((jobs.`status` = 'OPEN') and (jobs.budget_max >= 4800.00))  (cost=41 rows=201) (actual time=0.0129..0.0177 rows=20 loops=1)\n        -> Covering index range scan on jobs using ix_jobs_status_budget over (status = 'OPEN' AND 4800.00 <= budget_max) (reverse)  (cost=41 rows=201) (actual time=0.0113..0.0138 rows=20 loops=1)\n"
+    },
+    {
+      "label": "index_ignored",
+      "sql": "SELECT job_id,budget_max FROM jobs IGNORE INDEX (ix_jobs_status_budget) WHERE status='OPEN' AND budget_max>=4800 ORDER BY budget_max DESC LIMIT 20",
+      "median_ms": 1.3832079998792324,
+      "actual": [
+        [
+          5000,
+          "5000.00"
+        ],
+        [
+          4999,
+          "4999.00"
+        ],
+        [
+          4998,
+          "4998.00"
+        ],
+        [
+          4997,
+          "4997.00"
+        ],
+        [
+          4996,
+          "4996.00"
+        ],
+        [
+          4995,
+          "4995.00"
+        ],
+        [
+          4994,
+          "4994.00"
+        ],
+        [
+          4993,
+          "4993.00"
+        ],
+        [
+          4992,
+          "4992.00"
+        ],
+        [
+          4991,
+          "4991.00"
+        ],
+        [
+          4990,
+          "4990.00"
+        ],
+        [
+          4989,
+          "4989.00"
+        ],
+        [
+          4988,
+          "4988.00"
+        ],
+        [
+          4987,
+          "4987.00"
+        ],
+        [
+          4986,
+          "4986.00"
+        ],
+        [
+          4985,
+          "4985.00"
+        ],
+        [
+          4984,
+          "4984.00"
+        ],
+        [
+          4983,
+          "4983.00"
+        ],
+        [
+          4982,
+          "4982.00"
+        ],
+        [
+          4981,
+          "4981.00"
+        ]
+      ],
+      "explain": {
+        "query_block": {
+          "select_id": 1,
+          "cost_info": {
+            "query_cost": "496.95"
+          },
+          "ordering_operation": {
+            "using_filesort": true,
+            "table": {
+              "table_name": "jobs",
+              "access_type": "ALL",
+              "rows_examined_per_scan": 4902,
+              "rows_produced_per_join": 1633,
+              "filtered": "33.33",
+              "cost_info": {
+                "read_cost": "333.57",
+                "eval_cost": "163.38",
+                "prefix_cost": "496.95",
+                "data_read_per_join": "1M"
+              },
+              "used_columns": [
+                "job_id",
+                "budget_max",
+                "status"
+              ],
+              "attached_condition": "((`mini_upwork_perf`.`jobs`.`status` = 'OPEN') and (`mini_upwork_perf`.`jobs`.`budget_max` >= 4800.00))"
+            }
+          }
+        }
+      },
+      "explain_analyze": "-> Limit: 20 row(s)  (cost=497 rows=20) (actual time=1.33..1.33 rows=20 loops=1)\n    -> Sort: jobs.budget_max DESC, limit input to 20 row(s) per chunk  (cost=497 rows=4902) (actual time=1.33..1.33 rows=20 loops=1)\n        -> Filter: ((jobs.`status` = 'OPEN') and (jobs.budget_max >= 4800.00))  (cost=497 rows=4902) (actual time=1.24..1.29 rows=201 loops=1)\n            -> Table scan on jobs  (cost=497 rows=4902) (actual time=0.0249..0.791 rows=5000 loops=1)\n"
+    }
+  ],
+  "identical_results": true
+}

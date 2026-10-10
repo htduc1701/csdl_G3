@@ -1,0 +1,86 @@
+[
+  {
+    "id": "Q-01",
+    "question": "Jobs and proposal counts",
+    "sql": "SELECT *\nFROM v_job_proposals\nORDER BY job_id;",
+    "expected": "8 jobs, counts 2,2,2,1,2,1,0,1",
+    "explanation": "LEFT JOIN retains jobs with no proposals."
+  },
+  {
+    "id": "Q-02",
+    "question": "Freelancers with at least two proposals",
+    "sql": "SELECT freelancer_id,\n       COUNT(*) AS proposals\nFROM proposals\nGROUP BY freelancer_id\nHAVING COUNT(*) >= 2\nORDER BY freelancer_id;",
+    "expected": "IDs 4:3, 6:3, 7:2, 8:2",
+    "explanation": "HAVING filters aggregate groups."
+  },
+  {
+    "id": "Q-03",
+    "question": "Jobs with no proposals",
+    "sql": "SELECT j.job_id,\n       j.title\nFROM jobs AS j\nWHERE NOT EXISTS\n        (SELECT 1\n         FROM proposals AS p\n         WHERE p.job_id = j.job_id)\nORDER BY j.job_id;",
+    "expected": "Job 7",
+    "explanation": "Correlated anti-existence test."
+  },
+  {
+    "id": "Q-04",
+    "question": "Rank freelancer contract value",
+    "sql": "WITH totals AS\n    (SELECT freelancer_id,\n            SUM(total_amount) AS value\n     FROM contracts\n     WHERE status <> 'CANCELLED'\n     GROUP BY freelancer_id)\nSELECT freelancer_id,\n       value,\n       DENSE_RANK() OVER (\n                          ORDER BY value DESC) AS value_rank\nFROM totals\nORDER BY value_rank,\n         freelancer_id;",
+    "expected": "4:3000 rank1; 6:1500 rank2; 5:800 rank3; 7:600 rank4",
+    "explanation": "CTE and window ranking."
+  },
+  {
+    "id": "Q-05",
+    "question": "Client successful payment totals",
+    "sql": "SELECT *\nFROM v_client_spend\nORDER BY client_id;",
+    "expected": "Client1 700; client2 200; client3 0",
+    "explanation": "Only PAID attempts contribute."
+  },
+  {
+    "id": "Q-06",
+    "question": "Contracts not fully paid",
+    "sql": "SELECT contract_id,\n       total_amount,\n       paid_amount,\n       outstanding_amount\nFROM v_contract_overview\nWHERE outstanding_amount > 0\nORDER BY contract_id;",
+    "expected": "Outstanding 600,500,1500,400,2000",
+    "explanation": "Pre-aggregation prevents payment retry fan-out."
+  },
+  {
+    "id": "Q-07",
+    "question": "Completed work not yet paid",
+    "sql": "SELECT m.milestone_id,\n       m.status,\n       m.amount\nFROM milestones AS m\nWHERE m.status IN ('COMPLETED',\n                   'APPROVED')\n    AND NOT EXISTS\n        (SELECT 1\n         FROM payments AS p\n         WHERE p.milestone_id=m.milestone_id\n             AND p.payment_status='PAID')\nORDER BY m.milestone_id;",
+    "expected": "Milestones 2,5,9",
+    "explanation": "COMPLETED still needs approval; pending and failed are unpaid."
+  },
+  {
+    "id": "Q-08",
+    "question": "Jobs above mean maximum budget",
+    "sql": "SELECT job_id,\n       budget_max\nFROM jobs\nWHERE budget_max >\n        (SELECT AVG(budget_max)\n         FROM jobs)\nORDER BY job_id;",
+    "expected": "Jobs 3,5,8; mean1062.50",
+    "explanation": "Scalar non-correlated aggregate subquery."
+  },
+  {
+    "id": "Q-09",
+    "question": "Freelancers with at least three skills",
+    "sql": "SELECT f.freelancer_id,\n       f.professional_title,\n       COUNT(fs.skill_id) AS skill_count\nFROM freelancers AS f\nINNER JOIN freelancer_skills AS fs ON fs.freelancer_id=f.freelancer_id\nGROUP BY f.freelancer_id,\n         f.professional_title\nHAVING COUNT(fs.skill_id)>=3\nORDER BY f.freelancer_id;",
+    "expected": "Freelancers4,6 each3",
+    "explanation": "INNER JOIN with HAVING."
+  },
+  {
+    "id": "Q-10",
+    "question": "Contract milestone payment report",
+    "sql": "SELECT *\nFROM v_contract_overview\nORDER BY contract_id;",
+    "expected": "5 contracts, 2 milestones each; PAID 400,300,0,200,0",
+    "explanation": "Separate aggregation avoids repeated milestone totals."
+  },
+  {
+    "id": "Q-11",
+    "question": "Clients posting the most jobs",
+    "sql": "WITH counts AS\n    (SELECT client_id,\n            COUNT(*) AS job_count\n     FROM jobs\n     GROUP BY client_id),\n     ranked AS\n    (SELECT *,\n            DENSE_RANK() OVER (\n                               ORDER BY job_count DESC) AS r\n     FROM counts)\nSELECT client_id,\n       job_count\nFROM ranked\nWHERE r=1\nORDER BY client_id;",
+    "expected": "Clients1,2 each3",
+    "explanation": "Retains ties rather than LIMIT1."
+  },
+  {
+    "id": "Q-12",
+    "question": "Contracts at risk by a supplied reference date",
+    "sql": "SELECT c.contract_id,\n       COUNT(m.milestone_id) AS overdue_work\nFROM contracts AS c\nJOIN milestones AS m ON m.contract_id=c.contract_id\nWHERE c.status='ACTIVE'\n    AND m.status IN ('PENDING',\n                     'IN_PROGRESS',\n                     'COMPLETED')\n    AND m.due_date < DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY)\nGROUP BY c.contract_id\nORDER BY c.contract_id;",
+    "expected": "Contracts1..5 each1",
+    "explanation": "Reference date is30 days after seed date; excludes approved work."
+  }
+]

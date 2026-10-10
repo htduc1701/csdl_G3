@@ -1,0 +1,544 @@
+{
+  "users": [
+    {
+      "name": "user_id",
+      "type": "INT",
+      "key": "PK",
+      "nullable": "No",
+      "default": "AUTO_INCREMENT",
+      "rules": "Unique user identifier"
+    },
+    {
+      "name": "email",
+      "type": "VARCHAR(150)",
+      "key": "UNIQUE",
+      "nullable": "No",
+      "default": "None",
+      "rules": "Must be unique"
+    },
+    {
+      "name": "full_name",
+      "type": "VARCHAR(100)",
+      "key": "None",
+      "nullable": "No",
+      "default": "None",
+      "rules": "User full name"
+    },
+    {
+      "name": "password_hash",
+      "type": "VARCHAR(255)",
+      "key": "None",
+      "nullable": "No",
+      "default": "None",
+      "rules": "Password must be stored as a secure hash"
+    },
+    {
+      "name": "phone",
+      "type": "VARCHAR(20)",
+      "key": "None",
+      "nullable": "Yes",
+      "default": "NULL",
+      "rules": "Optional phone number"
+    },
+    {
+      "name": "user_type",
+      "type": "VARCHAR(20)",
+      "key": "None",
+      "nullable": "No",
+      "default": "None",
+      "rules": "CLIENT or FREELANCER; subtype trigger checks parent type; immutable after registration."
+    }
+  ],
+  "clients": [
+    {
+      "name": "client_id",
+      "type": "INT",
+      "key": "PK, FK",
+      "nullable": "No",
+      "default": "None",
+      "rules": "References users(user_id); unique client identifier"
+    },
+    {
+      "name": "company_name",
+      "type": "VARCHAR(150)",
+      "key": "None",
+      "nullable": "Yes",
+      "default": "NULL",
+      "rules": "Client company name"
+    },
+    {
+      "name": "company_description",
+      "type": "TEXT",
+      "key": "None",
+      "nullable": "Yes",
+      "default": "NULL",
+      "rules": "Optional company description"
+    },
+    {
+      "name": "location",
+      "type": "VARCHAR(150)",
+      "key": "None",
+      "nullable": "Yes",
+      "default": "NULL",
+      "rules": "Client location"
+    }
+  ],
+  "freelancers": [
+    {
+      "name": "freelancer_id",
+      "type": "INT",
+      "key": "PK, FK",
+      "nullable": "No",
+      "default": "None",
+      "rules": "References users(user_id); unique freelancer identifier"
+    },
+    {
+      "name": "professional_title",
+      "type": "VARCHAR(150)",
+      "key": "None",
+      "nullable": "No",
+      "default": "Not specified",
+      "rules": "Profile title; initial value from atomic registration, editable by owner."
+    },
+    {
+      "name": "bio",
+      "type": "TEXT",
+      "key": "None",
+      "nullable": "Yes",
+      "default": "NULL",
+      "rules": "Freelancer biography/profile text"
+    },
+    {
+      "name": "hourly_rate",
+      "type": "DECIMAL(10,2)",
+      "key": "None",
+      "nullable": "No",
+      "default": "0.00",
+      "rules": "Must be greater than or equal to 0"
+    },
+    {
+      "name": "experience_level",
+      "type": "VARCHAR(20)",
+      "key": "None",
+      "nullable": "No",
+      "default": "INTERMEDIATE",
+      "rules": "Level such as BEGINNER, INTERMEDIATE, ADVANCED, or EXPERT"
+    }
+  ],
+  "skills": [
+    {
+      "name": "skill_id",
+      "type": "INT",
+      "key": "PK",
+      "nullable": "No",
+      "default": "AUTO_INCREMENT",
+      "rules": "Unique skill identifier"
+    },
+    {
+      "name": "skill_name",
+      "type": "VARCHAR(100)",
+      "key": "UNIQUE",
+      "nullable": "No",
+      "default": "None",
+      "rules": "Skill name must be unique"
+    }
+  ],
+  "freelancer_skills": [
+    {
+      "name": "freelancer_id",
+      "type": "INT",
+      "key": "PK, FK",
+      "nullable": "No",
+      "default": "None",
+      "rules": "References freelancers(freelancer_id)"
+    },
+    {
+      "name": "skill_id",
+      "type": "INT",
+      "key": "PK, FK",
+      "nullable": "No",
+      "default": "None",
+      "rules": "References skills(skill_id)"
+    },
+    {
+      "name": "skill_level",
+      "type": "VARCHAR(20)",
+      "key": "None",
+      "nullable": "No",
+      "default": "INTERMEDIATE",
+      "rules": "BEGINNER, INTERMEDIATE, ADVANCED, or EXPERT"
+    }
+  ],
+  "job_categories": [
+    {
+      "name": "category_id",
+      "type": "INT",
+      "key": "PK",
+      "nullable": "No",
+      "default": "AUTO_INCREMENT",
+      "rules": "Unique category identifier"
+    },
+    {
+      "name": "category_name",
+      "type": "VARCHAR(100)",
+      "key": "UNIQUE",
+      "nullable": "No",
+      "default": "None",
+      "rules": "Category name must be unique"
+    },
+    {
+      "name": "description",
+      "type": "TEXT",
+      "key": "None",
+      "nullable": "Yes",
+      "default": "NULL",
+      "rules": "Optional category description"
+    }
+  ],
+  "jobs": [
+    {
+      "name": "job_id",
+      "type": "INT",
+      "key": "PK",
+      "nullable": "No",
+      "default": "AUTO_INCREMENT",
+      "rules": "Unique job identifier"
+    },
+    {
+      "name": "client_id",
+      "type": "INT",
+      "key": "FK",
+      "nullable": "No",
+      "default": "None",
+      "rules": "References clients(client_id)"
+    },
+    {
+      "name": "category_id",
+      "type": "INT",
+      "key": "FK",
+      "nullable": "No",
+      "default": "None",
+      "rules": "References job_categories(category_id)"
+    },
+    {
+      "name": "title",
+      "type": "VARCHAR(200)",
+      "key": "None",
+      "nullable": "No",
+      "default": "None",
+      "rules": "Job title"
+    },
+    {
+      "name": "description",
+      "type": "TEXT",
+      "key": "None",
+      "nullable": "No",
+      "default": "None",
+      "rules": "Job details"
+    },
+    {
+      "name": "budget_min",
+      "type": "DECIMAL(15,2)",
+      "key": "None",
+      "nullable": "No",
+      "default": "0.00",
+      "rules": "Must be greater than or equal to 0 and not exceed budget_max"
+    },
+    {
+      "name": "budget_max",
+      "type": "DECIMAL(15,2)",
+      "key": "None",
+      "nullable": "No",
+      "default": "0.00",
+      "rules": "Must be greater than or equal to budget_min"
+    },
+    {
+      "name": "deadline",
+      "type": "DATE",
+      "key": "None",
+      "nullable": "Yes",
+      "default": "NULL",
+      "rules": "NULL or later than DATE(created_at); created_at immutable."
+    },
+    {
+      "name": "status",
+      "type": "VARCHAR(20)",
+      "key": "None",
+      "nullable": "No",
+      "default": "OPEN",
+      "rules": "OPEN, IN_PROGRESS, COMPLETED, or CANCELLED"
+    },
+    {
+      "name": "created_at",
+      "type": "DATETIME",
+      "key": "None",
+      "nullable": "No",
+      "default": "CURRENT_TIMESTAMP",
+      "rules": "Creation point for deadline CHECK."
+    }
+  ],
+  "proposals": [
+    {
+      "name": "proposal_id",
+      "type": "INT",
+      "key": "PK",
+      "nullable": "No",
+      "default": "AUTO_INCREMENT",
+      "rules": "Unique proposal identifier"
+    },
+    {
+      "name": "job_id",
+      "type": "INT",
+      "key": "FK",
+      "nullable": "No",
+      "default": "None",
+      "rules": "References jobs(job_id)"
+    },
+    {
+      "name": "freelancer_id",
+      "type": "INT",
+      "key": "FK",
+      "nullable": "No",
+      "default": "None",
+      "rules": "References freelancers(freelancer_id)"
+    },
+    {
+      "name": "proposed_amount",
+      "type": "DECIMAL(15,2)",
+      "key": "None",
+      "nullable": "No",
+      "default": "None",
+      "rules": "Must be greater than 0"
+    },
+    {
+      "name": "cover_letter",
+      "type": "TEXT",
+      "key": "None",
+      "nullable": "No",
+      "default": "None",
+      "rules": "Proposal description/cover letter"
+    },
+    {
+      "name": "estimated_days",
+      "type": "INT",
+      "key": "None",
+      "nullable": "No",
+      "default": "None",
+      "rules": "Must be greater than 0"
+    },
+    {
+      "name": "status",
+      "type": "VARCHAR(20)",
+      "key": "None",
+      "nullable": "No",
+      "default": "PENDING",
+      "rules": "PENDING, CLIENT_ACCEPTED, CONFIRMED, REJECTED, or WITHDRAWN"
+    },
+    {
+      "name": "submitted_at",
+      "type": "DATETIME",
+      "key": "None",
+      "nullable": "No",
+      "default": "CURRENT_TIMESTAMP",
+      "rules": "Proposal submission time"
+    },
+    {
+      "name": "selected_job_id",
+      "type": "INT",
+      "key": "UNIQUE",
+      "nullable": "Yes",
+      "default": "Generated STORED",
+      "rules": "job_id only for CLIENT_ACCEPTED or CONFIRMED; otherwise NULL. BR-10."
+    }
+  ],
+  "contracts": [
+    {
+      "name": "contract_id",
+      "type": "INT",
+      "key": "PK",
+      "nullable": "No",
+      "default": "AUTO_INCREMENT",
+      "rules": "Unique contract identifier"
+    },
+    {
+      "name": "proposal_id",
+      "type": "INT",
+      "key": "FK, UNIQUE",
+      "nullable": "No",
+      "default": "None",
+      "rules": "One accepted proposal creates at most one contract"
+    },
+    {
+      "name": "client_id",
+      "type": "INT",
+      "key": "FK",
+      "nullable": "No",
+      "default": "None",
+      "rules": "References clients(client_id)"
+    },
+    {
+      "name": "freelancer_id",
+      "type": "INT",
+      "key": "FK",
+      "nullable": "No",
+      "default": "None",
+      "rules": "References freelancers(freelancer_id)"
+    },
+    {
+      "name": "start_date",
+      "type": "DATE",
+      "key": "None",
+      "nullable": "No",
+      "default": "None",
+      "rules": "Contract start date"
+    },
+    {
+      "name": "end_date",
+      "type": "DATE",
+      "key": "None",
+      "nullable": "Yes",
+      "default": "NULL",
+      "rules": "NULL or later than start_date; contains all non-NULL milestone due dates."
+    },
+    {
+      "name": "total_amount",
+      "type": "DECIMAL(15,2)",
+      "key": "None",
+      "nullable": "No",
+      "default": "None",
+      "rules": "Must be greater than 0"
+    },
+    {
+      "name": "status",
+      "type": "VARCHAR(20)",
+      "key": "None",
+      "nullable": "No",
+      "default": "ACTIVE",
+      "rules": "ACTIVE, COMPLETED, or CANCELLED"
+    }
+  ],
+  "milestones": [
+    {
+      "name": "milestone_id",
+      "type": "INT",
+      "key": "PK",
+      "nullable": "No",
+      "default": "AUTO_INCREMENT",
+      "rules": "Unique milestone identifier"
+    },
+    {
+      "name": "contract_id",
+      "type": "INT",
+      "key": "FK",
+      "nullable": "No",
+      "default": "None",
+      "rules": "References contracts(contract_id)"
+    },
+    {
+      "name": "title",
+      "type": "VARCHAR(200)",
+      "key": "None",
+      "nullable": "No",
+      "default": "None",
+      "rules": "Milestone title"
+    },
+    {
+      "name": "description",
+      "type": "TEXT",
+      "key": "None",
+      "nullable": "Yes",
+      "default": "NULL",
+      "rules": "Optional milestone description"
+    },
+    {
+      "name": "amount",
+      "type": "DECIMAL(15,2)",
+      "key": "None",
+      "nullable": "No",
+      "default": "None",
+      "rules": "Must be greater than 0; total milestone value must not exceed contract total"
+    },
+    {
+      "name": "due_date",
+      "type": "DATE",
+      "key": "None",
+      "nullable": "Yes",
+      "default": "NULL",
+      "rules": "NULL or >= contract.start_date and <= non-NULL contract.end_date."
+    },
+    {
+      "name": "status",
+      "type": "VARCHAR(20)",
+      "key": "None",
+      "nullable": "No",
+      "default": "PENDING",
+      "rules": "PENDING -> IN_PROGRESS -> COMPLETED -> APPROVED; no skipping; payment requires APPROVED."
+    }
+  ],
+  "payments": [
+    {
+      "name": "payment_id",
+      "type": "INT",
+      "key": "PK",
+      "nullable": "No",
+      "default": "AUTO_INCREMENT",
+      "rules": "Unique payment identifier"
+    },
+    {
+      "name": "milestone_id",
+      "type": "INT",
+      "key": "FK",
+      "nullable": "No",
+      "default": "None",
+      "rules": "References milestones; many attempts, at most one PAID."
+    },
+    {
+      "name": "payer_id",
+      "type": "INT",
+      "key": "FK",
+      "nullable": "No",
+      "default": "None",
+      "rules": "FK users; must equal contract.client_id (BR-16)."
+    },
+    {
+      "name": "payee_id",
+      "type": "INT",
+      "key": "FK",
+      "nullable": "No",
+      "default": "None",
+      "rules": "FK users; must equal contract.freelancer_id (BR-16)."
+    },
+    {
+      "name": "amount",
+      "type": "DECIMAL(15,2)",
+      "key": "None",
+      "nullable": "No",
+      "default": "None",
+      "rules": "DECIMAL positive; exactly milestone.amount; immutable."
+    },
+    {
+      "name": "payment_status",
+      "type": "VARCHAR(20)",
+      "key": "None",
+      "nullable": "No",
+      "default": "PENDING",
+      "rules": "PENDING, PAID, or FAILED"
+    },
+    {
+      "name": "payment_method",
+      "type": "VARCHAR(50)",
+      "key": "None",
+      "nullable": "No",
+      "default": "None",
+      "rules": "PAYPAL, CREDIT_CARD, BANK_TRANSFER; labels normalized from source examples."
+    },
+    {
+      "name": "paid_milestone_id",
+      "type": "INT",
+      "key": "UNIQUE",
+      "nullable": "Yes",
+      "default": "Generated STORED",
+      "rules": "milestone_id only for PAID; otherwise NULL."
+    }
+  ]
+}

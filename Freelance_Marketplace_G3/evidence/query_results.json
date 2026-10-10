@@ -1,0 +1,1672 @@
+[
+  {
+    "id": "Q-01",
+    "question": "Jobs and proposal counts",
+    "sql": "SELECT *\nFROM v_job_proposals\nORDER BY job_id;",
+    "expected": "8 jobs, counts 2,2,2,1,2,1,0,1",
+    "explanation": "LEFT JOIN retains jobs with no proposals.",
+    "actual": [
+      [
+        1,
+        1,
+        "Demo job 1",
+        "IN_PROGRESS",
+        "1000.00",
+        2,
+        "1"
+      ],
+      [
+        2,
+        1,
+        "Demo job 2",
+        "IN_PROGRESS",
+        "800.00",
+        2,
+        "1"
+      ],
+      [
+        3,
+        2,
+        "Demo job 3",
+        "IN_PROGRESS",
+        "1500.00",
+        2,
+        "1"
+      ],
+      [
+        4,
+        2,
+        "Demo job 4",
+        "IN_PROGRESS",
+        "600.00",
+        1,
+        "1"
+      ],
+      [
+        5,
+        3,
+        "Demo job 5",
+        "IN_PROGRESS",
+        "2000.00",
+        2,
+        "1"
+      ],
+      [
+        6,
+        3,
+        "Demo job 6",
+        "OPEN",
+        "900.00",
+        1,
+        "1"
+      ],
+      [
+        7,
+        1,
+        "Demo job 7",
+        "OPEN",
+        "500.00",
+        0,
+        "0"
+      ],
+      [
+        8,
+        2,
+        "Demo job 8",
+        "OPEN",
+        "1200.00",
+        1,
+        "0"
+      ]
+    ],
+    "median_ms": 0.3990110003542213,
+    "explain": {
+      "query_block": {
+        "select_id": 1,
+        "cost_info": {
+          "query_cost": "15.85"
+        },
+        "ordering_operation": {
+          "using_filesort": true,
+          "cost_info": {
+            "sort_cost": "12.00"
+          },
+          "table": {
+            "table_name": "v_job_proposals",
+            "access_type": "ALL",
+            "rows_examined_per_scan": 12,
+            "rows_produced_per_join": 12,
+            "filtered": "100.00",
+            "cost_info": {
+              "read_cost": "2.65",
+              "eval_cost": "1.20",
+              "prefix_cost": "3.85",
+              "data_read_per_join": "10K"
+            },
+            "used_columns": [
+              "job_id",
+              "client_id",
+              "title",
+              "status",
+              "budget_max",
+              "proposal_count",
+              "selected_count"
+            ],
+            "materialized_from_subquery": {
+              "using_temporary_table": true,
+              "dependent": false,
+              "cacheable": true,
+              "query_block": {
+                "select_id": 2,
+                "cost_info": {
+                  "query_cost": "5.45"
+                },
+                "grouping_operation": {
+                  "using_temporary_table": true,
+                  "using_filesort": false,
+                  "nested_loop": [
+                    {
+                      "table": {
+                        "table_name": "j",
+                        "access_type": "ALL",
+                        "rows_examined_per_scan": 8,
+                        "rows_produced_per_join": 8,
+                        "filtered": "100.00",
+                        "cost_info": {
+                          "read_cost": "0.25",
+                          "eval_cost": "0.80",
+                          "prefix_cost": "1.05",
+                          "data_read_per_join": "7K"
+                        },
+                        "used_columns": [
+                          "job_id",
+                          "client_id",
+                          "title",
+                          "budget_max",
+                          "status"
+                        ]
+                      }
+                    },
+                    {
+                      "table": {
+                        "table_name": "p",
+                        "access_type": "ref",
+                        "possible_keys": [
+                          "uq_proposal_freelancer_job"
+                        ],
+                        "key": "uq_proposal_freelancer_job",
+                        "used_key_parts": [
+                          "job_id"
+                        ],
+                        "key_length": "4",
+                        "ref": [
+                          "mini_upwork.j.job_id"
+                        ],
+                        "rows_examined_per_scan": 1,
+                        "rows_produced_per_join": 12,
+                        "filtered": "100.00",
+                        "cost_info": {
+                          "read_cost": "3.14",
+                          "eval_cost": "1.26",
+                          "prefix_cost": "5.45",
+                          "data_read_per_join": "1K"
+                        },
+                        "used_columns": [
+                          "proposal_id",
+                          "job_id",
+                          "status"
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "explain_analyze": "-> Sort: v_job_proposals.job_id  (cost=2.6..2.6 rows=0) (actual time=0.0727..0.0733 rows=8 loops=1)\n    -> Table scan on v_job_proposals  (cost=2.5..2.5 rows=0) (actual time=0.0662..0.0671 rows=8 loops=1)\n        -> Materialize  (cost=0..0 rows=0) (actual time=0.0658..0.0658 rows=8 loops=1)\n            -> Table scan on <temporary>  (actual time=0.0569..0.0579 rows=8 loops=1)\n                -> Aggregate using temporary table  (actual time=0.0564..0.0564 rows=8 loops=1)\n                    -> Nested loop left join  (cost=5.45 rows=12.6) (actual time=0.0185..0.0362 rows=12 loops=1)\n                        -> Table scan on j  (cost=1.05 rows=8) (actual time=0.0101..0.0126 rows=8 loops=1)\n                        -> Index lookup on p using uq_proposal_freelancer_job (job_id=j.job_id)  (cost=0.412 rows=1.57) (actual time=0.00225..0.00264 rows=1.38 loops=8)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-02",
+    "question": "Freelancers with at least two proposals",
+    "sql": "SELECT freelancer_id,\n       COUNT(*) AS proposals\nFROM proposals\nGROUP BY freelancer_id\nHAVING COUNT(*) >= 2\nORDER BY freelancer_id;",
+    "expected": "IDs 4:3, 6:3, 7:2, 8:2",
+    "explanation": "HAVING filters aggregate groups.",
+    "actual": [
+      [
+        4,
+        3
+      ],
+      [
+        6,
+        3
+      ],
+      [
+        7,
+        2
+      ],
+      [
+        8,
+        2
+      ]
+    ],
+    "median_ms": 0.10468000027685775,
+    "explain": {
+      "query_block": {
+        "select_id": 1,
+        "cost_info": {
+          "query_cost": "1.35"
+        },
+        "ordering_operation": {
+          "using_filesort": false,
+          "grouping_operation": {
+            "using_filesort": false,
+            "table": {
+              "table_name": "proposals",
+              "access_type": "index",
+              "possible_keys": [
+                "uq_proposal_freelancer_job",
+                "fk_proposals_freelancer"
+              ],
+              "key": "fk_proposals_freelancer",
+              "used_key_parts": [
+                "freelancer_id"
+              ],
+              "key_length": "4",
+              "rows_examined_per_scan": 11,
+              "rows_produced_per_join": 11,
+              "filtered": "100.00",
+              "using_index": true,
+              "cost_info": {
+                "read_cost": "0.25",
+                "eval_cost": "1.10",
+                "prefix_cost": "1.35",
+                "data_read_per_join": "1K"
+              },
+              "used_columns": [
+                "proposal_id",
+                "freelancer_id"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "explain_analyze": "-> Filter: (count(0) >= 2)  (cost=2.45 rows=5) (actual time=0.00627..0.00857 rows=4 loops=1)\n    -> Group aggregate: count(0), count(0)  (cost=2.45 rows=5) (actual time=0.00553..0.00742 rows=5 loops=1)\n        -> Covering index scan on proposals using fk_proposals_freelancer  (cost=1.35 rows=11) (actual time=0.00401..0.00546 rows=11 loops=1)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-03",
+    "question": "Jobs with no proposals",
+    "sql": "SELECT j.job_id,\n       j.title\nFROM jobs AS j\nWHERE NOT EXISTS\n        (SELECT 1\n         FROM proposals AS p\n         WHERE p.job_id = j.job_id)\nORDER BY j.job_id;",
+    "expected": "Job 7",
+    "explanation": "Correlated anti-existence test.",
+    "actual": [
+      [
+        7,
+        "Demo job 7"
+      ]
+    ],
+    "median_ms": 0.10594600007607369,
+    "explain": {
+      "query_block": {
+        "select_id": 1,
+        "cost_info": {
+          "query_cost": "4.31"
+        },
+        "ordering_operation": {
+          "using_filesort": false,
+          "nested_loop": [
+            {
+              "table": {
+                "table_name": "j",
+                "access_type": "index",
+                "key": "PRIMARY",
+                "used_key_parts": [
+                  "job_id"
+                ],
+                "key_length": "4",
+                "rows_examined_per_scan": 8,
+                "rows_produced_per_join": 8,
+                "filtered": "100.00",
+                "cost_info": {
+                  "read_cost": "0.25",
+                  "eval_cost": "0.80",
+                  "prefix_cost": "1.05",
+                  "data_read_per_join": "7K"
+                },
+                "used_columns": [
+                  "job_id",
+                  "title"
+                ]
+              }
+            },
+            {
+              "table": {
+                "table_name": "p",
+                "access_type": "ref",
+                "possible_keys": [
+                  "uq_proposal_freelancer_job"
+                ],
+                "key": "uq_proposal_freelancer_job",
+                "used_key_parts": [
+                  "job_id"
+                ],
+                "key_length": "4",
+                "ref": [
+                  "mini_upwork.j.job_id"
+                ],
+                "rows_examined_per_scan": 1,
+                "rows_produced_per_join": 8,
+                "filtered": "100.00",
+                "not_exists": true,
+                "using_index": true,
+                "cost_info": {
+                  "read_cost": "2.00",
+                  "eval_cost": "0.80",
+                  "prefix_cost": "4.31",
+                  "data_read_per_join": "1024"
+                },
+                "used_columns": [
+                  "proposal_id",
+                  "job_id"
+                ],
+                "attached_condition": "<if>(is_not_null_compl(p), <if>(found_match(p), false, true), true)"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "explain_analyze": "-> Nested loop antijoin  (cost=4.31 rows=12.6) (actual time=0.0132..0.0154 rows=1 loops=1)\n    -> Index scan on j using PRIMARY  (cost=1.05 rows=8) (actual time=0.00449..0.00662 rows=8 loops=1)\n    -> Covering index lookup on p using uq_proposal_freelancer_job (job_id=j.job_id)  (cost=0.424 rows=1.57) (actual time=939e-6..939e-6 rows=0.875 loops=8)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-04",
+    "question": "Rank freelancer contract value",
+    "sql": "WITH totals AS\n    (SELECT freelancer_id,\n            SUM(total_amount) AS value\n     FROM contracts\n     WHERE status <> 'CANCELLED'\n     GROUP BY freelancer_id)\nSELECT freelancer_id,\n       value,\n       DENSE_RANK() OVER (\n                          ORDER BY value DESC) AS value_rank\nFROM totals\nORDER BY value_rank,\n         freelancer_id;",
+    "expected": "4:3000 rank1; 6:1500 rank2; 5:800 rank3; 7:600 rank4",
+    "explanation": "CTE and window ranking.",
+    "actual": [
+      [
+        4,
+        "3000.00",
+        1
+      ],
+      [
+        6,
+        "1500.00",
+        2
+      ],
+      [
+        5,
+        "800.00",
+        3
+      ],
+      [
+        7,
+        "600.00",
+        4
+      ]
+    ],
+    "median_ms": 0.22439199983637081,
+    "explain": {
+      "query_block": {
+        "select_id": 1,
+        "cost_info": {
+          "query_cost": "10.95"
+        },
+        "ordering_operation": {
+          "using_filesort": true,
+          "cost_info": {
+            "sort_cost": "4.00"
+          },
+          "windowing": {
+            "windows": [
+              {
+                "name": "<unnamed window>",
+                "using_temporary_table": true,
+                "using_filesort": true,
+                "filesort_key": [
+                  "`value` desc"
+                ],
+                "functions": [
+                  "dense_rank"
+                ]
+              }
+            ],
+            "cost_info": {
+              "sort_cost": "4.00"
+            },
+            "table": {
+              "table_name": "totals",
+              "access_type": "ALL",
+              "rows_examined_per_scan": 4,
+              "rows_produced_per_join": 4,
+              "filtered": "100.00",
+              "cost_info": {
+                "read_cost": "2.55",
+                "eval_cost": "0.40",
+                "prefix_cost": "2.95",
+                "data_read_per_join": "128"
+              },
+              "used_columns": [
+                "freelancer_id",
+                "value"
+              ],
+              "materialized_from_subquery": {
+                "using_temporary_table": true,
+                "dependent": false,
+                "cacheable": true,
+                "query_block": {
+                  "select_id": 2,
+                  "cost_info": {
+                    "query_cost": "0.75"
+                  },
+                  "grouping_operation": {
+                    "using_filesort": false,
+                    "table": {
+                      "table_name": "contracts",
+                      "access_type": "index",
+                      "possible_keys": [
+                        "fk_contract_freelancer"
+                      ],
+                      "key": "fk_contract_freelancer",
+                      "used_key_parts": [
+                        "freelancer_id"
+                      ],
+                      "key_length": "4",
+                      "rows_examined_per_scan": 5,
+                      "rows_produced_per_join": 4,
+                      "filtered": "80.00",
+                      "cost_info": {
+                        "read_cost": "0.35",
+                        "eval_cost": "0.40",
+                        "prefix_cost": "0.75",
+                        "data_read_per_join": "448"
+                      },
+                      "used_columns": [
+                        "contract_id",
+                        "freelancer_id",
+                        "total_amount",
+                        "status"
+                      ],
+                      "attached_condition": "(`mini_upwork`.`contracts`.`status` <> 'CANCELLED')"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "explain_analyze": "-> Sort: value_rank, totals.freelancer_id  (actual time=0.0375..0.0377 rows=4 loops=1)\n    -> Table scan on <temporary>  (cost=2.5..2.5 rows=0) (actual time=0.0353..0.0356 rows=4 loops=1)\n        -> Temporary table  (cost=0..0 rows=0) (actual time=0.035..0.035 rows=4 loops=1)\n            -> Window aggregate: dense_rank() OVER (ORDER BY totals.`value` desc )   (actual time=0.0301..0.0312 rows=4 loops=1)\n                -> Sort: totals.`value` DESC  (cost=4.28..4.28 rows=2) (actual time=0.0286..0.0289 rows=4 loops=1)\n                    -> Table scan on totals  (cost=2.61..3.88 rows=2) (actual time=0.0241..0.0246 rows=4 loops=1)\n                        -> Materialize CTE totals  (cost=1.35..1.35 rows=2) (actual time=0.0235..0.0235 rows=4 loops=1)\n                            -> Group aggregate: sum(contracts.total_amount)  (cost=1.15 rows=2) (actual time=0.0182..0.0199 rows=4 loops=1)\n                                -> Filter: (contracts.`status` <> 'CANCELLED')  (cost=0.75 rows=4) (actual time=0.0153..0.0171 rows=5 loops=1)\n                                    -> Index scan on contracts using fk_contract_freelancer  (cost=0.75 rows=5) (actual time=0.0144..0.0157 rows=5 loops=1)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-05",
+    "question": "Client successful payment totals",
+    "sql": "SELECT *\nFROM v_client_spend\nORDER BY client_id;",
+    "expected": "Client1 700; client2 200; client3 0",
+    "explanation": "Only PAID attempts contribute.",
+    "actual": [
+      [
+        1,
+        2,
+        "700.00"
+      ],
+      [
+        2,
+        1,
+        "200.00"
+      ],
+      [
+        3,
+        0,
+        "0.00"
+      ]
+    ],
+    "median_ms": 0.3002200000992161,
+    "explain": {
+      "query_block": {
+        "select_id": 1,
+        "cost_info": {
+          "query_cost": "22.52"
+        },
+        "ordering_operation": {
+          "using_filesort": true,
+          "cost_info": {
+            "sort_cost": "18.00"
+          },
+          "table": {
+            "table_name": "v_client_spend",
+            "access_type": "ALL",
+            "rows_examined_per_scan": 18,
+            "rows_produced_per_join": 18,
+            "filtered": "100.00",
+            "cost_info": {
+              "read_cost": "2.73",
+              "eval_cost": "1.80",
+              "prefix_cost": "4.53",
+              "data_read_per_join": "720"
+            },
+            "used_columns": [
+              "client_id",
+              "paid_count",
+              "paid_amount"
+            ],
+            "materialized_from_subquery": {
+              "using_temporary_table": true,
+              "dependent": false,
+              "cacheable": true,
+              "query_block": {
+                "select_id": 2,
+                "cost_info": {
+                  "query_cost": "2.60"
+                },
+                "grouping_operation": {
+                  "using_temporary_table": true,
+                  "using_filesort": false,
+                  "nested_loop": [
+                    {
+                      "table": {
+                        "table_name": "c",
+                        "access_type": "index",
+                        "possible_keys": [
+                          "PRIMARY"
+                        ],
+                        "key": "PRIMARY",
+                        "used_key_parts": [
+                          "client_id"
+                        ],
+                        "key_length": "4",
+                        "rows_examined_per_scan": 3,
+                        "rows_produced_per_join": 3,
+                        "filtered": "100.00",
+                        "using_index": true,
+                        "cost_info": {
+                          "read_cost": "0.25",
+                          "eval_cost": "0.30",
+                          "prefix_cost": "0.55",
+                          "data_read_per_join": "3K"
+                        },
+                        "used_columns": [
+                          "client_id"
+                        ]
+                      }
+                    },
+                    {
+                      "table": {
+                        "table_name": "p",
+                        "access_type": "ALL",
+                        "possible_keys": [
+                          "fk_payment_payer"
+                        ],
+                        "rows_examined_per_scan": 6,
+                        "rows_produced_per_join": 18,
+                        "filtered": "100.00",
+                        "using_join_buffer": "hash join",
+                        "cost_info": {
+                          "read_cost": "0.25",
+                          "eval_cost": "1.80",
+                          "prefix_cost": "2.60",
+                          "data_read_per_join": "5K"
+                        },
+                        "used_columns": [
+                          "payment_id",
+                          "payer_id",
+                          "amount",
+                          "payment_status"
+                        ],
+                        "attached_condition": "<if>(is_not_null_compl(p), ((`mini_upwork`.`p`.`payment_status` = 'PAID') and (`mini_upwork`.`p`.`payer_id` = `mini_upwork`.`c`.`client_id`)), true)"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "explain_analyze": "-> Sort: v_client_spend.client_id  (cost=2.6..2.6 rows=0) (actual time=0.0396..0.0397 rows=3 loops=1)\n    -> Table scan on v_client_spend  (cost=2.5..2.5 rows=0) (actual time=0.0352..0.0355 rows=3 loops=1)\n        -> Materialize  (cost=0..0 rows=0) (actual time=0.0349..0.0349 rows=3 loops=1)\n            -> Table scan on <temporary>  (actual time=0.0299..0.0303 rows=3 loops=1)\n                -> Aggregate using temporary table  (actual time=0.0295..0.0295 rows=3 loops=1)\n                    -> Left hash join (p.payer_id = c.client_id)  (cost=2.33 rows=18) (actual time=0.0207..0.0225 rows=4 loops=1)\n                        -> Covering index scan on c using PRIMARY  (cost=0.55 rows=3) (actual time=0.00198..0.00276 rows=3 loops=1)\n                        -> Hash\n                            -> Filter: (p.payment_status = 'PAID')  (cost=0.283 rows=6) (actual time=0.0108..0.0126 rows=3 loops=1)\n                                -> Table scan on p  (cost=0.283 rows=6) (actual time=0.00934..0.0112 rows=6 loops=1)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-06",
+    "question": "Contracts not fully paid",
+    "sql": "SELECT contract_id,\n       total_amount,\n       paid_amount,\n       outstanding_amount\nFROM v_contract_overview\nWHERE outstanding_amount > 0\nORDER BY contract_id;",
+    "expected": "Outstanding 600,500,1500,400,2000",
+    "explanation": "Pre-aggregation prevents payment retry fan-out.",
+    "actual": [
+      [
+        1,
+        "1000.00",
+        "400.00",
+        "600.00"
+      ],
+      [
+        2,
+        "800.00",
+        "300.00",
+        "500.00"
+      ],
+      [
+        3,
+        "1500.00",
+        "0.00",
+        "1500.00"
+      ],
+      [
+        4,
+        "600.00",
+        "200.00",
+        "400.00"
+      ],
+      [
+        5,
+        "2000.00",
+        "0.00",
+        "2000.00"
+      ]
+    ],
+    "median_ms": 0.4839050002374279,
+    "explain": {
+      "query_block": {
+        "select_id": 1,
+        "cost_info": {
+          "query_cost": "28.78"
+        },
+        "ordering_operation": {
+          "using_temporary_table": true,
+          "using_filesort": true,
+          "cost_info": {
+            "sort_cost": "20.00"
+          },
+          "nested_loop": [
+            {
+              "table": {
+                "table_name": "c",
+                "access_type": "ALL",
+                "rows_examined_per_scan": 5,
+                "rows_produced_per_join": 5,
+                "filtered": "100.00",
+                "cost_info": {
+                  "read_cost": "0.25",
+                  "eval_cost": "0.50",
+                  "prefix_cost": "0.75",
+                  "data_read_per_join": "560"
+                },
+                "used_columns": [
+                  "contract_id",
+                  "total_amount"
+                ]
+              }
+            },
+            {
+              "table": {
+                "table_name": "m",
+                "access_type": "ref",
+                "possible_keys": [
+                  "<auto_key0>"
+                ],
+                "key": "<auto_key0>",
+                "used_key_parts": [
+                  "contract_id"
+                ],
+                "key_length": "4",
+                "ref": [
+                  "mini_upwork.c.contract_id"
+                ],
+                "rows_examined_per_scan": 2,
+                "rows_produced_per_join": 10,
+                "filtered": "100.00",
+                "cost_info": {
+                  "read_cost": "2.50",
+                  "eval_cost": "1.00",
+                  "prefix_cost": "4.25",
+                  "data_read_per_join": "400"
+                },
+                "used_columns": [
+                  "contract_id",
+                  "milestone_count",
+                  "allocated_amount"
+                ],
+                "materialized_from_subquery": {
+                  "using_temporary_table": true,
+                  "dependent": false,
+                  "cacheable": true,
+                  "query_block": {
+                    "select_id": 4,
+                    "cost_info": {
+                      "query_cost": "1.25"
+                    },
+                    "grouping_operation": {
+                      "using_filesort": false,
+                      "table": {
+                        "table_name": "milestones",
+                        "access_type": "index",
+                        "possible_keys": [
+                          "fk_milestone_contract"
+                        ],
+                        "key": "fk_milestone_contract",
+                        "used_key_parts": [
+                          "contract_id"
+                        ],
+                        "key_length": "4",
+                        "rows_examined_per_scan": 10,
+                        "rows_produced_per_join": 10,
+                        "filtered": "100.00",
+                        "cost_info": {
+                          "read_cost": "0.25",
+                          "eval_cost": "1.00",
+                          "prefix_cost": "1.25",
+                          "data_read_per_join": "8K"
+                        },
+                        "used_columns": [
+                          "milestone_id",
+                          "contract_id",
+                          "amount"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "table": {
+                "table_name": "p",
+                "access_type": "ALL",
+                "rows_examined_per_scan": 2,
+                "rows_produced_per_join": 20,
+                "filtered": "100.00",
+                "using_join_buffer": "hash join",
+                "cost_info": {
+                  "read_cost": "2.53",
+                  "eval_cost": "2.00",
+                  "prefix_cost": "8.78",
+                  "data_read_per_join": "640"
+                },
+                "used_columns": [
+                  "contract_id",
+                  "paid_amount"
+                ],
+                "attached_condition": "(<if>(found_match(p), ((`mini_upwork`.`c`.`total_amount` - coalesce(`p`.`paid_amount`,0)) > 0), true) and <if>(is_not_null_compl(p), (`p`.`contract_id` = `mini_upwork`.`c`.`contract_id`), true))",
+                "materialized_from_subquery": {
+                  "using_temporary_table": true,
+                  "dependent": false,
+                  "cacheable": true,
+                  "query_block": {
+                    "select_id": 3,
+                    "cost_info": {
+                      "query_cost": "1.20"
+                    },
+                    "grouping_operation": {
+                      "using_temporary_table": true,
+                      "using_filesort": false,
+                      "nested_loop": [
+                        {
+                          "table": {
+                            "table_name": "p",
+                            "access_type": "ALL",
+                            "possible_keys": [
+                              "fk_payment_milestone"
+                            ],
+                            "rows_examined_per_scan": 6,
+                            "rows_produced_per_join": 1,
+                            "filtered": "16.67",
+                            "cost_info": {
+                              "read_cost": "0.75",
+                              "eval_cost": "0.10",
+                              "prefix_cost": "0.85",
+                              "data_read_per_join": "312"
+                            },
+                            "used_columns": [
+                              "payment_id",
+                              "milestone_id",
+                              "amount",
+                              "payment_status"
+                            ],
+                            "attached_condition": "(`mini_upwork`.`p`.`payment_status` = 'PAID')"
+                          }
+                        },
+                        {
+                          "table": {
+                            "table_name": "m",
+                            "access_type": "eq_ref",
+                            "possible_keys": [
+                              "PRIMARY",
+                              "fk_milestone_contract"
+                            ],
+                            "key": "PRIMARY",
+                            "used_key_parts": [
+                              "milestone_id"
+                            ],
+                            "key_length": "4",
+                            "ref": [
+                              "mini_upwork.p.milestone_id"
+                            ],
+                            "rows_examined_per_scan": 1,
+                            "rows_produced_per_join": 1,
+                            "filtered": "100.00",
+                            "cost_info": {
+                              "read_cost": "0.25",
+                              "eval_cost": "0.10",
+                              "prefix_cost": "1.20",
+                              "data_read_per_join": "920"
+                            },
+                            "used_columns": [
+                              "milestone_id",
+                              "contract_id"
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "explain_analyze": "-> Sort: v_contract_overview.contract_id  (actual time=0.0775..0.0778 rows=5 loops=1)\n    -> Stream results  (cost=5.03 rows=0) (actual time=0.0644..0.0722 rows=5 loops=1)\n        -> Filter: ((c.total_amount - coalesce(p.paid_amount,0)) > 0)  (cost=5.03 rows=0) (actual time=0.063..0.0692 rows=5 loops=1)\n            -> Left hash join (p.contract_id = c.contract_id)  (cost=5.03 rows=0) (actual time=0.0612..0.0664 rows=5 loops=1)\n                -> Nested loop left join  (cost=4.83 rows=15.8) (actual time=0.0223..0.0263 rows=5 loops=1)\n                    -> Table scan on c  (cost=0.75 rows=5) (actual time=0.00256..0.00351 rows=5 loops=1)\n                    -> Index lookup on m using <auto_key0> (contract_id=c.contract_id)  (cost=2.84..3.11 rows=2) (actual time=0.00415..0.00436 rows=1 loops=5)\n                        -> Materialize  (cost=2.57..2.57 rows=3.16) (actual time=0.0186..0.0186 rows=5 loops=1)\n                            -> Group aggregate: count(0), sum(milestones.amount)  (cost=2.25 rows=3.16) (actual time=0.00949..0.0145 rows=5 loops=1)\n                                -> Index scan on milestones using fk_milestone_contract  (cost=1.25 rows=10) (actual time=0.00665..0.0108 rows=10 loops=1)\n                -> Hash\n                    -> Table scan on p  (cost=2.5..2.5 rows=0) (actual time=0.0325..0.0328 rows=3 loops=1)\n                        -> Materialize  (cost=0..0 rows=0) (actual time=0.0322..0.0322 rows=3 loops=1)\n                            -> Table scan on <temporary>  (actual time=0.0273..0.0276 rows=3 loops=1)\n                                -> Aggregate using temporary table  (actual time=0.0268..0.0268 rows=3 loops=1)\n                                    -> Nested loop inner join  (cost=1.2 rows=1) (actual time=0.0169..0.0215 rows=3 loops=1)\n                                        -> Filter: (p.payment_status = 'PAID')  (cost=0.85 rows=1) (actual time=0.0124..0.015 rows=3 loops=1)\n                                            -> Table scan on p  (cost=0.85 rows=6) (actual time=0.0108..0.0133 rows=6 loops=1)\n                                        -> Single-row index lookup on m using PRIMARY (milestone_id=p.milestone_id)  (cost=0.35 rows=1) (actual time=0.00185..0.00189 rows=1 loops=3)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-07",
+    "question": "Completed work not yet paid",
+    "sql": "SELECT m.milestone_id,\n       m.status,\n       m.amount\nFROM milestones AS m\nWHERE m.status IN ('COMPLETED',\n                   'APPROVED')\n    AND NOT EXISTS\n        (SELECT 1\n         FROM payments AS p\n         WHERE p.milestone_id=m.milestone_id\n             AND p.payment_status='PAID')\nORDER BY m.milestone_id;",
+    "expected": "Milestones 2,5,9",
+    "explanation": "COMPLETED still needs approval; pending and failed are unpaid.",
+    "actual": [
+      [
+        2,
+        "COMPLETED",
+        "600.00"
+      ],
+      [
+        5,
+        "APPROVED",
+        "500.00"
+      ],
+      [
+        9,
+        "APPROVED",
+        "500.00"
+      ]
+    ],
+    "median_ms": 0.18739550023383345,
+    "explain": {
+      "query_block": {
+        "select_id": 1,
+        "cost_info": {
+          "query_cost": "6.26"
+        },
+        "ordering_operation": {
+          "using_filesort": false,
+          "nested_loop": [
+            {
+              "table": {
+                "table_name": "m",
+                "access_type": "index",
+                "possible_keys": [
+                  "ix_milestones_status_due"
+                ],
+                "key": "PRIMARY",
+                "used_key_parts": [
+                  "milestone_id"
+                ],
+                "key_length": "4",
+                "rows_examined_per_scan": 10,
+                "rows_produced_per_join": 6,
+                "filtered": "60.00",
+                "cost_info": {
+                  "read_cost": "2.61",
+                  "eval_cost": "0.60",
+                  "prefix_cost": "3.21",
+                  "data_read_per_join": "5K"
+                },
+                "used_columns": [
+                  "milestone_id",
+                  "amount",
+                  "status"
+                ],
+                "attached_condition": "(`mini_upwork`.`m`.`status` in ('COMPLETED','APPROVED'))"
+              }
+            },
+            {
+              "table": {
+                "table_name": "<subquery2>",
+                "access_type": "eq_ref",
+                "key": "<auto_distinct_key>",
+                "key_length": "5",
+                "ref": [
+                  "mini_upwork.m.milestone_id"
+                ],
+                "rows_examined_per_scan": 1,
+                "not_exists": true,
+                "attached_condition": "<if>(is_not_null_compl(<subquery2>), <if>(found_match(<subquery2>), false, true), true)",
+                "materialized_from_subquery": {
+                  "using_temporary_table": true,
+                  "query_block": {
+                    "table": {
+                      "table_name": "p",
+                      "access_type": "ALL",
+                      "possible_keys": [
+                        "fk_payment_milestone"
+                      ],
+                      "rows_examined_per_scan": 6,
+                      "rows_produced_per_join": 6,
+                      "filtered": "100.00",
+                      "cost_info": {
+                        "read_cost": "0.25",
+                        "eval_cost": "0.60",
+                        "prefix_cost": "0.85",
+                        "data_read_per_join": "1K"
+                      },
+                      "used_columns": [
+                        "payment_id",
+                        "milestone_id",
+                        "payment_status"
+                      ],
+                      "attached_condition": "(`mini_upwork`.`p`.`payment_status` = 'PAID')"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "explain_analyze": "-> Nested loop antijoin  (cost=7.41 rows=36) (actual time=0.0192..0.0239 rows=3 loops=1)\n    -> Filter: (m.`status` in ('COMPLETED','APPROVED'))  (cost=3.21 rows=6) (actual time=0.00708..0.011 rows=6 loops=1)\n        -> Index scan on m using PRIMARY  (cost=3.21 rows=10) (actual time=0.00627..0.00872 rows=10 loops=1)\n    -> Single-row index lookup on <subquery2> using <auto_distinct_key> (milestone_id=m.milestone_id)  (cost=1.57..1.57 rows=1) (actual time=0.00195..0.00195 rows=0.5 loops=6)\n        -> Materialize with deduplication  (cost=1.45..1.45 rows=6) (actual time=0.00899..0.00899 rows=3 loops=1)\n            -> Filter: (p.milestone_id is not null)  (cost=0.85 rows=6) (actual time=0.00426..0.00641 rows=3 loops=1)\n                -> Filter: (p.payment_status = 'PAID')  (cost=0.85 rows=6) (actual time=0.00404..0.00599 rows=3 loops=1)\n                    -> Table scan on p  (cost=0.85 rows=6) (actual time=0.00279..0.00473 rows=6 loops=1)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-08",
+    "question": "Jobs above mean maximum budget",
+    "sql": "SELECT job_id,\n       budget_max\nFROM jobs\nWHERE budget_max >\n        (SELECT AVG(budget_max)\n         FROM jobs)\nORDER BY job_id;",
+    "expected": "Jobs 3,5,8; mean1062.50",
+    "explanation": "Scalar non-correlated aggregate subquery.",
+    "actual": [
+      [
+        3,
+        "1500.00"
+      ],
+      [
+        5,
+        "2000.00"
+      ],
+      [
+        8,
+        "1200.00"
+      ]
+    ],
+    "median_ms": 0.105971500488522,
+    "explain": {
+      "query_block": {
+        "select_id": 1,
+        "cost_info": {
+          "query_cost": "1.05"
+        },
+        "ordering_operation": {
+          "using_filesort": false,
+          "table": {
+            "table_name": "jobs",
+            "access_type": "index",
+            "possible_keys": [
+              "ix_jobs_status_budget"
+            ],
+            "key": "PRIMARY",
+            "used_key_parts": [
+              "job_id"
+            ],
+            "key_length": "4",
+            "rows_examined_per_scan": 8,
+            "rows_produced_per_join": 2,
+            "filtered": "33.33",
+            "cost_info": {
+              "read_cost": "0.25",
+              "eval_cost": "0.27",
+              "prefix_cost": "1.05",
+              "data_read_per_join": "2K"
+            },
+            "used_columns": [
+              "job_id",
+              "budget_max"
+            ],
+            "attached_condition": "(`mini_upwork`.`jobs`.`budget_max` > (/* select#2 */ select avg(`mini_upwork`.`jobs`.`budget_max`) from `mini_upwork`.`jobs`))",
+            "attached_subqueries": [
+              {
+                "dependent": false,
+                "cacheable": true,
+                "query_block": {
+                  "select_id": 2,
+                  "cost_info": {
+                    "query_cost": "1.05"
+                  },
+                  "table": {
+                    "table_name": "jobs",
+                    "access_type": "index",
+                    "key": "ix_jobs_status_budget",
+                    "used_key_parts": [
+                      "status",
+                      "budget_max"
+                    ],
+                    "key_length": "89",
+                    "rows_examined_per_scan": 8,
+                    "rows_produced_per_join": 8,
+                    "filtered": "100.00",
+                    "using_index": true,
+                    "cost_info": {
+                      "read_cost": "0.25",
+                      "eval_cost": "0.80",
+                      "prefix_cost": "1.05",
+                      "data_read_per_join": "7K"
+                    },
+                    "used_columns": [
+                      "budget_max"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "explain_analyze": "-> Filter: (jobs.budget_max > (select #2))  (cost=0.517 rows=2.67) (actual time=0.00288..0.00446 rows=3 loops=1)\n    -> Index scan on jobs using PRIMARY  (cost=0.517 rows=8) (actual time=0.00193..0.00321 rows=8 loops=1)\n    -> Select #2 (subquery in condition; run only once)\n        -> Aggregate: avg(jobs.budget_max)  (cost=1.85 rows=1) (actual time=0.00647..0.00652 rows=1 loops=1)\n            -> Covering index scan on jobs using ix_jobs_status_budget  (cost=1.05 rows=8) (actual time=0.00337..0.00488 rows=8 loops=1)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-09",
+    "question": "Freelancers with at least three skills",
+    "sql": "SELECT f.freelancer_id,\n       f.professional_title,\n       COUNT(fs.skill_id) AS skill_count\nFROM freelancers AS f\nINNER JOIN freelancer_skills AS fs ON fs.freelancer_id=f.freelancer_id\nGROUP BY f.freelancer_id,\n         f.professional_title\nHAVING COUNT(fs.skill_id)>=3\nORDER BY f.freelancer_id;",
+    "expected": "Freelancers4,6 each3",
+    "explanation": "INNER JOIN with HAVING.",
+    "actual": [
+      [
+        4,
+        "Database and software specialist",
+        3
+      ],
+      [
+        6,
+        "Database and software specialist",
+        3
+      ]
+    ],
+    "median_ms": 0.17285550029555452,
+    "explain": {
+      "query_block": {
+        "select_id": 1,
+        "cost_info": {
+          "query_cost": "13.00"
+        },
+        "ordering_operation": {
+          "using_filesort": false,
+          "grouping_operation": {
+            "using_temporary_table": true,
+            "using_filesort": true,
+            "cost_info": {
+              "sort_cost": "10.00"
+            },
+            "nested_loop": [
+              {
+                "table": {
+                  "table_name": "f",
+                  "access_type": "ALL",
+                  "possible_keys": [
+                    "PRIMARY"
+                  ],
+                  "rows_examined_per_scan": 5,
+                  "rows_produced_per_join": 5,
+                  "filtered": "100.00",
+                  "cost_info": {
+                    "read_cost": "0.25",
+                    "eval_cost": "0.50",
+                    "prefix_cost": "0.75",
+                    "data_read_per_join": "3K"
+                  },
+                  "used_columns": [
+                    "freelancer_id",
+                    "professional_title"
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "table_name": "fs",
+                  "access_type": "ref",
+                  "possible_keys": [
+                    "PRIMARY"
+                  ],
+                  "key": "PRIMARY",
+                  "used_key_parts": [
+                    "freelancer_id"
+                  ],
+                  "key_length": "4",
+                  "ref": [
+                    "mini_upwork.f.freelancer_id"
+                  ],
+                  "rows_examined_per_scan": 2,
+                  "rows_produced_per_join": 10,
+                  "filtered": "100.00",
+                  "using_index": true,
+                  "cost_info": {
+                    "read_cost": "1.25",
+                    "eval_cost": "1.00",
+                    "prefix_cost": "3.00",
+                    "data_read_per_join": "960"
+                  },
+                  "used_columns": [
+                    "freelancer_id",
+                    "skill_id"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "explain_analyze": "-> Sort: f.freelancer_id, f.professional_title  (actual time=0.0466..0.0467 rows=2 loops=1)\n    -> Filter: (`count(fs.skill_id)` >= 3)  (actual time=0.0401..0.0411 rows=2 loops=1)\n        -> Table scan on <temporary>  (actual time=0.0392..0.0398 rows=5 loops=1)\n            -> Aggregate using temporary table  (actual time=0.0387..0.0387 rows=5 loops=1)\n                -> Nested loop inner join  (cost=3 rows=10) (actual time=0.0162..0.0258 rows=10 loops=1)\n                    -> Table scan on f  (cost=0.75 rows=5) (actual time=0.0104..0.0116 rows=5 loops=1)\n                    -> Covering index lookup on fs using PRIMARY (freelancer_id=f.freelancer_id)  (cost=0.29 rows=2) (actual time=0.00182..0.00247 rows=2 loops=5)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-10",
+    "question": "Contract milestone payment report",
+    "sql": "SELECT *\nFROM v_contract_overview\nORDER BY contract_id;",
+    "expected": "5 contracts, 2 milestones each; PAID 400,300,0,200,0",
+    "explanation": "Separate aggregation avoids repeated milestone totals.",
+    "actual": [
+      [
+        1,
+        1,
+        4,
+        "1000.00",
+        "ACTIVE",
+        2,
+        "1000.00",
+        "400.00",
+        "600.00"
+      ],
+      [
+        2,
+        1,
+        5,
+        "800.00",
+        "ACTIVE",
+        2,
+        "800.00",
+        "300.00",
+        "500.00"
+      ],
+      [
+        3,
+        2,
+        6,
+        "1500.00",
+        "ACTIVE",
+        2,
+        "1500.00",
+        "0.00",
+        "1500.00"
+      ],
+      [
+        4,
+        2,
+        7,
+        "600.00",
+        "ACTIVE",
+        2,
+        "600.00",
+        "200.00",
+        "400.00"
+      ],
+      [
+        5,
+        3,
+        4,
+        "2000.00",
+        "ACTIVE",
+        2,
+        "2000.00",
+        "0.00",
+        "2000.00"
+      ]
+    ],
+    "median_ms": 0.521612999818899,
+    "explain": {
+      "query_block": {
+        "select_id": 1,
+        "cost_info": {
+          "query_cost": "28.79"
+        },
+        "ordering_operation": {
+          "using_temporary_table": true,
+          "using_filesort": true,
+          "cost_info": {
+            "sort_cost": "20.00"
+          },
+          "nested_loop": [
+            {
+              "table": {
+                "table_name": "c",
+                "access_type": "ALL",
+                "rows_examined_per_scan": 5,
+                "rows_produced_per_join": 5,
+                "filtered": "100.00",
+                "cost_info": {
+                  "read_cost": "0.25",
+                  "eval_cost": "0.50",
+                  "prefix_cost": "0.75",
+                  "data_read_per_join": "560"
+                },
+                "used_columns": [
+                  "contract_id",
+                  "client_id",
+                  "freelancer_id",
+                  "total_amount",
+                  "status"
+                ]
+              }
+            },
+            {
+              "table": {
+                "table_name": "m",
+                "access_type": "ref",
+                "possible_keys": [
+                  "<auto_key0>"
+                ],
+                "key": "<auto_key0>",
+                "used_key_parts": [
+                  "contract_id"
+                ],
+                "key_length": "4",
+                "ref": [
+                  "mini_upwork.c.contract_id"
+                ],
+                "rows_examined_per_scan": 2,
+                "rows_produced_per_join": 10,
+                "filtered": "100.00",
+                "cost_info": {
+                  "read_cost": "2.50",
+                  "eval_cost": "1.00",
+                  "prefix_cost": "4.25",
+                  "data_read_per_join": "400"
+                },
+                "used_columns": [
+                  "contract_id",
+                  "milestone_count",
+                  "allocated_amount"
+                ],
+                "materialized_from_subquery": {
+                  "using_temporary_table": true,
+                  "dependent": false,
+                  "cacheable": true,
+                  "query_block": {
+                    "select_id": 4,
+                    "cost_info": {
+                      "query_cost": "1.25"
+                    },
+                    "grouping_operation": {
+                      "using_filesort": false,
+                      "table": {
+                        "table_name": "milestones",
+                        "access_type": "index",
+                        "possible_keys": [
+                          "fk_milestone_contract"
+                        ],
+                        "key": "fk_milestone_contract",
+                        "used_key_parts": [
+                          "contract_id"
+                        ],
+                        "key_length": "4",
+                        "rows_examined_per_scan": 10,
+                        "rows_produced_per_join": 10,
+                        "filtered": "100.00",
+                        "cost_info": {
+                          "read_cost": "0.25",
+                          "eval_cost": "1.00",
+                          "prefix_cost": "1.25",
+                          "data_read_per_join": "8K"
+                        },
+                        "used_columns": [
+                          "milestone_id",
+                          "contract_id",
+                          "amount"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "table": {
+                "table_name": "p",
+                "access_type": "ALL",
+                "rows_examined_per_scan": 2,
+                "rows_produced_per_join": 20,
+                "filtered": "100.00",
+                "using_join_buffer": "hash join",
+                "cost_info": {
+                  "read_cost": "2.54",
+                  "eval_cost": "2.00",
+                  "prefix_cost": "8.79",
+                  "data_read_per_join": "640"
+                },
+                "used_columns": [
+                  "contract_id",
+                  "paid_amount"
+                ],
+                "attached_condition": "<if>(is_not_null_compl(p), (`p`.`contract_id` = `mini_upwork`.`c`.`contract_id`), true)",
+                "materialized_from_subquery": {
+                  "using_temporary_table": true,
+                  "dependent": false,
+                  "cacheable": true,
+                  "query_block": {
+                    "select_id": 3,
+                    "cost_info": {
+                      "query_cost": "1.20"
+                    },
+                    "grouping_operation": {
+                      "using_temporary_table": true,
+                      "using_filesort": false,
+                      "nested_loop": [
+                        {
+                          "table": {
+                            "table_name": "p",
+                            "access_type": "ALL",
+                            "possible_keys": [
+                              "fk_payment_milestone"
+                            ],
+                            "rows_examined_per_scan": 6,
+                            "rows_produced_per_join": 1,
+                            "filtered": "16.67",
+                            "cost_info": {
+                              "read_cost": "0.75",
+                              "eval_cost": "0.10",
+                              "prefix_cost": "0.85",
+                              "data_read_per_join": "312"
+                            },
+                            "used_columns": [
+                              "payment_id",
+                              "milestone_id",
+                              "amount",
+                              "payment_status"
+                            ],
+                            "attached_condition": "(`mini_upwork`.`p`.`payment_status` = 'PAID')"
+                          }
+                        },
+                        {
+                          "table": {
+                            "table_name": "m",
+                            "access_type": "eq_ref",
+                            "possible_keys": [
+                              "PRIMARY",
+                              "fk_milestone_contract"
+                            ],
+                            "key": "PRIMARY",
+                            "used_key_parts": [
+                              "milestone_id"
+                            ],
+                            "key_length": "4",
+                            "ref": [
+                              "mini_upwork.p.milestone_id"
+                            ],
+                            "rows_examined_per_scan": 1,
+                            "rows_produced_per_join": 1,
+                            "filtered": "100.00",
+                            "cost_info": {
+                              "read_cost": "0.25",
+                              "eval_cost": "0.10",
+                              "prefix_cost": "1.20",
+                              "data_read_per_join": "920"
+                            },
+                            "used_columns": [
+                              "milestone_id",
+                              "contract_id"
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "explain_analyze": "-> Sort: v_contract_overview.contract_id  (actual time=0.0829..0.0834 rows=5 loops=1)\n    -> Stream results  (cost=5.04 rows=0) (actual time=0.0687..0.0773 rows=5 loops=1)\n        -> Left hash join (p.contract_id = c.contract_id)  (cost=5.04 rows=0) (actual time=0.0654..0.0709 rows=5 loops=1)\n            -> Nested loop left join  (cost=4.83 rows=15.8) (actual time=0.0225..0.0267 rows=5 loops=1)\n                -> Table scan on c  (cost=0.75 rows=5) (actual time=0.00289..0.00402 rows=5 loops=1)\n                -> Index lookup on m using <auto_key0> (contract_id=c.contract_id)  (cost=2.84..3.11 rows=2) (actual time=0.00413..0.00435 rows=1 loops=5)\n                    -> Materialize  (cost=2.57..2.57 rows=3.16) (actual time=0.0185..0.0185 rows=5 loops=1)\n                        -> Group aggregate: count(0), sum(milestones.amount)  (cost=2.25 rows=3.16) (actual time=0.00953..0.0143 rows=5 loops=1)\n                            -> Index scan on milestones using fk_milestone_contract  (cost=1.25 rows=10) (actual time=0.0067..0.0106 rows=10 loops=1)\n            -> Hash\n                -> Table scan on p  (cost=2.5..2.5 rows=0) (actual time=0.0365..0.0368 rows=3 loops=1)\n                    -> Materialize  (cost=0..0 rows=0) (actual time=0.0362..0.0362 rows=3 loops=1)\n                        -> Table scan on <temporary>  (actual time=0.0301..0.0305 rows=3 loops=1)\n                            -> Aggregate using temporary table  (actual time=0.0297..0.0297 rows=3 loops=1)\n                                -> Nested loop inner join  (cost=1.2 rows=1) (actual time=0.0197..0.0241 rows=3 loops=1)\n                                    -> Filter: (p.payment_status = 'PAID')  (cost=0.85 rows=1) (actual time=0.0146..0.0169 rows=3 loops=1)\n                                        -> Table scan on p  (cost=0.85 rows=6) (actual time=0.0125..0.0149 rows=6 loops=1)\n                                    -> Single-row index lookup on m using PRIMARY (milestone_id=p.milestone_id)  (cost=0.35 rows=1) (actual time=0.00204..0.00207 rows=1 loops=3)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-11",
+    "question": "Clients posting the most jobs",
+    "sql": "WITH counts AS\n    (SELECT client_id,\n            COUNT(*) AS job_count\n     FROM jobs\n     GROUP BY client_id),\n     ranked AS\n    (SELECT *,\n            DENSE_RANK() OVER (\n                               ORDER BY job_count DESC) AS r\n     FROM counts)\nSELECT client_id,\n       job_count\nFROM ranked\nWHERE r=1\nORDER BY client_id;",
+    "expected": "Clients1,2 each3",
+    "explanation": "Retains ties rather than LIMIT1.",
+    "actual": [
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "median_ms": 0.14948000080039492,
+    "explain": {
+      "query_block": {
+        "select_id": 1,
+        "cost_info": {
+          "query_cost": "0.35"
+        },
+        "ordering_operation": {
+          "using_filesort": true,
+          "table": {
+            "table_name": "ranked",
+            "access_type": "ref",
+            "possible_keys": [
+              "<auto_key0>"
+            ],
+            "key": "<auto_key0>",
+            "used_key_parts": [
+              "r"
+            ],
+            "key_length": "8",
+            "ref": [
+              "const"
+            ],
+            "rows_examined_per_scan": 1,
+            "rows_produced_per_join": 1,
+            "filtered": "100.00",
+            "cost_info": {
+              "read_cost": "0.25",
+              "eval_cost": "0.10",
+              "prefix_cost": "0.35",
+              "data_read_per_join": "32"
+            },
+            "used_columns": [
+              "client_id",
+              "job_count",
+              "r"
+            ],
+            "materialized_from_subquery": {
+              "using_temporary_table": true,
+              "dependent": false,
+              "cacheable": true,
+              "query_block": {
+                "select_id": 2,
+                "cost_info": {
+                  "query_cost": "11.40"
+                },
+                "windowing": {
+                  "windows": [
+                    {
+                      "name": "<unnamed window>",
+                      "using_filesort": true,
+                      "filesort_key": [
+                        "`job_count` desc"
+                      ],
+                      "functions": [
+                        "dense_rank"
+                      ]
+                    }
+                  ],
+                  "cost_info": {
+                    "sort_cost": "8.00"
+                  },
+                  "table": {
+                    "table_name": "counts",
+                    "access_type": "ALL",
+                    "rows_examined_per_scan": 8,
+                    "rows_produced_per_join": 8,
+                    "filtered": "100.00",
+                    "cost_info": {
+                      "read_cost": "2.60",
+                      "eval_cost": "0.80",
+                      "prefix_cost": "3.40",
+                      "data_read_per_join": "192"
+                    },
+                    "used_columns": [
+                      "client_id",
+                      "job_count"
+                    ],
+                    "materialized_from_subquery": {
+                      "using_temporary_table": true,
+                      "dependent": false,
+                      "cacheable": true,
+                      "query_block": {
+                        "select_id": 3,
+                        "cost_info": {
+                          "query_cost": "1.05"
+                        },
+                        "grouping_operation": {
+                          "using_filesort": false,
+                          "table": {
+                            "table_name": "jobs",
+                            "access_type": "index",
+                            "possible_keys": [
+                              "fk_jobs_client"
+                            ],
+                            "key": "fk_jobs_client",
+                            "used_key_parts": [
+                              "client_id"
+                            ],
+                            "key_length": "4",
+                            "rows_examined_per_scan": 8,
+                            "rows_produced_per_join": 8,
+                            "filtered": "100.00",
+                            "using_index": true,
+                            "cost_info": {
+                              "read_cost": "0.25",
+                              "eval_cost": "0.80",
+                              "prefix_cost": "1.05",
+                              "data_read_per_join": "7K"
+                            },
+                            "used_columns": [
+                              "job_id",
+                              "client_id"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "explain_analyze": "-> Sort: ranked.client_id  (cost=0.45..0.45 rows=0) (actual time=0.0271..0.0272 rows=2 loops=1)\n    -> Index lookup on ranked using <auto_key0> (r=1)  (cost=0.35..0.35 rows=1) (actual time=0.0248..0.0255 rows=2 loops=1)\n        -> Materialize CTE ranked  (cost=0..0 rows=0) (actual time=0.0239..0.0239 rows=3 loops=1)\n            -> Window aggregate: dense_rank() OVER (ORDER BY counts.job_count desc )   (actual time=0.0184..0.0191 rows=3 loops=1)\n                -> Sort: counts.job_count DESC  (cost=5.36..5.36 rows=2.83) (actual time=0.0174..0.0175 rows=3 loops=1)\n                    -> Table scan on counts  (cost=3.03..4.66 rows=2.83) (actual time=0.0137..0.0142 rows=3 loops=1)\n                        -> Materialize CTE counts  (cost=2.13..2.13 rows=2.83) (actual time=0.0133..0.0133 rows=3 loops=1)\n                            -> Group aggregate: count(0)  (cost=1.85 rows=2.83) (actual time=0.0091..0.0109 rows=3 loops=1)\n                                -> Covering index scan on jobs using fk_jobs_client  (cost=1.05 rows=8) (actual time=0.00732..0.00911 rows=8 loops=1)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-12",
+    "question": "Contracts at risk by a supplied reference date",
+    "sql": "SELECT c.contract_id,\n       COUNT(m.milestone_id) AS overdue_work\nFROM contracts AS c\nJOIN milestones AS m ON m.contract_id=c.contract_id\nWHERE c.status='ACTIVE'\n    AND m.status IN ('PENDING',\n                     'IN_PROGRESS',\n                     'COMPLETED')\n    AND m.due_date < DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY)\nGROUP BY c.contract_id\nORDER BY c.contract_id;",
+    "expected": "Contracts1..5 each1",
+    "explanation": "Reference date is30 days after seed date; excludes approved work.",
+    "actual": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        5,
+        1
+      ]
+    ],
+    "median_ms": 0.1966620002349373,
+    "explain": {
+      "query_block": {
+        "select_id": 1,
+        "cost_info": {
+          "query_cost": "2.25"
+        },
+        "ordering_operation": {
+          "using_filesort": false,
+          "grouping_operation": {
+            "using_filesort": false,
+            "nested_loop": [
+              {
+                "table": {
+                  "table_name": "c",
+                  "access_type": "index",
+                  "possible_keys": [
+                    "PRIMARY",
+                    "uq_contract_proposal",
+                    "fk_contract_client",
+                    "fk_contract_freelancer"
+                  ],
+                  "key": "PRIMARY",
+                  "used_key_parts": [
+                    "contract_id"
+                  ],
+                  "key_length": "4",
+                  "rows_examined_per_scan": 5,
+                  "rows_produced_per_join": 1,
+                  "filtered": "20.00",
+                  "cost_info": {
+                    "read_cost": "0.65",
+                    "eval_cost": "0.10",
+                    "prefix_cost": "0.75",
+                    "data_read_per_join": "112"
+                  },
+                  "used_columns": [
+                    "contract_id",
+                    "status"
+                  ],
+                  "attached_condition": "(`mini_upwork`.`c`.`status` = 'ACTIVE')"
+                }
+              },
+              {
+                "table": {
+                  "table_name": "m",
+                  "access_type": "ref",
+                  "possible_keys": [
+                    "fk_milestone_contract",
+                    "ix_milestones_status_due"
+                  ],
+                  "key": "fk_milestone_contract",
+                  "used_key_parts": [
+                    "contract_id"
+                  ],
+                  "key_length": "4",
+                  "ref": [
+                    "mini_upwork.c.contract_id"
+                  ],
+                  "rows_examined_per_scan": 10,
+                  "rows_produced_per_join": 6,
+                  "filtered": "60.00",
+                  "cost_info": {
+                    "read_cost": "0.50",
+                    "eval_cost": "0.60",
+                    "prefix_cost": "2.25",
+                    "data_read_per_join": "5K"
+                  },
+                  "used_columns": [
+                    "milestone_id",
+                    "contract_id",
+                    "due_date",
+                    "status"
+                  ],
+                  "attached_condition": "((`mini_upwork`.`m`.`status` in ('PENDING','IN_PROGRESS','COMPLETED')) and (`mini_upwork`.`m`.`due_date` < <cache>((curdate() + interval 30 day))))"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "explain_analyze": "-> Group aggregate: count(m.milestone_id)  (cost=2.85 rows=2.45) (actual time=0.0245..0.0353 rows=5 loops=1)\n    -> Nested loop inner join  (cost=2.25 rows=6) (actual time=0.018..0.0323 rows=5 loops=1)\n        -> Filter: (c.`status` = 'ACTIVE')  (cost=0.75 rows=1) (actual time=0.00727..0.00894 rows=5 loops=1)\n            -> Index scan on c using PRIMARY  (cost=0.75 rows=5) (actual time=0.00664..0.00774 rows=5 loops=1)\n        -> Filter: ((m.`status` in ('PENDING','IN_PROGRESS','COMPLETED')) and (m.due_date < <cache>((curdate() + interval 30 day))))  (cost=1.1 rows=6) (actual time=0.00395..0.00435 rows=1 loops=5)\n            -> Index lookup on m using fk_milestone_contract (contract_id=c.contract_id)  (cost=1.1 rows=10) (actual time=0.00308..0.0036 rows=2 loops=5)\n",
+    "passed": true
+  }
+]

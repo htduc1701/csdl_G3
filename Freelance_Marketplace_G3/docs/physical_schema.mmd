@@ -1,0 +1,16 @@
+erDiagram
+    users ||--o| clients : "client subtype"
+    users ||--o| freelancers : "freelancer subtype"
+    clients ||--o{ jobs : posts
+    job_categories ||--o{ jobs : classifies
+    freelancers ||--o{ freelancer_skills : owns
+    skills ||--o{ freelancer_skills : classifies
+    jobs ||--o{ proposals : receives
+    freelancers ||--o{ proposals : submits
+    proposals ||--o| contracts : establishes
+    clients ||--o{ contracts : commissions
+    freelancers ||--o{ contracts : delivers
+    contracts ||--o{ milestones : divides
+    milestones ||--o{ payments : attempts
+    users ||--o{ payments : payer
+    users ||--o{ payments : payee
