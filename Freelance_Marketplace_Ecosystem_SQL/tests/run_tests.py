@@ -83,7 +83,7 @@ test('TP-09','completion only after fully paid',["UPDATE milestones SET status='
 test('TC-31','date CHECK isolated',["UPDATE proposals SET status='CONFIRMED' WHERE proposal_id=10", "UPDATE contracts SET end_date=DATE_SUB(start_date,INTERVAL 1 DAY) WHERE proposal_id=10"],3819)
 test('TC-32','negative milestone',"UPDATE milestones SET amount=-1 WHERE milestone_id=10",3819)
 test('TC-33','contract positive',"UPDATE contracts SET total_amount=0 WHERE contract_id=1",1644,'BR-14')
-test('TC-34','deadline',"UPDATE jobs SET deadline='2026-08-31' WHERE job_id=7",3819)
+test('TC-34','deadline',"UPDATE jobs SET deadline=DATE_SUB(DATE(created_at), INTERVAL 1 DAY) WHERE job_id=7",3819)
 test('TC-35','milestone due',"UPDATE milestones SET due_date='2020-01-01' WHERE milestone_id=10",1644,'date')
 test('TC-36','proposal identity',"UPDATE proposals SET freelancer_id=5 WHERE proposal_id=10",1644,'immutable')
 test('TC-37','milestone parent',"UPDATE milestones SET contract_id=2 WHERE milestone_id=10",1644,'identity')

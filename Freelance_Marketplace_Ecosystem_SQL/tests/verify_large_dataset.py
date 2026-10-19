@@ -17,6 +17,17 @@ for table, number in expected.items():
     counts[table] = cur.fetchone()[0]
     assert counts[table] == number, (table, counts[table], number)
 assert sum(counts.values()) == 7223
+cur.execute('SELECT COUNT(DISTINCT full_name) FROM users')
+assert cur.fetchone()[0] == 248
+cur.execute('SELECT COUNT(DISTINCT title) FROM jobs')
+assert cur.fetchone()[0] == 1008
+cur.execute("SELECT COUNT(*) FROM users WHERE full_name LIKE 'Demo %' OR full_name LIKE 'Synthetic %'")
+assert cur.fetchone()[0] == 0
+cur.execute("SELECT COUNT(*) FROM jobs WHERE title LIKE 'Demo %' OR description LIKE 'Synthetic %'")
+assert cur.fetchone()[0] == 0
+cur.execute('''SELECT COUNT(*) FROM proposals p JOIN jobs j ON j.job_id=p.job_id
+    WHERE p.job_id>=22001 AND MOD(p.freelancer_id-21001,8)<>j.category_id-20001''')
+assert cur.fetchone()[0] == 0
 checks = {
     'subtype_violation': """SELECT COUNT(*) FROM users u LEFT JOIN clients c ON c.client_id=u.user_id
         LEFT JOIN freelancers f ON f.freelancer_id=u.user_id
@@ -56,6 +67,8 @@ assert len(queries) == 12
 cur.execute('SELECT VERSION(), @@transaction_isolation')
 environment = cur.fetchone()
 result = dict(environment=environment, counts=counts, total_rows=sum(counts.values()),
+    realistic_data_checks=dict(unique_people=248, unique_job_titles=1008,
+        placeholder_names=0, placeholder_jobs=0, category_assignment_mismatches=0),
     invariant_violations=actual, status_distribution=states, advanced_queries=queries,
     advanced_queries_executed=12, passed=True)
 (P/'evidence/large_dataset_results.json').write_text(json.dumps(result, indent=2, default=str))

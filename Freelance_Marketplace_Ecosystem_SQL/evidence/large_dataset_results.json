@@ -17,6 +17,13 @@
     "payments": 846
   },
   "total_rows": 7223,
+  "realistic_data_checks": {
+    "unique_people": 248,
+    "unique_job_titles": 1008,
+    "placeholder_names": 0,
+    "placeholder_jobs": 0,
+    "category_assignment_mismatches": 0
+  },
   "invariant_violations": {
     "subtype_violation": 0,
     "duplicate_proposal_pair": 0,
@@ -73,7 +80,7 @@
         [
           1,
           1,
-          "Demo job 1",
+          "X\u00e2y d\u1ef1ng c\u1ed5ng \u0111\u1eb7t h\u00e0ng cho An Nhi\u00ean Retail",
           "IN_PROGRESS",
           "1000.00",
           2,
@@ -82,7 +89,7 @@
         [
           2,
           1,
-          "Demo job 2",
+          "Thi\u1ebft k\u1ebf b\u1ed9 giao di\u1ec7n \u0111\u1eb7t tr\u00e0 cho M\u1ed9c Tr\u00e0 Studio",
           "IN_PROGRESS",
           "800.00",
           2,
@@ -91,7 +98,7 @@
         [
           3,
           2,
-          "Demo job 3",
+          "Dashboard theo d\u00f5i giao h\u00e0ng c\u1ee7a M\u1ed9c Tr\u00e0 Studio",
           "IN_PROGRESS",
           "1500.00",
           2,
@@ -100,7 +107,7 @@
         [
           4,
           2,
-          "Demo job 4",
+          "API qu\u1ea3n l\u00fd y\u00eau c\u1ea7u cho M\u1ed9c Tr\u00e0 Studio",
           "IN_PROGRESS",
           "600.00",
           1,
@@ -109,7 +116,7 @@
         [
           5,
           3,
-          "Demo job 5",
+          "Pipeline \u0111\u1ed1i so\u00e1t \u0111\u01a1n v\u1eadn chuy\u1ec3n c\u1ee7a H\u1ea3i \u0110\u0103ng Logistics",
           "IN_PROGRESS",
           "2000.00",
           2,
@@ -118,7 +125,7 @@
         [
           6,
           3,
-          "Demo job 6",
+          "B\u00e1o c\u00e1o chi ph\u00ed tuy\u1ebfn giao h\u00e0ng H\u1ea3i \u0110\u0103ng Logistics",
           "OPEN",
           "900.00",
           1,
@@ -127,7 +134,7 @@
         [
           7,
           1,
-          "Demo job 7",
+          "Thi\u1ebft k\u1ebf trang gi\u1edbi thi\u1ec7u b\u1ed9 s\u01b0u t\u1eadp An Nhi\u00ean Retail",
           "OPEN",
           "500.00",
           0,
@@ -136,7 +143,7 @@
         [
           8,
           2,
-          "Demo job 8",
+          "T\u1ed1i \u01b0u truy v\u1ea5n b\u00e1o c\u00e1o t\u1ed3n kho M\u1ed9c Tr\u00e0 Studio",
           "OPEN",
           "1200.00",
           1,
@@ -145,18 +152,18 @@
         [
           22001,
           20001,
-          "Company website project 1",
+          "X\u00e2y d\u1ef1ng c\u1ed5ng \u0111\u1eb7t h\u00e0ng cho M\u1ed9c Tr\u00e0 Commerce \u2014 chi nh\u00e1nh trung t\u00e2m",
           "IN_PROGRESS",
-          "930.00",
+          "1800.00",
           2,
           "1"
         ],
         [
           22002,
           20002,
-          "Mobile booking app project 2",
+          "Ph\u00e1t tri\u1ec3n \u1ee9ng d\u1ee5ng \u0111\u1eb7t l\u1ecbch cho Sen Xanh Services \u2014 chi nh\u00e1nh trung t\u00e2m",
           "IN_PROGRESS",
-          "960.00",
+          "2400.00",
           2,
           "1"
         ]
@@ -222,43 +229,43 @@
       "first_10_rows": [
         [
           7,
-          "Demo job 7"
+          "Thi\u1ebft k\u1ebf trang gi\u1edbi thi\u1ec7u b\u1ed9 s\u01b0u t\u1eadp An Nhi\u00ean Retail"
         ],
         [
           22901,
-          "Product interface project 901"
+          "X\u00e2y d\u1ef1ng design system cho Thi\u00ean Lam Learning \u2014 nh\u00f3m ch\u0103m s\u00f3c kh\u00e1ch h\u00e0ng"
         ],
         [
           22902,
-          "Regression test suite project 902"
+          "Ki\u1ec3m tra ch\u1ea5t l\u01b0\u1ee3ng b\u1ea3n ph\u00e1t h\u00e0nh cho B\u1ea3o An Solutions \u2014 nh\u00f3m ch\u0103m s\u00f3c kh\u00e1ch h\u00e0ng"
         ],
         [
           22903,
-          "Cloud deployment project 903"
+          "Thi\u1ebft l\u1eadp m\u00f4i tr\u01b0\u1eddng staging cho Ph\u1ed1 Nh\u1ecf Cloud \u2014 nh\u00f3m ch\u0103m s\u00f3c kh\u00e1ch h\u00e0ng"
         ],
         [
           22904,
-          "Technical documentation project 904"
+          "Vi\u1ebft h\u01b0\u1edbng d\u1eabn t\u00edch h\u1ee3p API cho T\u00e2m Vi\u1ec7t Media \u2014 nh\u00f3m ch\u0103m s\u00f3c kh\u00e1ch h\u00e0ng"
         ],
         [
           22905,
-          "Company website project 905"
+          "Ph\u00e1t tri\u1ec3n website gi\u1edbi thi\u1ec7u s\u1ea3n ph\u1ea9m cho H\u1ea1 V\u00e0ng Commerce \u2014 nh\u00f3m ch\u0103m s\u00f3c kh\u00e1ch h\u00e0ng"
         ],
         [
           22906,
-          "Mobile booking app project 906"
+          "N\u00e2ng c\u1ea5p \u1ee9ng d\u1ee5ng \u0111\u1eb7t d\u1ecbch v\u1ee5 cho Thu H\u00e0 Services \u2014 nh\u00f3m ch\u0103m s\u00f3c kh\u00e1ch h\u00e0ng"
         ],
         [
           22907,
-          "Data pipeline project 907"
+          "T\u00edch h\u1ee3p d\u1eef li\u1ec7u \u0111\u01a1n h\u00e0ng cho Qu\u1ef3nh Anh Logistics \u2014 nh\u00f3m ch\u0103m s\u00f3c kh\u00e1ch h\u00e0ng"
         ],
         [
           22908,
-          "Sales dashboard project 908"
+          "Ph\u00e2n t\u00edch t\u1ef7 l\u1ec7 chuy\u1ec3n \u0111\u1ed5i cho H\u1ed3ng Ph\u00fac Foods \u2014 nh\u00f3m ch\u0103m s\u00f3c kh\u00e1ch h\u00e0ng"
         ],
         [
           22909,
-          "Product interface project 909"
+          "X\u00e2y d\u1ef1ng design system cho Lam S\u01a1n Learning \u2014 nh\u00f3m ch\u0103m s\u00f3c kh\u00e1ch h\u00e0ng"
         ]
       ]
     },
@@ -272,54 +279,54 @@
       "row_count": 204,
       "first_10_rows": [
         [
-          21039,
-          "6210.00",
+          21159,
+          "10740.00",
           1
         ],
         [
-          21079,
-          "6210.00",
-          1
+          21135,
+          "10680.00",
+          2
+        ],
+        [
+          21151,
+          "10650.00",
+          3
+        ],
+        [
+          21127,
+          "10590.00",
+          4
+        ],
+        [
+          21143,
+          "10560.00",
+          5
+        ],
+        [
+          21103,
+          "10290.00",
+          6
+        ],
+        [
+          21095,
+          "10200.00",
+          7
+        ],
+        [
+          21111,
+          "10170.00",
+          8
+        ],
+        [
+          21087,
+          "10110.00",
+          9
         ],
         [
           21119,
-          "6210.00",
-          1
-        ],
-        [
-          21159,
-          "6210.00",
-          1
-        ],
-        [
-          21199,
-          "6210.00",
-          1
-        ],
-        [
-          21038,
-          "6120.00",
-          2
-        ],
-        [
-          21078,
-          "6120.00",
-          2
-        ],
-        [
-          21118,
-          "6120.00",
-          2
-        ],
-        [
-          21158,
-          "6120.00",
-          2
-        ],
-        [
-          21198,
-          "6120.00",
-          2
+          "10050.00",
+          10
         ]
       ]
     },
@@ -350,7 +357,7 @@
         [
           20001,
           15,
-          "4650.00"
+          "11970.00"
         ],
         [
           20002,
@@ -370,12 +377,12 @@
         [
           20005,
           45,
-          "15750.00"
+          "26910.00"
         ],
         [
           20006,
           15,
-          "5400.00"
+          "9720.00"
         ],
         [
           20007,
@@ -426,33 +433,33 @@
         ],
         [
           6,
-          "930.00",
-          "310.00",
-          "620.00"
+          "1800.00",
+          "600.00",
+          "1200.00"
         ],
         [
           7,
-          "960.00",
+          "2400.00",
           "0.00",
-          "960.00"
+          "2400.00"
         ],
         [
           8,
-          "990.00",
+          "2100.00",
           "0.00",
-          "990.00"
+          "2100.00"
         ],
         [
           9,
-          "1020.00",
+          "1500.00",
           "0.00",
-          "1020.00"
+          "1500.00"
         ],
         [
           11,
-          "1080.00",
-          "360.00",
-          "720.00"
+          "1350.00",
+          "450.00",
+          "900.00"
         ]
       ]
     },
@@ -483,37 +490,37 @@
         [
           26002,
           "COMPLETED",
-          "310.00"
+          "600.00"
         ],
         [
           26004,
           "APPROVED",
-          "320.00"
+          "800.00"
         ],
         [
           26007,
           "APPROVED",
-          "330.00"
+          "700.00"
         ],
         [
           26010,
           "COMPLETED",
-          "340.00"
+          "500.00"
         ],
         [
           26017,
           "COMPLETED",
-          "360.00"
+          "450.00"
         ],
         [
           26019,
           "APPROVED",
-          "370.00"
+          "900.00"
         ],
         [
           26022,
           "APPROVED",
-          "380.00"
+          "300.00"
         ]
       ]
     },
@@ -523,47 +530,47 @@
         "job_id",
         "budget_max"
       ],
-      "row_count": 502,
+      "row_count": 494,
       "first_10_rows": [
         [
-          3,
-          "1500.00"
+          22002,
+          "2400.00"
         ],
         [
-          5,
-          "2000.00"
+          22007,
+          "2700.00"
         ],
         [
-          22020,
-          "1500.00"
+          22010,
+          "2430.00"
         ],
         [
-          22021,
-          "1530.00"
+          22015,
+          "2730.00"
         ],
         [
-          22022,
-          "1560.00"
+          22018,
+          "2460.00"
         ],
         [
           22023,
-          "1590.00"
-        ],
-        [
-          22024,
-          "1620.00"
-        ],
-        [
-          22025,
-          "1650.00"
+          "2760.00"
         ],
         [
           22026,
-          "1680.00"
+          "2490.00"
         ],
         [
-          22027,
-          "1710.00"
+          22031,
+          "2790.00"
+        ],
+        [
+          22034,
+          "2520.00"
+        ],
+        [
+          22039,
+          "2820.00"
         ]
       ]
     },
@@ -578,52 +585,52 @@
       "first_10_rows": [
         [
           4,
-          "Database and software specialist",
+          "L\u1eadp tr\u00ecnh vi\u00ean Python v\u00e0 c\u01a1 s\u1edf d\u1eef li\u1ec7u",
           3
         ],
         [
           6,
-          "Database and software specialist",
+          "Chuy\u00ean vi\u00ean d\u1eef li\u1ec7u v\u00e0 b\u00e1o c\u00e1o",
           3
         ],
         [
           21001,
-          "Data Engineer",
+          "L\u1eadp tr\u00ecnh vi\u00ean web full stack",
           3
         ],
         [
           21002,
-          "Product Designer",
+          "L\u1eadp tr\u00ecnh vi\u00ean \u1ee9ng d\u1ee5ng di \u0111\u1ed9ng",
           3
         ],
         [
           21003,
-          "QA Engineer",
+          "K\u1ef9 s\u01b0 d\u1eef li\u1ec7u",
           3
         ],
         [
           21004,
-          "Web Developer",
+          "Chuy\u00ean vi\u00ean ph\u00e2n t\u00edch d\u1eef li\u1ec7u",
           3
         ],
         [
           21005,
-          "Data Engineer",
+          "Nh\u00e0 thi\u1ebft k\u1ebf s\u1ea3n ph\u1ea9m s\u1ed1",
           3
         ],
         [
           21006,
-          "Product Designer",
+          "K\u1ef9 s\u01b0 ki\u1ec3m th\u1eed ph\u1ea7n m\u1ec1m",
           3
         ],
         [
           21007,
-          "QA Engineer",
+          "K\u1ef9 s\u01b0 DevOps v\u00e0 \u0111\u00e1m m\u00e2y",
           3
         ],
         [
           21008,
-          "Web Developer",
+          "Chuy\u00ean vi\u00ean t\u00e0i li\u1ec7u k\u1ef9 thu\u1eadt",
           3
         ]
       ]
@@ -702,55 +709,55 @@
           6,
           20001,
           21001,
-          "930.00",
+          "1800.00",
           "ACTIVE",
           3,
-          "930.00",
-          "310.00",
-          "620.00"
+          "1800.00",
+          "600.00",
+          "1200.00"
         ],
         [
           7,
           20002,
           21002,
-          "960.00",
+          "2400.00",
           "ACTIVE",
           3,
-          "960.00",
+          "2400.00",
           "0.00",
-          "960.00"
+          "2400.00"
         ],
         [
           8,
           20003,
           21003,
-          "990.00",
+          "2100.00",
           "ACTIVE",
           3,
-          "990.00",
+          "2100.00",
           "0.00",
-          "990.00"
+          "2100.00"
         ],
         [
           9,
           20004,
           21004,
-          "1020.00",
+          "1500.00",
           "ACTIVE",
           3,
-          "1020.00",
+          "1500.00",
           "0.00",
-          "1020.00"
+          "1500.00"
         ],
         [
           10,
           20005,
           21005,
-          "1050.00",
+          "1200.00",
           "COMPLETED",
           3,
-          "1050.00",
-          "1050.00",
+          "1200.00",
+          "1200.00",
           "0.00"
         ]
       ]
