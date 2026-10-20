@@ -24,6 +24,22 @@
 
 <div class="container mt-4">
 
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+    {% if messages %}
+
+        {% for category, message in messages %}
+
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+{% endwith %}
+
     <h2>Contract Milestones</h2>
 
     <p>
@@ -121,10 +137,20 @@
 
     {% elif milestone.status == 'APPROVED' %}
 
-    <a href="/payment/milestone/{{ milestone.milestone_id }}"
-        class="btn btn-sm btn-success">
-        Record Payment
-    </a>
+    {% if milestone.is_paid %}
+
+        <span class="badge bg-success">
+            Paid
+        </span>
+
+    {% else %}
+
+        <a href="/payment/milestone/{{ milestone.milestone_id }}"
+           class="btn btn-sm btn-success">
+            Record Payment
+        </a>
+
+    {% endif %}
 
     {% else %}
 

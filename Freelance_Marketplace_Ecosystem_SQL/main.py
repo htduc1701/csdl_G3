@@ -1,4 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for
+import mysql.connector
+
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    flash
+)
 from app.db import (
     get_connection,
     get_client_connection,
@@ -11,6 +20,8 @@ app = Flask(
     template_folder="app/templates",
     static_folder="app/static"
 )
+
+app.secret_key = "mini-upwork-g3-demo"
 
 @app.route("/")
 def home():
@@ -83,9 +94,7 @@ def post_job():
                     deadline
                 ]
             )
-
             conn.commit()
-
         finally:
             cursor.close()
             conn.close()
@@ -110,6 +119,7 @@ def post_job():
         "post_job.html",
         categories=categories
     )
+
 
 @app.route("/freelancer")
 def freelancer_dashboard():
@@ -198,6 +208,7 @@ def submit_proposal(job_id):
         "proposal.html",
         job=job
     )
+
 
 @app.route("/client/job/<int:job_id>/proposals")
 def view_proposals(job_id):
@@ -433,14 +444,20 @@ def contract_milestones(contract_id):
 
     cursor.execute("""
         SELECT
-            milestone_id,
-            title,
-            amount,
-            due_date,
-            status
-        FROM milestones
-        WHERE contract_id = %s
-        ORDER BY milestone_id
+            m.milestone_id,
+            m.title,
+            m.amount,
+            m.due_date,
+            m.status,
+            EXISTS (
+                SELECT 1
+                FROM payments p
+                WHERE p.milestone_id = m.milestone_id
+                  AND p.payment_status = 'PAID'
+            ) AS is_paid
+        FROM milestones m
+        WHERE m.contract_id = %s
+        ORDER BY m.milestone_id
     """, (contract_id,))
 
     milestones = cursor.fetchall()
@@ -532,6 +549,24 @@ def approve_milestone(milestone_id):
 
     client_id = 1
 
+    # Lấy contract_id của milestone hiện tại
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT contract_id
+        FROM milestones
+        WHERE milestone_id = %s
+    """, (milestone_id,))
+
+    milestone = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    contract_id = milestone["contract_id"]
+
+    # Approve milestone
     conn = get_client_connection(client_id)
     cursor = conn.cursor()
 
@@ -554,7 +589,7 @@ def approve_milestone(milestone_id):
     return redirect(
         url_for(
             "contract_milestones",
-            contract_id=606
+            contract_id=contract_id
         )
     )
 
@@ -591,10 +626,13 @@ def record_payment(milestone_id):
         payment_method = request.form["payment_method"]
         payment_status = request.form["payment_status"]
 
-        conn = get_payment_connection()
-        cursor = conn.cursor()
+        conn = None
+        cursor = None
 
         try:
+            conn = get_payment_connection()
+            cursor = conn.cursor()
+
             cursor.callproc(
                 "sp_record_payment",
                 [
@@ -607,9 +645,44 @@ def record_payment(milestone_id):
 
             conn.commit()
 
+            flash(
+                "Payment recorded successfully.",
+                "success"
+            )
+
+        except mysql.connector.IntegrityError as err:
+
+            if conn:
+                conn.rollback()
+
+            if err.errno == 1062:
+                flash(
+                    "This milestone has already been paid.",
+                    "warning"
+                )
+            else:
+                flash(
+                    f"Payment could not be recorded: {err.msg}",
+                    "danger"
+                )
+
+        except mysql.connector.Error as err:
+
+            if conn:
+                conn.rollback()
+
+            flash(
+                f"Database error: {err.msg}",
+                "danger"
+            )
+
         finally:
-            cursor.close()
-            conn.close()
+
+            if cursor:
+                cursor.close()
+
+            if conn:
+                conn.close()
 
         return redirect(
             url_for(
