@@ -1,0 +1,19 @@
+{
+  "engine": "26.7.0",
+  "counts": {
+    "users": 248,
+    "clients": 43,
+    "freelancers": 205,
+    "skills": 26,
+    "freelancer_skills": 610,
+    "job_categories": 11,
+    "jobs": 1008,
+    "proposals": 1811,
+    "contracts": 605,
+    "milestones": 1810,
+    "payments": 846,
+    "contract_reviews": 120
+  },
+  "total": 7343,
+  "phase": "after fresh install before tests"
+}

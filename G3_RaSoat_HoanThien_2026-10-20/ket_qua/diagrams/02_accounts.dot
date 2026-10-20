@@ -1,0 +1,15 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad=0.3, nodesep=0.55, ranksep=0.7, splines=polyline, fontname="Arial"];
+node [shape=record, fontname="Arial", fontsize=13, style="filled", fillcolor="#f7f9fc", color="#566779", margin="0.15,0.10"];
+edge [dir=none, fontname="Arial", fontsize=11, color="#53677c", labeldistance=1.5];
+users [label="{users|user_id PK\lemail UQ\lfull_name\lpassword_hash\lphone\luser_type\l}"];
+clients [label="{clients|client_id PK FK\lcompany_name\lcompany_description\llocation\l}"];
+freelancers [label="{freelancers|freelancer_id PK FK\lprofessional_title\lbio\lhourly_rate\lexperience_level\l}"];
+skills [label="{skills|skill_id PK\lskill_name UQ\l}"];
+freelancer_skills [label="{freelancer_skills|freelancer_id PK FK\lskill_id PK FK\lskill_level\l}"];
+users -> clients [taillabel="1",headlabel="0..1"];
+users -> freelancers [taillabel="1",headlabel="0..1"];
+freelancers -> freelancer_skills [taillabel="1",headlabel="0..*"];
+skills -> freelancer_skills [taillabel="1",headlabel="0..*"];
+specialization [shape=note,label="USER specialization\nTotal and disjoint\nExactly one subtype per user",fontsize=12,fillcolor="white"]; users -> specialization [style=dashed];
+}
