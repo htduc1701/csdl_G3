@@ -112,28 +112,61 @@ BEGIN
     COMMIT;
 END$$
 
-CREATE PROCEDURE sp_record_payment (IN p_actor INT, IN p_milestone INT, IN p_method VARCHAR(50), IN p_status VARCHAR(20))
+CREATE PROCEDURE sp_record_payment (
+    IN p_actor INT,
+    IN p_milestone INT,
+    IN p_method VARCHAR(50),
+    IN p_status VARCHAR(20)
+)
 SQL SECURITY DEFINER
 BEGIN
     DECLARE v_client INT;
-    DECLARE v_freelancer INT;
-    DECLARE v_amount DECIMAL(15,2);
     DECLARE v_contract INT;
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN ROLLBACK; RESIGNAL; END;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
     IF SUBSTRING_INDEX(USER(), '@', 1) <> 'payment_service' THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Only trusted payment service records payment results';
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT =
+            'Only trusted payment service records payment results';
     END IF;
+
     SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
     START TRANSACTION;
-    SELECT contract_id INTO v_contract FROM milestones WHERE milestone_id = p_milestone;
-    SELECT client_id, freelancer_id INTO v_client, v_freelancer
-    FROM contracts WHERE contract_id = v_contract FOR UPDATE;
-    SELECT amount INTO v_amount FROM milestones WHERE milestone_id = p_milestone FOR UPDATE;
-    IF p_actor IS NULL OR v_client IS NULL OR v_client <> p_actor THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Payer is not owning client';
+
+    SELECT contract_id
+    INTO v_contract
+    FROM milestones
+    WHERE milestone_id = p_milestone;
+
+    SELECT client_id
+    INTO v_client
+    FROM contracts
+    WHERE contract_id = v_contract
+    FOR UPDATE;
+
+    IF p_actor IS NULL
+       OR v_client IS NULL
+       OR v_client <> p_actor THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Payer is not owning client';
     END IF;
-    INSERT INTO payments (milestone_id, payer_id, payee_id, amount, payment_method, payment_status)
-    VALUES (p_milestone, v_client, v_freelancer, v_amount, p_method, p_status);
+
+    INSERT INTO payments (
+        milestone_id,
+        payment_method,
+        payment_status
+    )
+    VALUES (
+        p_milestone,
+        p_method,
+        p_status
+    );
+
     COMMIT;
 END$$
 DELIMITER ;

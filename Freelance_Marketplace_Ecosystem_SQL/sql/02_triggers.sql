@@ -277,52 +277,67 @@ CREATE TRIGGER tr_payments_insert
 BEFORE INSERT ON payments
 FOR EACH ROW
 BEGIN
-    DECLARE v_amount DECIMAL(15,2);
     DECLARE v_status VARCHAR(20);
-    DECLARE v_client INT;
-    DECLARE v_freelancer INT;
     DECLARE v_contract_status VARCHAR(20);
-    SELECT m.amount, m.status, c.client_id, c.freelancer_id, c.status
-      INTO v_amount, v_status, v_client, v_freelancer, v_contract_status
-    FROM milestones AS m JOIN contracts AS c ON c.contract_id = m.contract_id
-    WHERE m.milestone_id = NEW.milestone_id FOR UPDATE;
-    IF v_status IS NULL OR v_status <> 'APPROVED' OR v_contract_status <> 'ACTIVE' THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'BR-15 payment requires APPROVED active work';
-    END IF;
-    IF NEW.payer_id <> v_client OR NEW.payee_id <> v_freelancer OR NEW.amount <> v_amount THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'BR-16 payment parties or amount mismatch';
-    END IF;
 
+    SELECT
+        m.status,
+        c.status
+    INTO
+        v_status,
+        v_contract_status
+    FROM milestones AS m
+    JOIN contracts AS c
+        ON c.contract_id = m.contract_id
+    WHERE m.milestone_id = NEW.milestone_id
+    FOR UPDATE;
+
+    IF v_status IS NULL
+       OR v_status <> 'APPROVED'
+       OR v_contract_status <> 'ACTIVE' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'BR-15 payment requires APPROVED active work';
+    END IF;
 END$$
 
 CREATE TRIGGER tr_payments_update
 BEFORE UPDATE ON payments
 FOR EACH ROW
 BEGIN
-    DECLARE v_amount DECIMAL(15,2);
     DECLARE v_status VARCHAR(20);
-    DECLARE v_client INT;
-    DECLARE v_freelancer INT;
     DECLARE v_contract_status VARCHAR(20);
-    SELECT m.amount, m.status, c.client_id, c.freelancer_id, c.status
-      INTO v_amount, v_status, v_client, v_freelancer, v_contract_status
-    FROM milestones AS m JOIN contracts AS c ON c.contract_id = m.contract_id
-    WHERE m.milestone_id = NEW.milestone_id FOR UPDATE;
-    IF v_status IS NULL OR v_status <> 'APPROVED' OR v_contract_status <> 'ACTIVE' THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'BR-15 payment requires APPROVED active work';
-    END IF;
-    IF NEW.payer_id <> v_client OR NEW.payee_id <> v_freelancer OR NEW.amount <> v_amount THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'BR-16 payment parties or amount mismatch';
-    END IF;
-    IF NEW.payment_id <> OLD.payment_id OR NEW.milestone_id <> OLD.milestone_id
-        OR NEW.payer_id <> OLD.payer_id OR NEW.payee_id <> OLD.payee_id
-        OR NEW.amount <> OLD.amount OR NEW.payment_method <> OLD.payment_method THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Payment evidence is immutable';
-    END IF;
-    IF OLD.payment_status <> 'PENDING' AND NEW.payment_status <> OLD.payment_status THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Terminal payment cannot change status';
+
+    SELECT
+        m.status,
+        c.status
+    INTO
+        v_status,
+        v_contract_status
+    FROM milestones AS m
+    JOIN contracts AS c
+        ON c.contract_id = m.contract_id
+    WHERE m.milestone_id = NEW.milestone_id
+    FOR UPDATE;
+
+    IF v_status IS NULL
+       OR v_status <> 'APPROVED'
+       OR v_contract_status <> 'ACTIVE' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'BR-15 payment requires APPROVED active work';
     END IF;
 
+    IF NEW.payment_id <> OLD.payment_id
+       OR NEW.milestone_id <> OLD.milestone_id
+       OR NEW.payment_method <> OLD.payment_method THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Payment evidence is immutable';
+    END IF;
+
+    IF OLD.payment_status <> 'PENDING'
+       AND NEW.payment_status <> OLD.payment_status THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Terminal payment cannot change status';
+    END IF;
 END$$
 
 CREATE TRIGGER tr_payments_delete
