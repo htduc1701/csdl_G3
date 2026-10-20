@@ -85,14 +85,15 @@
             <table class="table table-hover">
 
                 <thead>
-                <tr>
+                    <tr>
                     <th>ID</th>
                     <th>Title</th>
                     <th>Amount</th>
                     <th>Due Date</th>
                     <th>Status</th>
-                </tr>
-                </thead>
+                    <th>Action</th>
+                    </tr>
+                </thead>    
 
                 <tbody>
 
@@ -104,6 +105,36 @@
                     <td>{{ milestone.amount }}</td>
                     <td>{{ milestone.due_date }}</td>
                     <td>{{ milestone.status }}</td>
+                    <td>
+
+    {% if milestone.status == 'COMPLETED' %}
+
+    <form method="POST"
+          action="/client/milestone/{{ milestone.milestone_id }}/approve">
+
+        <button type="submit"
+                class="btn btn-sm btn-success">
+            Approve
+        </button>
+
+    </form>
+
+    {% elif milestone.status == 'APPROVED' %}
+
+    <a href="/payment/milestone/{{ milestone.milestone_id }}"
+        class="btn btn-sm btn-success">
+        Record Payment
+    </a>
+
+    {% else %}
+
+    <span class="text-muted">
+        {{ milestone.status }}
+    </span>
+
+    {% endif %}
+
+</td>
                 </tr>
 
                 {% endfor %}

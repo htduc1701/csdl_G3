@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for
 from app.db import (
     get_connection,
     get_client_connection,
-    get_freelancer_connection
+    get_freelancer_connection,
+    get_payment_connection
 )
 
 app = Flask(
@@ -451,6 +452,244 @@ def contract_milestones(contract_id):
         "milestones.html",
         contract=contract,
         milestones=milestones
+    )
+
+@app.route("/freelancer/milestones")
+def freelancer_milestones():
+
+    freelancer_id = 4
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            m.milestone_id,
+            m.title,
+            m.amount,
+            m.due_date,
+            m.status,
+            j.title AS job_title
+        FROM milestones m
+        JOIN contracts c
+            ON m.contract_id = c.contract_id
+        JOIN proposals p
+            ON c.proposal_id = p.proposal_id
+        JOIN jobs j
+            ON p.job_id = j.job_id
+        WHERE c.freelancer_id = %s
+        ORDER BY m.milestone_id DESC
+        LIMIT 100
+    """, (freelancer_id,))
+
+    milestones = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        "freelancer_milestones.html",
+        milestones=milestones
+    )
+
+@app.route(
+    "/freelancer/milestone/<int:milestone_id>/advance",
+    methods=["POST"]
+)
+def advance_milestone(milestone_id):
+
+    freelancer_id = 4
+    new_status = request.form["status"]
+
+    conn = get_freelancer_connection(freelancer_id)
+    cursor = conn.cursor()
+
+    try:
+        cursor.callproc(
+            "sp_advance_milestone",
+            [
+                freelancer_id,
+                milestone_id,
+                new_status
+            ]
+        )
+
+        conn.commit()
+
+    finally:
+        cursor.close()
+        conn.close()
+
+    return redirect(
+        url_for("freelancer_milestones")
+    )
+
+@app.route(
+    "/client/milestone/<int:milestone_id>/approve",
+    methods=["POST"]
+)
+def approve_milestone(milestone_id):
+
+    client_id = 1
+
+    conn = get_client_connection(client_id)
+    cursor = conn.cursor()
+
+    try:
+        cursor.callproc(
+            "sp_advance_milestone",
+            [
+                client_id,
+                milestone_id,
+                "APPROVED"
+            ]
+        )
+
+        conn.commit()
+
+    finally:
+        cursor.close()
+        conn.close()
+
+    return redirect(
+        url_for(
+            "contract_milestones",
+            contract_id=606
+        )
+    )
+
+@app.route(
+    "/payment/milestone/<int:milestone_id>",
+    methods=["GET", "POST"]
+)
+def record_payment(milestone_id):
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            m.milestone_id,
+            m.title,
+            m.amount,
+            m.status,
+            m.contract_id,
+            c.client_id
+        FROM milestones m
+        JOIN contracts c
+            ON m.contract_id = c.contract_id
+        WHERE m.milestone_id = %s
+    """, (milestone_id,))
+
+    milestone = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    if request.method == "POST":
+
+        payment_method = request.form["payment_method"]
+        payment_status = request.form["payment_status"]
+
+        conn = get_payment_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.callproc(
+                "sp_record_payment",
+                [
+                    milestone["client_id"],
+                    milestone_id,
+                    payment_method,
+                    payment_status
+                ]
+            )
+
+            conn.commit()
+
+        finally:
+            cursor.close()
+            conn.close()
+
+        return redirect(
+            url_for(
+                "contract_milestones",
+                contract_id=milestone["contract_id"]
+            )
+        )
+
+    return render_template(
+        "payment.html",
+        milestone=milestone
+    )
+
+@app.route("/reports")
+def reports():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            (SELECT COUNT(*) FROM v_job_proposals) AS total_jobs,
+            (SELECT COUNT(*) FROM v_contract_overview) AS total_contracts,
+            (SELECT COALESCE(SUM(paid_amount), 0)
+             FROM v_client_spend) AS total_paid,
+            (SELECT COALESCE(SUM(outstanding_amount), 0)
+             FROM v_contract_overview) AS total_outstanding
+    """)
+    summary = cursor.fetchone()
+
+    cursor.execute("""
+        SELECT
+            job_id,
+            client_id,
+            title,
+            status,
+            budget_max,
+            proposal_count,
+            selected_count
+        FROM v_job_proposals
+        ORDER BY job_id DESC
+        LIMIT 20
+    """)
+    job_reports = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT
+            contract_id,
+            client_id,
+            freelancer_id,
+            total_amount,
+            status,
+            milestone_count,
+            allocated_amount,
+            paid_amount,
+            outstanding_amount
+        FROM v_contract_overview
+        ORDER BY contract_id DESC
+        LIMIT 20
+    """)
+    contract_reports = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT
+            client_id,
+            paid_count,
+            paid_amount
+        FROM v_client_spend
+        ORDER BY client_id
+    """)
+    client_spend = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        "reports.html",
+        summary=summary,
+        job_reports=job_reports,
+        contract_reports=contract_reports,
+        client_spend=client_spend
     )
 
 if __name__ == "__main__":
