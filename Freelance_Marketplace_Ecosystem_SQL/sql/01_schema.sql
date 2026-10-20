@@ -137,18 +137,39 @@ CREATE TABLE milestones (
 CREATE TABLE payments (
     payment_id INT NOT NULL AUTO_INCREMENT,
     milestone_id INT NOT NULL,
-    payer_id INT NOT NULL,
-    payee_id INT NOT NULL,
-    amount DECIMAL(15,2) NOT NULL,
+
     payment_status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
     payment_method VARCHAR(50) NOT NULL,
-    paid_milestone_id INT GENERATED ALWAYS AS (CASE WHEN payment_status = 'PAID' THEN milestone_id ELSE NULL END) STORED,
+
+    paid_milestone_id INT
+        GENERATED ALWAYS AS (
+            CASE
+                WHEN payment_status = 'PAID'
+                THEN milestone_id
+                ELSE NULL
+            END
+        ) STORED,
+
     PRIMARY KEY (payment_id),
-    CONSTRAINT fk_payment_milestone FOREIGN KEY (milestone_id) REFERENCES milestones (milestone_id),
-    CONSTRAINT fk_payment_payer FOREIGN KEY (payer_id) REFERENCES users (user_id),
-    CONSTRAINT fk_payment_payee FOREIGN KEY (payee_id) REFERENCES users (user_id),
-    CONSTRAINT uq_paid_milestone UNIQUE (paid_milestone_id),
-    CONSTRAINT ck_payment_amount CHECK (amount > 0),
-    CONSTRAINT ck_payment_status CHECK (payment_status IN ('PENDING', 'PAID', 'FAILED')),
-    CONSTRAINT ck_payment_method CHECK (payment_method IN ('PAYPAL', 'CREDIT_CARD', 'BANK_TRANSFER'))
+
+    CONSTRAINT fk_payment_milestone
+        FOREIGN KEY (milestone_id)
+        REFERENCES milestones (milestone_id),
+
+    CONSTRAINT uq_paid_milestone
+        UNIQUE (paid_milestone_id),
+
+    CONSTRAINT ck_payment_status
+        CHECK (
+            payment_status IN ('PENDING', 'PAID', 'FAILED')
+        ),
+
+    CONSTRAINT ck_payment_method
+        CHECK (
+            payment_method IN (
+                'PAYPAL',
+                'CREDIT_CARD',
+                'BANK_TRANSFER'
+            )
+        )
 ) ENGINE = InnoDB;

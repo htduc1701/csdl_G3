@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reports Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            Mini Upwork G3
+        </a>
+
+        <a href="/" class="btn btn-outline-light">
+            Home
+        </a>
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Reports Dashboard</h2>
+
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Total Jobs</h6>
+                    <h2>{{ summary.total_jobs }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Total Contracts</h6>
+                    <h2>{{ summary.total_contracts }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Total Paid</h6>
+                    <h2>{{ summary.total_paid }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Outstanding</h6>
+                    <h2>{{ summary.total_outstanding }}</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <h4>Job & Proposal Report</h4>
+            <p class="text-muted">v_job_proposals</p>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover">
+
+                    <thead>
+                    <tr>
+                        <th>Job ID</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Budget Max</th>
+                        <th>Proposals</th>
+                        <th>Selected</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for job in job_reports %}
+
+                    <tr>
+                        <td>{{ job.job_id }}</td>
+                        <td>{{ job.title }}</td>
+                        <td>{{ job.status }}</td>
+                        <td>{{ job.budget_max }}</td>
+                        <td>{{ job.proposal_count }}</td>
+                        <td>{{ job.selected_count }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <h4>Contract Overview</h4>
+            <p class="text-muted">v_contract_overview</p>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover">
+
+                    <thead>
+                    <tr>
+                        <th>Contract</th>
+                        <th>Client</th>
+                        <th>Freelancer</th>
+                        <th>Total</th>
+                        <th>Milestones</th>
+                        <th>Allocated</th>
+                        <th>Paid</th>
+                        <th>Outstanding</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for contract in contract_reports %}
+
+                    <tr>
+                        <td>{{ contract.contract_id }}</td>
+                        <td>{{ contract.client_id }}</td>
+                        <td>{{ contract.freelancer_id }}</td>
+                        <td>{{ contract.total_amount }}</td>
+                        <td>{{ contract.milestone_count }}</td>
+                        <td>{{ contract.allocated_amount }}</td>
+                        <td>{{ contract.paid_amount }}</td>
+                        <td>{{ contract.outstanding_amount }}</td>
+                        <td>{{ contract.status }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="card shadow-sm mb-5">
+        <div class="card-body">
+
+            <h4>Client Spending</h4>
+            <p class="text-muted">v_client_spend</p>
+
+            <table class="table table-hover">
+
+                <thead>
+                <tr>
+                    <th>Client ID</th>
+                    <th>Successful Payments</th>
+                    <th>Total Paid</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                {% for client in client_spend %}
+
+                <tr>
+                    <td>{{ client.client_id }}</td>
+                    <td>{{ client.paid_count }}</td>
+                    <td>{{ client.paid_amount }}</td>
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

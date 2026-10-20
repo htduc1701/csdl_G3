@@ -1,0 +1,18 @@
+[
+  "BR-01: Each USER must have a unique user_id.",
+  "BR-02: In this version, a USER is specialized into CLIENT or FREELANCER; the two subtypes are distinct and disjoint.",
+  "BR-03: Each CLIENT can post many JOB records, but each JOB belongs to one CLIENT.",
+  "BR-04: Each JOB belongs to one JOB_CATEGORY, while one JOB_CATEGORY can contain many JOB records.",
+  "BR-05: A FREELANCER can have many SKILL records and a SKILL can belong to many FREELANCER records; the relationship is resolved through FREELANCER_SKILL.",
+  "BR-06: A JOB can receive many PROPOSAL records.",
+  "BR-07: A FREELANCER can submit many PROPOSAL records for different JOB records.",
+  "BR-08: A FREELANCER may not submit more than one PROPOSAL for the same JOB.",
+  "BR-09: Each PROPOSAL belongs to exactly one JOB and one FREELANCER.",
+  "BR-10: A JOB may have at most one PROPOSAL selected (offered) by the CLIENT at a time.",
+  "BR-11: An accepted PROPOSAL requires mutual consent: it must be selected by the CLIENT and subsequently confirmed by the FREELANCER to generate exactly one CONTRACT. A proposal that lacks this final confirmation from the freelancer does not create a CONTRACT.",
+  "BR-12: Each CONTRACT involves exactly one CLIENT and one FREELANCER.",
+  "BR-13: A CONTRACT can be divided into multiple MILESTONE records; each MILESTONE belongs to one CONTRACT.",
+  "BR-14: Each MILESTONE amount must be greater than 0, and the total milestone value must not exceed the CONTRACT value.",
+  "BR-15: A MILESTONE may trigger a PAYMENT only after its work status is marked as COMPLETED and approved by the CLIENT.",
+  "BR-16: Each PAYMENT explicitly records the transfer of funds from the CLIENT (payer_id) to the FREELANCER (payee_id) for one specific MILESTONE, using a designated payment method."
+]

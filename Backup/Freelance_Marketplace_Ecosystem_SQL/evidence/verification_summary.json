@@ -1,0 +1,11 @@
+{
+  "engine": "MySQL 8.0.42",
+  "integrity_tests": 72,
+  "rbac_tests": 20,
+  "query_assertions": 12,
+  "total_passed": 104,
+  "total_failed": 0,
+  "source": "Aggregated from execution result JSON files",
+  "benchmark_jobs": 5000,
+  "benchmark_proposals": 10000
+}

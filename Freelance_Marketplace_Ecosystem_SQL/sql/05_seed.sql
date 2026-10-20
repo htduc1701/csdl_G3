@@ -78,10 +78,16 @@ UPDATE milestones SET status='APPROVED' WHERE milestone_id=3;
 UPDATE milestones SET status='APPROVED' WHERE milestone_id=5;
 UPDATE milestones SET status='APPROVED' WHERE milestone_id=7;
 UPDATE milestones SET status='APPROVED' WHERE milestone_id=9;
-INSERT INTO payments (payment_id,milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (1,1,1,4,400,'BANK_TRANSFER','FAILED');
-INSERT INTO payments (payment_id,milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (2,1,1,4,400,'BANK_TRANSFER','PAID');
-INSERT INTO payments (payment_id,milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (3,3,1,5,300,'BANK_TRANSFER','PAID');
-INSERT INTO payments (payment_id,milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (4,5,2,6,500,'BANK_TRANSFER','PENDING');
-INSERT INTO payments (payment_id,milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (5,7,2,7,200,'BANK_TRANSFER','PAID');
-INSERT INTO payments (payment_id,milestone_id,payer_id,payee_id,amount,payment_method,payment_status) VALUES (6,9,3,4,500,'BANK_TRANSFER','FAILED');
+INSERT INTO payments (
+    payment_id,
+    milestone_id,
+    payment_method,
+    payment_status
+) VALUES
+    (1,1,'BANK_TRANSFER','FAILED'),
+    (2,1,'BANK_TRANSFER','PAID'),
+    (3,3,'BANK_TRANSFER','PAID'),
+    (4,5,'BANK_TRANSFER','PENDING'),
+    (5,7,'BANK_TRANSFER','PAID'),
+    (6,9,'BANK_TRANSFER','FAILED');
 COMMIT;
