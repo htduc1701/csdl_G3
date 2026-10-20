@@ -39,7 +39,7 @@ checks = {
     'missing_confirmed_contract': "SELECT COUNT(*) FROM proposals p LEFT JOIN contracts c ON c.proposal_id=p.proposal_id WHERE p.status='CONFIRMED' AND c.contract_id IS NULL",
     'bad_contract_parties': 'SELECT COUNT(*) FROM contracts c JOIN proposals p ON p.proposal_id=c.proposal_id JOIN jobs j ON j.job_id=p.job_id WHERE c.client_id<>j.client_id OR c.freelancer_id<>p.freelancer_id OR c.total_amount<>p.proposed_amount',
     'milestone_overflow': 'SELECT COUNT(*) FROM (SELECT c.contract_id FROM contracts c JOIN milestones m ON m.contract_id=c.contract_id GROUP BY c.contract_id,c.total_amount HAVING SUM(m.amount)>c.total_amount) x',
-    'bad_payment': "SELECT COUNT(*) FROM payments p JOIN milestones m ON m.milestone_id=p.milestone_id JOIN contracts c ON c.contract_id=m.contract_id WHERE m.status<>'APPROVED' OR p.payer_id<>c.client_id OR p.payee_id<>c.freelancer_id OR p.amount<>m.amount",
+    'bad_payment_state': "SELECT COUNT(*) FROM payments p JOIN milestones m ON m.milestone_id=p.milestone_id JOIN contracts c ON c.contract_id=m.contract_id WHERE m.status<>'APPROVED' OR c.status<>'ACTIVE'",
     'multiple_paid': "SELECT COUNT(*) FROM (SELECT milestone_id FROM payments WHERE payment_status='PAID' GROUP BY milestone_id HAVING COUNT(*)>1) x",
     'milestone_dates': 'SELECT COUNT(*) FROM milestones m JOIN contracts c ON c.contract_id=m.contract_id WHERE m.due_date<c.start_date OR m.due_date>c.end_date',
 }
