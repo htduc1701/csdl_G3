@@ -1,0 +1,18 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad=0.3, nodesep=0.55, ranksep=0.7, splines=polyline, fontname="Arial"];
+node [shape=record, fontname="Arial", fontsize=13, style="filled", fillcolor="#f7f9fc", color="#566779", margin="0.15,0.10"];
+edge [dir=none, fontname="Arial", fontsize=11, color="#53677c", labeldistance=1.5];
+clients [label="{clients|client_id PK FK\lcompany_name\lcompany_description\llocation\l}"];
+freelancers [label="{freelancers|freelancer_id PK FK\lprofessional_title\lbio\lhourly_rate\lexperience_level\l}"];
+job_categories [label="{job_categories|category_id PK\lcategory_name UQ\ldescription\l}"];
+jobs [label="{jobs|job_id PK\lclient_id FK\lcategory_id FK\ltitle\ldescription\lbudget_min\lbudget_max\ldeadline\lstatus\lcreated_at\l}"];
+proposals [label="{proposals|proposal_id PK\ljob_id FK\lfreelancer_id FK\lproposed_amount\lcover_letter\lestimated_days\lstatus\lsubmitted_at\lUQ(job_id, freelancer_id)\l}"];
+contracts [label="{contracts|contract_id PK\lproposal_id FK UQ\lclient_id FK\lfreelancer_id FK\lstart_date\lend_date\ltotal_amount\lstatus\l}"];
+clients -> jobs [taillabel="1",headlabel="0..*"];
+job_categories -> jobs [taillabel="1",headlabel="0..*"];
+jobs -> proposals [taillabel="1",headlabel="0..*"];
+freelancers -> proposals [taillabel="1",headlabel="0..*"];
+proposals -> contracts [taillabel="1",headlabel="0..1"];
+clients -> contracts [taillabel="1",headlabel="0..*"];
+freelancers -> contracts [taillabel="1",headlabel="0..*"];
+}

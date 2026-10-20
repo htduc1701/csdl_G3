@@ -1,0 +1,675 @@
+[
+  {
+    "id": "Q-01",
+    "title": "Jobs and proposal counts",
+    "sql": "SELECT *\nFROM v_job_proposals\nORDER BY job_id",
+    "row_count": 1010,
+    "columns": [
+      "job_id",
+      "client_id",
+      "title",
+      "status",
+      "budget_max",
+      "proposal_count",
+      "selected_count"
+    ],
+    "preview": [
+      [
+        1,
+        1,
+        "Xây dựng cổng đặt hàng cho An Nhiên Retail",
+        "IN_PROGRESS",
+        "1000.00",
+        2,
+        "1"
+      ],
+      [
+        2,
+        1,
+        "Thiết kế bộ giao diện đặt trà cho Mộc Trà Studio",
+        "IN_PROGRESS",
+        "800.00",
+        2,
+        "1"
+      ],
+      [
+        3,
+        2,
+        "Dashboard theo dõi giao hàng của Mộc Trà Studio",
+        "IN_PROGRESS",
+        "1500.00",
+        2,
+        "1"
+      ],
+      [
+        4,
+        2,
+        "API quản lý yêu cầu cho Mộc Trà Studio",
+        "IN_PROGRESS",
+        "600.00",
+        1,
+        "1"
+      ],
+      [
+        5,
+        3,
+        "Pipeline đối soát đơn vận chuyển của Hải Đăng Logistics",
+        "IN_PROGRESS",
+        "2000.00",
+        2,
+        "1"
+      ]
+    ],
+    "median_ms": 11.699300001055235,
+    "plan": [
+      [
+        "-> Sort: v_job_proposals.job_id  (cost=2.85..2.85 rows=0)\n    -> Table scan on v_job_proposals  (cost=2.5..2.5 rows=0)\n        -> Materialize  (cost=0..0 rows=0)\n            -> Table scan on <temporary>\n                -> Aggregate using temporary table\n                    -> Nested loop left join  (cost=27003 rows=261446)\n                        -> Table scan on j  (cost=101 rows=1010)\n                        -> Index lookup on p using uq_proposal_freelancer_job (job_id = j.job_id)  (cost=0.776 rows=259)\n"
+      ]
+    ]
+  },
+  {
+    "id": "Q-02",
+    "title": "Freelancers with at least two proposals",
+    "sql": "SELECT freelancer_id,\n       COUNT(*) AS proposals\nFROM proposals\nGROUP BY freelancer_id\nHAVING COUNT(*) >= 2\nORDER BY freelancer_id",
+    "row_count": 204,
+    "columns": [
+      "freelancer_id",
+      "proposals"
+    ],
+    "preview": [
+      [
+        4,
+        5
+      ],
+      [
+        6,
+        3
+      ],
+      [
+        7,
+        2
+      ],
+      [
+        8,
+        2
+      ],
+      [
+        21001,
+        9
+      ]
+    ],
+    "median_ms": 0.787799999670824,
+    "plan": [
+      [
+        "-> Filter: (count(0) >= 2)  (cost=599 rows=5)\n    -> Group aggregate: count(0), count(0)  (cost=599 rows=5)\n        -> Covering index scan on proposals using fk_proposals_freelancer  (cost=182 rows=1813)\n"
+      ]
+    ]
+  },
+  {
+    "id": "Q-03",
+    "title": "Jobs with no proposals",
+    "sql": "SELECT j.job_id,\n       j.title\nFROM jobs AS j\nWHERE NOT EXISTS\n        (SELECT 1\n         FROM proposals AS p\n         WHERE p.job_id = j.job_id)\nORDER BY j.job_id",
+    "row_count": 101,
+    "columns": [
+      "job_id",
+      "title"
+    ],
+    "preview": [
+      [
+        7,
+        "Thiết kế trang giới thiệu bộ sưu tập An Nhiên Retail"
+      ],
+      [
+        22901,
+        "Xây dựng design system cho Thiên Lam Learning — nhóm chăm sóc khách hàng"
+      ],
+      [
+        22902,
+        "Kiểm tra chất lượng bản phát hành cho Bảo An Solutions — nhóm chăm sóc khách hàng"
+      ],
+      [
+        22903,
+        "Thiết lập môi trường staging cho Phố Nhỏ Cloud — nhóm chăm sóc khách hàng"
+      ],
+      [
+        22904,
+        "Viết hướng dẫn tích hợp API cho Tâm Việt Media — nhóm chăm sóc khách hàng"
+      ]
+    ],
+    "median_ms": 1.0617000007187016,
+    "plan": [
+      [
+        "-> Nested loop antijoin  (cost=183315 rows=1.83e+6)\n    -> Index scan on j using PRIMARY  (cost=101 rows=1010)\n    -> Single-row index lookup on <subquery2> using <auto_distinct_key> (job_id = j.job_id)  (cost=599..599 rows=1)\n        -> Materialize with deduplication  (cost=599..599 rows=1813)\n            -> Filter: (p.job_id is not null)  (cost=182 rows=1813)\n                -> Covering index scan on p using uq_proposal_freelancer_job  (cost=182 rows=1813)\n"
+      ]
+    ]
+  },
+  {
+    "id": "Q-04",
+    "title": "Rank freelancer contract value",
+    "sql": "WITH totals AS\n    (SELECT freelancer_id,\n            SUM(total_amount) AS value\n     FROM contracts\n     WHERE status <> 'CANCELLED'\n     GROUP BY freelancer_id)\nSELECT freelancer_id,\n       value,\n       DENSE_RANK() OVER (\n                          ORDER BY value DESC) AS value_rank\nFROM totals\nORDER BY value_rank,\n         freelancer_id",
+    "row_count": 204,
+    "columns": [
+      "freelancer_id",
+      "value",
+      "value_rank"
+    ],
+    "preview": [
+      [
+        21159,
+        "10740.00",
+        1
+      ],
+      [
+        21135,
+        "10680.00",
+        2
+      ],
+      [
+        21151,
+        "10650.00",
+        3
+      ],
+      [
+        21127,
+        "10590.00",
+        4
+      ],
+      [
+        21143,
+        "10560.00",
+        5
+      ]
+    ],
+    "median_ms": 1.5081000001373468,
+    "plan": [
+      [
+        "-> Sort: value_rank, totals.freelancer_id\n    -> Table scan on <temporary>  (cost=47..52.1 rows=204)\n        -> Temporary table  (cost=47..47 rows=204)\n            -> Window aggregate: dense_rank() OVER (ORDER BY totals.`value` desc )   (cost=0 rows=204)\n                -> Sort: totals.`value` DESC  (cost=361..361 rows=204)\n                    -> Table scan on totals  (cost=235..240 rows=204)\n                        -> Materialize CTE totals  (cost=235..235 rows=204)\n                            -> Group aggregate: sum(contracts.total_amount)  (cost=188 rows=204)\n                                -> Filter: (contracts.`status` <> 'CANCELLED')  (cost=61.7 rows=546)\n                                    -> Index scan on contracts using fk_contract_freelancer  (cost=61.7 rows=607)\n"
+      ]
+    ]
+  },
+  {
+    "id": "Q-05",
+    "title": "Client successful payment totals",
+    "sql": "SELECT *\nFROM v_client_spend\nORDER BY client_id",
+    "row_count": 43,
+    "columns": [
+      "client_id",
+      "paid_count",
+      "paid_amount"
+    ],
+    "preview": [
+      [
+        1,
+        3,
+        "800.00"
+      ],
+      [
+        2,
+        1,
+        "200.00"
+      ],
+      [
+        3,
+        0,
+        "0.00"
+      ],
+      [
+        20001,
+        15,
+        "11970.00"
+      ],
+      [
+        20002,
+        0,
+        "0.00"
+      ]
+    ],
+    "median_ms": 37.493499999982305,
+    "plan": [
+      [
+        "-> Sort: v_client_spend.client_id  (cost=2.85..2.85 rows=0)\n    -> Table scan on v_client_spend  (cost=2.5..2.5 rows=0)\n        -> Materialize  (cost=0..0 rows=0)\n            -> Table scan on <temporary>\n                -> Aggregate using temporary table\n                    -> Nested loop left join  (cost=3656 rows=36507)\n                        -> Covering index scan on c using PRIMARY  (cost=4.55 rows=43)\n                        -> Nested loop inner join  (cost=596 rows=849)\n                            -> Nested loop inner join  (cost=299 rows=849)\n                                -> Filter: (p.payment_status = 'PAID')  (cost=1.98 rows=849)\n                                    -> Table scan on p  (cost=1.98 rows=849)\n                                -> Single-row index lookup on m using PRIMARY (milestone_id = p.milestone_id)  (cost=0.00582 rows=1)\n                            -> Filter: (c.client_id = c.client_id)  (cost=0.00582 rows=1)\n                                -> Single-row index lookup on c using PRIMARY (contract_id = m.contract_id)  (cost=0.00582 rows=1)\n"
+      ]
+    ]
+  },
+  {
+    "id": "Q-06",
+    "title": "Contracts not fully paid",
+    "sql": "SELECT contract_id,\n       total_amount,\n       paid_amount,\n       outstanding_amount\nFROM v_contract_overview\nWHERE outstanding_amount > 0\nORDER BY contract_id",
+    "row_count": 486,
+    "columns": [
+      "contract_id",
+      "total_amount",
+      "paid_amount",
+      "outstanding_amount"
+    ],
+    "preview": [
+      [
+        1,
+        "1000.00",
+        "400.00",
+        "600.00"
+      ],
+      [
+        2,
+        "800.00",
+        "300.00",
+        "500.00"
+      ],
+      [
+        3,
+        "1500.00",
+        "0.00",
+        "1500.00"
+      ],
+      [
+        4,
+        "600.00",
+        "200.00",
+        "400.00"
+      ],
+      [
+        5,
+        "2000.00",
+        "0.00",
+        "2000.00"
+      ]
+    ],
+    "median_ms": 5.645400000503287,
+    "plan": [
+      [
+        "-> Filter: ((c.total_amount - coalesce(p.paid_amount,0)) > 0)  (cost=14403 rows=0)\n    -> Nested loop left join  (cost=14403 rows=0)\n        -> Nested loop left join  (cost=1642 rows=607)\n            -> Index scan on c using PRIMARY  (cost=61.7 rows=607)\n            -> Index lookup on m using <auto_key0> (contract_id = c.contract_id)  (cost=599..602 rows=10)\n                -> Materialize  (cost=599..599 rows=1)\n                    -> Group aggregate: count(0), sum(milestones.amount)  (cost=599 rows=1)\n                        -> Index scan on milestones using fk_milestone_contract  (cost=181 rows=1812)\n        -> Index lookup on p using <auto_key0> (contract_id = c.contract_id)  (cost=0.25..2.1 rows=8.4)\n            -> Materialize  (cost=0..0 rows=0)\n                -> Table scan on <temporary>\n                    -> Aggregate using temporary table\n                        -> Nested loop inner join  (cost=115 rows=84.9)\n                            -> Filter: (p.payment_status = 'PAID')  (cost=85.2 rows=84.9)\n                                -> Table scan on p  (cost=85.2 rows=849)\n                            -> Single-row index lookup on m using PRIMARY (milestone_id = p.milestone_id)  (cost=0.251 rows=1)\n"
+      ]
+    ]
+  },
+  {
+    "id": "Q-07",
+    "title": "Completed work not yet paid",
+    "sql": "SELECT m.milestone_id,\n       m.status,\n       m.amount\nFROM milestones AS m\nWHERE m.status IN ('COMPLETED',\n                   'APPROVED')\n    AND NOT EXISTS\n        (SELECT 1\n         FROM payments AS p\n         WHERE p.milestone_id=m.milestone_id\n             AND p.payment_status='PAID')\nORDER BY m.milestone_id",
+    "row_count": 483,
+    "columns": [
+      "milestone_id",
+      "status",
+      "amount"
+    ],
+    "preview": [
+      [
+        2,
+        "COMPLETED",
+        "600.00"
+      ],
+      [
+        5,
+        "APPROVED",
+        "500.00"
+      ],
+      [
+        9,
+        "APPROVED",
+        "500.00"
+      ],
+      [
+        26002,
+        "COMPLETED",
+        "600.00"
+      ],
+      [
+        26004,
+        "APPROVED",
+        "800.00"
+      ]
+    ],
+    "median_ms": 2.447299999403185,
+    "plan": [
+      [
+        "-> Nested loop antijoin  (cost=82376 rows=820983)\n    -> Filter: (m.`status` in ('COMPLETED','APPROVED'))  (cost=181 rows=967)\n        -> Index scan on m using PRIMARY  (cost=181 rows=1812)\n    -> Single-row index lookup on <subquery2> using <auto_distinct_key> (milestone_id = m.milestone_id)  (cost=281..281 rows=1)\n        -> Materialize with deduplication  (cost=281..281 rows=849)\n            -> Filter: (p.milestone_id is not null)  (cost=85.2 rows=849)\n                -> Filter: (p.payment_status = 'PAID')  (cost=85.2 rows=849)\n                    -> Table scan on p  (cost=85.2 rows=849)\n"
+      ]
+    ]
+  },
+  {
+    "id": "Q-08",
+    "title": "Jobs above mean maximum budget",
+    "sql": "SELECT job_id,\n       budget_max\nFROM jobs\nWHERE budget_max >\n        (SELECT AVG(budget_max)\n         FROM jobs)\nORDER BY job_id",
+    "row_count": 494,
+    "columns": [
+      "job_id",
+      "budget_max"
+    ],
+    "preview": [
+      [
+        22002,
+        "2400.00"
+      ],
+      [
+        22007,
+        "2700.00"
+      ],
+      [
+        22010,
+        "2430.00"
+      ],
+      [
+        22015,
+        "2730.00"
+      ],
+      [
+        22018,
+        "2460.00"
+      ]
+    ],
+    "median_ms": 1.643300000068848,
+    "plan": [
+      [
+        "-> Filter: (jobs.budget_max > (select #2))  (cost=33.9 rows=337)\n    -> Index scan on jobs using PRIMARY  (cost=33.9 rows=1010)\n    -> Select #2 (subquery in condition; run only once)\n        -> Aggregate: avg(jobs.budget_max)  (cost=334 rows=1)\n            -> Covering index scan on jobs using ix_jobs_status_budget  (cost=101 rows=1010)\n"
+      ]
+    ]
+  },
+  {
+    "id": "Q-09",
+    "title": "Freelancers with at least three skills",
+    "sql": "SELECT f.freelancer_id,\n       f.professional_title,\n       COUNT(fs.skill_id) AS skill_count\nFROM freelancers AS f\nINNER JOIN freelancer_skills AS fs ON fs.freelancer_id=f.freelancer_id\nGROUP BY f.freelancer_id,\n         f.professional_title\nHAVING COUNT(fs.skill_id)>=3\nORDER BY f.freelancer_id",
+    "row_count": 202,
+    "columns": [
+      "freelancer_id",
+      "professional_title",
+      "skill_count"
+    ],
+    "preview": [
+      [
+        4,
+        "Lập trình viên Python và cơ sở dữ liệu",
+        3
+      ],
+      [
+        6,
+        "Chuyên viên dữ liệu và báo cáo",
+        3
+      ],
+      [
+        21001,
+        "Lập trình viên web full stack",
+        3
+      ],
+      [
+        21002,
+        "Lập trình viên ứng dụng di động",
+        3
+      ],
+      [
+        21003,
+        "Kỹ sư dữ liệu",
+        3
+      ]
+    ],
+    "median_ms": 1.6666999999870313,
+    "plan": [
+      [
+        "-> Sort: f.freelancer_id, f.professional_title\n    -> Filter: (count(fs.skill_id) >= 3)\n        -> Table scan on <temporary>\n            -> Aggregate using temporary table\n                -> Nested loop inner join  (cost=275 rows=610)\n                    -> Covering index scan on fs using fk_fs_skill  (cost=61.2 rows=610)\n                    -> Single-row index lookup on f using PRIMARY (freelancer_id = fs.freelancer_id)  (cost=0.25 rows=1)\n"
+      ]
+    ]
+  },
+  {
+    "id": "Q-10",
+    "title": "Contract milestone payment report",
+    "sql": "SELECT *\nFROM v_contract_overview\nORDER BY contract_id",
+    "row_count": 607,
+    "columns": [
+      "contract_id",
+      "client_id",
+      "freelancer_id",
+      "total_amount",
+      "status",
+      "milestone_count",
+      "allocated_amount",
+      "paid_amount",
+      "outstanding_amount"
+    ],
+    "preview": [
+      [
+        1,
+        1,
+        4,
+        "1000.00",
+        "ACTIVE",
+        2,
+        "1000.00",
+        "400.00",
+        "600.00"
+      ],
+      [
+        2,
+        1,
+        5,
+        "800.00",
+        "ACTIVE",
+        2,
+        "800.00",
+        "300.00",
+        "500.00"
+      ],
+      [
+        3,
+        2,
+        6,
+        "1500.00",
+        "ACTIVE",
+        2,
+        "1500.00",
+        "0.00",
+        "1500.00"
+      ],
+      [
+        4,
+        2,
+        7,
+        "600.00",
+        "ACTIVE",
+        2,
+        "600.00",
+        "200.00",
+        "400.00"
+      ],
+      [
+        5,
+        3,
+        4,
+        "2000.00",
+        "ACTIVE",
+        2,
+        "2000.00",
+        "0.00",
+        "2000.00"
+      ]
+    ],
+    "median_ms": 7.277299999259412,
+    "plan": [
+      [
+        "-> Nested loop left join  (cost=14403 rows=0)\n    -> Nested loop left join  (cost=1642 rows=607)\n        -> Index scan on c using PRIMARY  (cost=61.7 rows=607)\n        -> Index lookup on m using <auto_key0> (contract_id = c.contract_id)  (cost=599..602 rows=10)\n            -> Materialize  (cost=599..599 rows=1)\n                -> Group aggregate: count(0), sum(milestones.amount)  (cost=599 rows=1)\n                    -> Index scan on milestones using fk_milestone_contract  (cost=181 rows=1812)\n    -> Index lookup on p using <auto_key0> (contract_id = c.contract_id)  (cost=0.25..2.1 rows=8.4)\n        -> Materialize  (cost=0..0 rows=0)\n            -> Table scan on <temporary>\n                -> Aggregate using temporary table\n                    -> Nested loop inner join  (cost=115 rows=84.9)\n                        -> Filter: (p.payment_status = 'PAID')  (cost=85.2 rows=84.9)\n                            -> Table scan on p  (cost=85.2 rows=849)\n                        -> Single-row index lookup on m using PRIMARY (milestone_id = p.milestone_id)  (cost=0.251 rows=1)\n"
+      ]
+    ]
+  },
+  {
+    "id": "Q-11",
+    "title": "Clients posting the most jobs",
+    "sql": "WITH counts AS\n    (SELECT client_id,\n            COUNT(*) AS job_count\n     FROM jobs\n     GROUP BY client_id),\n     ranked AS\n    (SELECT *,\n            DENSE_RANK() OVER (\n                               ORDER BY job_count DESC) AS r\n     FROM counts)\nSELECT client_id,\n       job_count\nFROM ranked\nWHERE r=1\nORDER BY client_id",
+    "row_count": 40,
+    "columns": [
+      "client_id",
+      "job_count"
+    ],
+    "preview": [
+      [
+        20001,
+        25
+      ],
+      [
+        20002,
+        25
+      ],
+      [
+        20003,
+        25
+      ],
+      [
+        20004,
+        25
+      ],
+      [
+        20005,
+        25
+      ]
+    ],
+    "median_ms": 0.43259999984002206,
+    "plan": [
+      [
+        "-> Sort: ranked.client_id  (cost=5.38..5.38 rows=3)\n    -> Index lookup on ranked using <auto_key0> (r = 1)  (cost=1.04..4.19 rows=10)\n        -> Materialize CTE ranked  (cost=0.692..0.692 rows=3)\n            -> Window aggregate: dense_rank() OVER (ORDER BY counts.job_count desc )   (cost=0 rows=3)\n                -> Sort: counts.job_count DESC  (cost=338..338 rows=3)\n                    -> Table scan on counts  (cost=336..337 rows=3)\n                        -> Materialize CTE counts  (cost=335..335 rows=3)\n                            -> Group aggregate: count(0)  (cost=334 rows=3)\n                                -> Covering index scan on jobs using fk_jobs_client  (cost=101 rows=1010)\n"
+      ]
+    ]
+  },
+  {
+    "id": "Q-12",
+    "title": "Strictly overdue unfinished milestones as of execution date",
+    "sql": "SELECT c.contract_id,\n       COUNT(m.milestone_id) AS overdue_work\nFROM contracts AS c\nJOIN milestones AS m ON m.contract_id=c.contract_id\nWHERE c.status='ACTIVE'\n    AND m.status IN ('PENDING',\n                     'IN_PROGRESS',\n                     'COMPLETED')\n    AND m.due_date < CURRENT_DATE\nGROUP BY c.contract_id\nORDER BY c.contract_id",
+    "row_count": 0,
+    "columns": [
+      "contract_id",
+      "overdue_work"
+    ],
+    "preview": [],
+    "median_ms": 0.21890000061830506,
+    "plan": [
+      [
+        "-> Sort: c.contract_id\n    -> Table scan on <temporary>\n        -> Aggregate using temporary table\n            -> Nested loop inner join  (cost=3.16 rows=0.3)\n                -> Index range scan on m using ix_milestones_status_due over (status = 'COMPLETED' AND NULL < due_date < '2026-10-20') OR (status = 'IN_PROGRESS' AND NULL < due_date < '2026-10-20') OR (status = 'PENDING' AND NULL < due_date < '2026-10-20'), with index condition: ((m.`status` in ('PENDING','IN_PROGRESS','COMPLETED')) and (m.due_date < <cache>(curdate())))  (cost=2.11 rows=3)\n                -> Filter: (c.`status` = 'ACTIVE')  (cost=0.253 rows=0.1)\n                    -> Single-row index lookup on c using PRIMARY (contract_id = m.contract_id)  (cost=0.253 rows=1)\n"
+      ]
+    ]
+  },
+  {
+    "id": "Q-13",
+    "title": "Rated freelancers ordered by average and review count",
+    "sql": "SELECT u.full_name,r.* FROM v_freelancer_ratings AS r\nJOIN users AS u ON u.user_id=r.freelancer_id\nWHERE r.rating_count>0 ORDER BY r.average_rating DESC,r.rating_count DESC,r.freelancer_id",
+    "row_count": 41,
+    "columns": [
+      "full_name",
+      "freelancer_id",
+      "rating_count",
+      "average_rating"
+    ],
+    "preview": [
+      [
+        "Đỗ Khánh Hà",
+        4,
+        1,
+        "5.00"
+      ],
+      [
+        "Vũ Thanh Dũng",
+        21005,
+        3,
+        "4.00"
+      ],
+      [
+        "Tạ Thùy An",
+        21010,
+        3,
+        "4.00"
+      ],
+      [
+        "Tạ Minh Linh",
+        21015,
+        3,
+        "4.00"
+      ],
+      [
+        "Phạm Bảo Khang",
+        21020,
+        3,
+        "4.00"
+      ]
+    ],
+    "median_ms": 1.1396999998396495,
+    "plan": [
+      [
+        "-> Nested loop inner join  (cost=646 rows=5)\n    -> Sort: r.average_rating DESC, r.rating_count DESC, r.freelancer_id  (cost=493..493 rows=5)\n        -> Table scan on r  (cost=489..491 rows=5)\n            -> Materialize  (cost=488..488 rows=5)\n                -> Filter: (count(r.contract_id) > 0)  (cost=487 rows=5)\n                    -> Group aggregate: avg(r.rating), count(r.contract_id)  (cost=487 rows=5)\n                        -> Nested loop left join  (cost=347 rows=610)\n                            -> Nested loop left join  (cost=133 rows=610)\n                                -> Covering index scan on f using PRIMARY  (cost=20.8 rows=205)\n                                -> Covering index lookup on c using fk_contract_freelancer (freelancer_id = f.freelancer_id)  (cost=0.252 rows=2.98)\n                            -> Single-row index lookup on r using PRIMARY (contract_id = c.contract_id)  (cost=0.25 rows=1)\n    -> Single-row index lookup on u using PRIMARY (user_id = r.freelancer_id)  (cost=0.25 rows=1)\n"
+      ]
+    ]
+  },
+  {
+    "id": "Q-14",
+    "title": "Review distribution by star value",
+    "sql": "SELECT rating,COUNT(*) AS review_count FROM contract_reviews GROUP BY rating ORDER BY rating",
+    "row_count": 3,
+    "columns": [
+      "rating",
+      "review_count"
+    ],
+    "preview": [
+      [
+        3,
+        40
+      ],
+      [
+        4,
+        40
+      ],
+      [
+        5,
+        41
+      ]
+    ],
+    "median_ms": 0.20190000032016542,
+    "plan": [
+      [
+        "-> Sort: contract_reviews.rating\n    -> Table scan on <temporary>\n        -> Aggregate using temporary table\n            -> Table scan on contract_reviews  (cost=12.4 rows=121)\n"
+      ]
+    ]
+  },
+  {
+    "id": "Q-15",
+    "title": "Successful revenue compared with rated contract count without fan-out",
+    "sql": "WITH revenue AS (\n    SELECT payee_id,SUM(amount) AS paid_amount FROM v_payment_details\n    WHERE payment_status='PAID' GROUP BY payee_id\n)\nSELECT r.freelancer_id,r.rating_count,r.average_rating,COALESCE(p.paid_amount,0) AS paid_amount\nFROM v_freelancer_ratings AS r LEFT JOIN revenue AS p ON p.payee_id=r.freelancer_id\nORDER BY r.freelancer_id",
+    "row_count": 205,
+    "columns": [
+      "freelancer_id",
+      "rating_count",
+      "average_rating",
+      "paid_amount"
+    ],
+    "preview": [
+      [
+        4,
+        1,
+        "5.00",
+        "500.00"
+      ],
+      [
+        5,
+        0,
+        null,
+        "300.00"
+      ],
+      [
+        6,
+        0,
+        null,
+        "0.00"
+      ],
+      [
+        7,
+        0,
+        null,
+        "200.00"
+      ],
+      [
+        8,
+        0,
+        null,
+        "0.00"
+      ]
+    ],
+    "median_ms": 2.7847000001202105,
+    "plan": [
+      [
+        "-> Nested loop left join  (cost=1772 rows=0)\n    -> Sort: r.freelancer_id  (cost=493..493 rows=5)\n        -> Table scan on r  (cost=489..491 rows=5)\n            -> Materialize  (cost=488..488 rows=5)\n                -> Group aggregate: avg(r.rating), count(r.contract_id)  (cost=487 rows=5)\n                    -> Nested loop left join  (cost=347 rows=610)\n                        -> Nested loop left join  (cost=133 rows=610)\n                            -> Covering index scan on f using PRIMARY  (cost=20.8 rows=205)\n                            -> Covering index lookup on c using fk_contract_freelancer (freelancer_id = f.freelancer_id)  (cost=0.252 rows=2.98)\n                        -> Single-row index lookup on r using PRIMARY (contract_id = c.contract_id)  (cost=0.25 rows=1)\n    -> Index lookup on p using <auto_key0> (payee_id = r.freelancer_id)  (cost=0.25..2.1 rows=8.4)\n        -> Materialize CTE revenue  (cost=0..0 rows=0)\n            -> Table scan on <temporary>\n                -> Aggregate using temporary table\n                    -> Nested loop inner join  (cost=145 rows=84.9)\n                        -> Nested loop inner join  (cost=115 rows=84.9)\n                            -> Filter: (p.payment_status = 'PAID')  (cost=85.2 rows=84.9)\n                                -> Table scan on p  (cost=85.2 rows=849)\n                            -> Single-row index lookup on m using PRIMARY (milestone_id = p.milestone_id)  (cost=0.251 rows=1)\n                        -> Single-row index lookup on c using PRIMARY (contract_id = m.contract_id)  (cost=0.251 rows=1)\n"
+      ]
+    ]
+  }
+]

@@ -1,0 +1,13 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad=0.3, nodesep=0.55, ranksep=0.7, splines=polyline, fontname="Arial"];
+node [shape=record, fontname="Arial", fontsize=13, style="filled", fillcolor="#f7f9fc", color="#566779", margin="0.15,0.10"];
+edge [dir=none, fontname="Arial", fontsize=11, color="#53677c", labeldistance=1.5];
+contracts [label="{contracts|contract_id PK\lproposal_id FK UQ\lclient_id FK\lfreelancer_id FK\lstart_date\lend_date\ltotal_amount\lstatus\l}"];
+milestones [label="{milestones|milestone_id PK\lcontract_id FK\ltitle\ldescription\lamount\ldue_date\lstatus\l}"];
+payments [label="{payments|payment_id PK\lmilestone_id FK\lpayment_status\lpayment_method\l}"];
+contract_reviews [label="{contract_reviews|contract_id PK FK\lrating\lreview_text\lcreated_at\l}"];
+contracts -> milestones [taillabel="1",headlabel="0..*"];
+milestones -> payments [taillabel="1",headlabel="0..*"];
+contracts -> contract_reviews [taillabel="1",headlabel="0..1"];
+rules [shape=note,label="Conditional uniqueness\nOne selected proposal per job\nOne PAID attempt per milestone\nReview only after completion",fontsize=12,fillcolor="white"]; payments -> rules [style=dashed];
+}

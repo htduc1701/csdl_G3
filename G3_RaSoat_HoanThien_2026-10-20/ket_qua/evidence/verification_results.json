@@ -1,0 +1,834 @@
+{
+  "engine": "26.7.0",
+  "executed_at": "2026-10-20T11:41:33.989596+00:00",
+  "passed": 59,
+  "failed": 0,
+  "tests": [
+    {
+      "id": "subtype_disjoint",
+      "passed": true,
+      "sql": "INSERT INTO freelancers(freelancer_id) VALUES(1)",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'BR-02 subtype must match parent user_type')"
+    },
+    {
+      "id": "subtype_retained",
+      "passed": true,
+      "sql": "DELETE FROM clients WHERE client_id=1",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'BR-02 total specialization requires subtype retention')"
+    },
+    {
+      "id": "user_type_immutable",
+      "passed": true,
+      "sql": "UPDATE users SET user_type='FREELANCER' WHERE user_id=1",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'BR-02 user identity and subtype are immutable')"
+    },
+    {
+      "id": "duplicate_email",
+      "passed": true,
+      "sql": "INSERT INTO users(email,full_name,password_hash,user_type) SELECT email,'x','x','CLIENT' FROM users WHERE user_id=1",
+      "expected_error": 1062,
+      "actual_error": 1062,
+      "message": "(1062, \"Duplicate entry 'caohonghan.1@example.test' for key 'users.uq_users_email'\")"
+    },
+    {
+      "id": "invalid_job_category",
+      "passed": true,
+      "sql": "INSERT INTO jobs(client_id,category_id,title,description) VALUES(1,999999,'x','x')",
+      "expected_error": 1452,
+      "actual_error": 1452,
+      "message": "(1452, 'Cannot add or update a child row: a foreign key constraint fails (`mini_upwork`.`jobs`, CONSTRAINT `fk_jobs_category` FOREIGN KEY (`category_id`) REFERENCES `job_categories` (`category_id`))')"
+    },
+    {
+      "id": "invalid_budget",
+      "passed": true,
+      "sql": "INSERT INTO jobs(client_id,category_id,title,description,budget_min,budget_max) VALUES(1,1,'x','x',100,1)",
+      "expected_error": 3819,
+      "actual_error": 3819,
+      "message": "(3819, \"Check constraint 'ck_jobs_budget' is violated.\")"
+    },
+    {
+      "id": "duplicate_proposal",
+      "passed": true,
+      "sql": "INSERT INTO proposals(job_id,freelancer_id,proposed_amount,cover_letter,estimated_days) VALUES(6,6,1,'x',1)",
+      "expected_error": 1062,
+      "actual_error": 1062,
+      "message": "(1062, \"Duplicate entry '6-6' for key 'proposals.uq_proposal_freelancer_job'\")"
+    },
+    {
+      "id": "invalid_proposal_amount",
+      "passed": true,
+      "sql": "INSERT INTO proposals(job_id,freelancer_id,proposed_amount,cover_letter,estimated_days) VALUES(7,4,0,'x',1)",
+      "expected_error": 3819,
+      "actual_error": 3819,
+      "message": "(3819, \"Check constraint 'ck_proposal_amount' is violated.\")"
+    },
+    {
+      "id": "confirmation_without_selection",
+      "passed": true,
+      "sql": "UPDATE proposals SET status='CONFIRMED' WHERE proposal_id=11",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'BR-11 illegal proposal transition')"
+    },
+    {
+      "id": "contract_parties_immutable",
+      "passed": true,
+      "sql": "UPDATE contracts SET client_id=2 WHERE contract_id=1",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'Contract identity and parties are immutable')"
+    },
+    {
+      "id": "contract_terms_immutable",
+      "passed": true,
+      "sql": "UPDATE contracts SET total_amount=2000 WHERE contract_id=1",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'Contract identity and parties are immutable')"
+    },
+    {
+      "id": "milestone_overflow",
+      "passed": true,
+      "sql": "INSERT INTO milestones(contract_id,title,amount) VALUES(1,'x',1)",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'BR-14 milestone sum exceeds contract')"
+    },
+    {
+      "id": "milestone_skip",
+      "passed": true,
+      "sql": "UPDATE milestones SET status='APPROVED' WHERE milestone_id=8",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'BR-15 illegal milestone transition')"
+    },
+    {
+      "id": "started_terms_immutable",
+      "passed": true,
+      "sql": "UPDATE milestones SET amount=1 WHERE milestone_id=1",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'Started milestone terms are immutable')"
+    },
+    {
+      "id": "payment_before_approval",
+      "passed": true,
+      "sql": "INSERT INTO payments(milestone_id,payment_method) VALUES(2,'PAYPAL')",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'BR-15 payment requires APPROVED active work')"
+    },
+    {
+      "id": "duplicate_successful_payment",
+      "passed": true,
+      "sql": "INSERT INTO payments(milestone_id,payment_method,payment_status) VALUES(1,'PAYPAL','PAID')",
+      "expected_error": 1062,
+      "actual_error": 1062,
+      "message": "(1062, \"Duplicate entry '1' for key 'payments.uq_paid_milestone'\")"
+    },
+    {
+      "id": "failed_payment_retry",
+      "passed": true,
+      "sql": "INSERT INTO payments(milestone_id,payment_method,payment_status) VALUES(9,'PAYPAL','PAID')",
+      "expected_error": 0,
+      "actual_error": 0,
+      "message": "accepted"
+    },
+    {
+      "id": "invalid_payment_method",
+      "passed": true,
+      "sql": "INSERT INTO payments(milestone_id,payment_method) VALUES(9,'INVALID')",
+      "expected_error": 3819,
+      "actual_error": 3819,
+      "message": "(3819, \"Check constraint 'ck_payment_method' is violated.\")"
+    },
+    {
+      "id": "terminal_payment_immutable",
+      "passed": true,
+      "sql": "UPDATE payments SET payment_status='FAILED' WHERE payment_id=2",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'Terminal payment cannot change status')"
+    },
+    {
+      "id": "payment_history_retained",
+      "passed": true,
+      "sql": "DELETE FROM payments WHERE payment_id=1",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'Payment evidence cannot be deleted')"
+    },
+    {
+      "id": "review_before_completion",
+      "passed": true,
+      "sql": "INSERT INTO contract_reviews(contract_id,rating) VALUES(1,5)",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'Review requires COMPLETED contract')"
+    },
+    {
+      "id": "incomplete_contract_cannot_close",
+      "passed": true,
+      "sql": "UPDATE contracts SET status='COMPLETED' WHERE contract_id=1",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'Completion requires fully allocated paid milestones')"
+    },
+    {
+      "id": "duplicate_review",
+      "passed": true,
+      "sql": "INSERT INTO contract_reviews(contract_id,rating) VALUES(10,5)",
+      "expected_error": 1062,
+      "actual_error": 1062,
+      "message": "(1062, \"Duplicate entry '10' for key 'contract_reviews.PRIMARY'\")"
+    },
+    {
+      "id": "review_immutable",
+      "passed": true,
+      "sql": "UPDATE contract_reviews SET rating=1 WHERE contract_id=10",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'Submitted review is immutable')"
+    },
+    {
+      "id": "review_retained",
+      "passed": true,
+      "sql": "DELETE FROM contract_reviews WHERE contract_id=10",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'Submitted review is retained')"
+    },
+    {
+      "id": "rbac_no_direct_write",
+      "passed": true,
+      "sql": "UPDATE proposals SET status='CONFIRMED' WHERE proposal_id=11",
+      "expected_error": 1142,
+      "actual_error": 1142,
+      "message": "(1142, \"UPDATE command denied to user 'client_1'@'localhost' for table 'proposals'\")"
+    },
+    {
+      "id": "rbac_no_password_hash",
+      "passed": true,
+      "sql": "SELECT password_hash FROM users",
+      "expected_error": 1142,
+      "actual_error": 1142,
+      "message": "(1142, \"SELECT command denied to user 'report_reader'@'localhost' for table 'users'\")"
+    },
+    {
+      "id": "rbac_no_record_payment",
+      "passed": true,
+      "sql": "CALL sp_record_payment(1,9,'PAYPAL','PAID')",
+      "expected_error": 1370,
+      "actual_error": 1370,
+      "message": "(1370, \"execute command denied to user 'client_1'@'localhost' for routine 'mini_upwork.sp_record_payment'\")"
+    },
+    {
+      "id": "actor_spoofing",
+      "passed": true,
+      "sql": "CALL sp_select_proposal(2,11)",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'Actor does not match authenticated client')"
+    },
+    {
+      "id": "outside_contract_review",
+      "passed": true,
+      "sql": "CALL sp_submit_review(2,1,5,'x')",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'Only owning client reviews contract')"
+    },
+    {
+      "id": "freelancer_cannot_review",
+      "passed": true,
+      "sql": "CALL sp_submit_review(4,10,5,'x')",
+      "expected_error": 1370,
+      "actual_error": 1370,
+      "message": "(1370, \"execute command denied to user 'freelancer_4'@'localhost' for routine 'mini_upwork.sp_submit_review'\")"
+    },
+    {
+      "id": "null_actor",
+      "passed": true,
+      "sql": "CALL sp_select_proposal(NULL,11)",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'Actor does not match authenticated client')"
+    },
+    {
+      "id": "mutual_consent_creates_one_contract",
+      "passed": true
+    },
+    {
+      "id": "freelancer_cannot_approve",
+      "passed": true,
+      "sql": "CALL sp_advance_milestone(4,27801,'APPROVED')",
+      "expected_error": 1644,
+      "actual_error": 1644,
+      "message": "(1644, 'Only owning client may approve')"
+    },
+    {
+      "id": "rating_above_domain",
+      "passed": true,
+      "sql": "CALL sp_submit_review(1,606,6,'x')",
+      "expected_error": 3819,
+      "actual_error": 3819,
+      "message": "(3819, \"Check constraint 'ck_review_rating' is violated.\")"
+    },
+    {
+      "id": "rating_below_domain",
+      "passed": true,
+      "sql": "CALL sp_submit_review(1,606,0,'x')",
+      "expected_error": 3819,
+      "actual_error": 3819,
+      "message": "(3819, \"Check constraint 'ck_review_rating' is violated.\")"
+    },
+    {
+      "id": "end_to_end_payment_and_review",
+      "passed": true
+    },
+    {
+      "id": "completed_job_synced",
+      "passed": true
+    },
+    {
+      "id": "normalized_payment_columns",
+      "passed": true
+    },
+    {
+      "id": "payment_view_derives_transfer",
+      "passed": true
+    },
+    {
+      "id": "rating_aggregate_oracle",
+      "passed": true,
+      "expected": [
+        [
+          21005,
+          3,
+          "4.00"
+        ],
+        [
+          21010,
+          3,
+          "4.00"
+        ],
+        [
+          21015,
+          3,
+          "4.00"
+        ],
+        [
+          21020,
+          3,
+          "4.00"
+        ],
+        [
+          21025,
+          3,
+          "4.00"
+        ],
+        [
+          21030,
+          3,
+          "4.00"
+        ],
+        [
+          21035,
+          3,
+          "4.00"
+        ],
+        [
+          21040,
+          3,
+          "4.00"
+        ],
+        [
+          21045,
+          3,
+          "4.00"
+        ],
+        [
+          21050,
+          3,
+          "4.00"
+        ],
+        [
+          21055,
+          3,
+          "4.00"
+        ],
+        [
+          21060,
+          3,
+          "4.00"
+        ],
+        [
+          21065,
+          3,
+          "4.00"
+        ],
+        [
+          21070,
+          3,
+          "4.00"
+        ],
+        [
+          21075,
+          3,
+          "4.00"
+        ],
+        [
+          21080,
+          3,
+          "4.00"
+        ],
+        [
+          21085,
+          3,
+          "4.00"
+        ],
+        [
+          21090,
+          3,
+          "4.00"
+        ],
+        [
+          21095,
+          3,
+          "4.00"
+        ],
+        [
+          21100,
+          3,
+          "4.00"
+        ],
+        [
+          21105,
+          3,
+          "4.00"
+        ],
+        [
+          21110,
+          3,
+          "4.00"
+        ],
+        [
+          21115,
+          3,
+          "4.00"
+        ],
+        [
+          21120,
+          3,
+          "4.00"
+        ],
+        [
+          21125,
+          3,
+          "4.00"
+        ],
+        [
+          21130,
+          3,
+          "4.00"
+        ],
+        [
+          21135,
+          3,
+          "4.00"
+        ],
+        [
+          21140,
+          3,
+          "4.00"
+        ],
+        [
+          21145,
+          3,
+          "4.00"
+        ],
+        [
+          21150,
+          3,
+          "4.00"
+        ],
+        [
+          21155,
+          3,
+          "4.00"
+        ],
+        [
+          21160,
+          3,
+          "4.00"
+        ],
+        [
+          21165,
+          3,
+          "4.00"
+        ],
+        [
+          21170,
+          3,
+          "4.00"
+        ],
+        [
+          21175,
+          3,
+          "4.00"
+        ],
+        [
+          21180,
+          3,
+          "4.00"
+        ],
+        [
+          21185,
+          3,
+          "4.00"
+        ],
+        [
+          21190,
+          3,
+          "4.00"
+        ],
+        [
+          21195,
+          3,
+          "4.00"
+        ],
+        [
+          21200,
+          3,
+          "4.00"
+        ],
+        [
+          4,
+          1,
+          "5.00"
+        ]
+      ],
+      "actual": [
+        [
+          4,
+          1,
+          "5.00"
+        ],
+        [
+          21005,
+          3,
+          "4.00"
+        ],
+        [
+          21010,
+          3,
+          "4.00"
+        ],
+        [
+          21015,
+          3,
+          "4.00"
+        ],
+        [
+          21020,
+          3,
+          "4.00"
+        ],
+        [
+          21025,
+          3,
+          "4.00"
+        ],
+        [
+          21030,
+          3,
+          "4.00"
+        ],
+        [
+          21035,
+          3,
+          "4.00"
+        ],
+        [
+          21040,
+          3,
+          "4.00"
+        ],
+        [
+          21045,
+          3,
+          "4.00"
+        ],
+        [
+          21050,
+          3,
+          "4.00"
+        ],
+        [
+          21055,
+          3,
+          "4.00"
+        ],
+        [
+          21060,
+          3,
+          "4.00"
+        ],
+        [
+          21065,
+          3,
+          "4.00"
+        ],
+        [
+          21070,
+          3,
+          "4.00"
+        ],
+        [
+          21075,
+          3,
+          "4.00"
+        ],
+        [
+          21080,
+          3,
+          "4.00"
+        ],
+        [
+          21085,
+          3,
+          "4.00"
+        ],
+        [
+          21090,
+          3,
+          "4.00"
+        ],
+        [
+          21095,
+          3,
+          "4.00"
+        ],
+        [
+          21100,
+          3,
+          "4.00"
+        ],
+        [
+          21105,
+          3,
+          "4.00"
+        ],
+        [
+          21110,
+          3,
+          "4.00"
+        ],
+        [
+          21115,
+          3,
+          "4.00"
+        ],
+        [
+          21120,
+          3,
+          "4.00"
+        ],
+        [
+          21125,
+          3,
+          "4.00"
+        ],
+        [
+          21130,
+          3,
+          "4.00"
+        ],
+        [
+          21135,
+          3,
+          "4.00"
+        ],
+        [
+          21140,
+          3,
+          "4.00"
+        ],
+        [
+          21145,
+          3,
+          "4.00"
+        ],
+        [
+          21150,
+          3,
+          "4.00"
+        ],
+        [
+          21155,
+          3,
+          "4.00"
+        ],
+        [
+          21160,
+          3,
+          "4.00"
+        ],
+        [
+          21165,
+          3,
+          "4.00"
+        ],
+        [
+          21170,
+          3,
+          "4.00"
+        ],
+        [
+          21175,
+          3,
+          "4.00"
+        ],
+        [
+          21180,
+          3,
+          "4.00"
+        ],
+        [
+          21185,
+          3,
+          "4.00"
+        ],
+        [
+          21190,
+          3,
+          "4.00"
+        ],
+        [
+          21195,
+          3,
+          "4.00"
+        ],
+        [
+          21200,
+          3,
+          "4.00"
+        ]
+      ]
+    },
+    {
+      "id": "unrated_mean_is_null",
+      "passed": true
+    },
+    {
+      "id": "no_payment_fanout",
+      "passed": true
+    },
+    {
+      "id": "concurrent_budget_serialization",
+      "passed": true,
+      "outcomes": [
+        0,
+        1644
+      ]
+    },
+    {
+      "id": "concurrent_budget_invariant",
+      "passed": true
+    },
+    {
+      "id": "invariant_total_disjoint_subtype",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "sql": "SELECT COUNT(*) FROM users u LEFT JOIN clients c ON c.client_id=u.user_id LEFT JOIN freelancers f ON f.freelancer_id=u.user_id WHERE (c.client_id IS NOT NULL)+(f.freelancer_id IS NOT NULL)<>1 OR (u.user_type='CLIENT' AND c.client_id IS NULL) OR (u.user_type='FREELANCER' AND f.freelancer_id IS NULL)"
+    },
+    {
+      "id": "invariant_unique_proposal_pair",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "sql": "SELECT COUNT(*) FROM (SELECT job_id,freelancer_id FROM proposals GROUP BY job_id,freelancer_id HAVING COUNT(*)>1) x"
+    },
+    {
+      "id": "invariant_unique_selected_proposal",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "sql": "SELECT COUNT(*) FROM (SELECT job_id FROM proposals WHERE status IN ('CLIENT_ACCEPTED','CONFIRMED') GROUP BY job_id HAVING COUNT(*)>1) x"
+    },
+    {
+      "id": "invariant_confirmed_contract_exists",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "sql": "SELECT COUNT(*) FROM proposals p LEFT JOIN contracts c ON c.proposal_id=p.proposal_id WHERE p.status='CONFIRMED' AND c.contract_id IS NULL"
+    },
+    {
+      "id": "invariant_contract_parties_match",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "sql": "SELECT COUNT(*) FROM contracts c JOIN proposals p ON p.proposal_id=c.proposal_id JOIN jobs j ON j.job_id=p.job_id WHERE c.client_id<>j.client_id OR c.freelancer_id<>p.freelancer_id OR c.total_amount<>p.proposed_amount"
+    },
+    {
+      "id": "invariant_milestone_budget",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "sql": "SELECT COUNT(*) FROM (SELECT c.contract_id FROM contracts c JOIN milestones m ON m.contract_id=c.contract_id GROUP BY c.contract_id,c.total_amount HAVING SUM(m.amount)>c.total_amount) x"
+    },
+    {
+      "id": "invariant_payment_requires_approved",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "sql": "SELECT COUNT(*) FROM payments p JOIN milestones m ON m.milestone_id=p.milestone_id WHERE m.status<>'APPROVED'"
+    },
+    {
+      "id": "invariant_unique_paid_attempt",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "sql": "SELECT COUNT(*) FROM (SELECT milestone_id FROM payments WHERE payment_status='PAID' GROUP BY milestone_id HAVING COUNT(*)>1) x"
+    },
+    {
+      "id": "invariant_milestone_date_bounds",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "sql": "SELECT COUNT(*) FROM milestones m JOIN contracts c ON c.contract_id=m.contract_id WHERE m.due_date<c.start_date OR m.due_date>c.end_date"
+    },
+    {
+      "id": "invariant_review_completion",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "sql": "SELECT COUNT(*) FROM contract_reviews r JOIN contracts c ON c.contract_id=r.contract_id WHERE c.status<>'COMPLETED' OR r.rating NOT BETWEEN 1 AND 5"
+    },
+    {
+      "id": "all_15_queries_execute",
+      "passed": true
+    },
+    {
+      "id": "http_reads_database",
+      "passed": true
+    },
+    {
+      "id": "http_writes_database",
+      "passed": true
+    },
+    {
+      "id": "http_csrf_rejected",
+      "passed": true
+    }
+  ],
+  "query_count": 15,
+  "scope": "fresh isolated local instance; fixtures plus verification-only rows; no historical evidence reused"
+}

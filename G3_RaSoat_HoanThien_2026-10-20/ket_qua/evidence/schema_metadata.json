@@ -1,0 +1,1440 @@
+{
+  "columns": [
+    {
+      "TABLE_NAME": "clients",
+      "COLUMN_NAME": "client_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "clients",
+      "COLUMN_NAME": "company_name",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "clients",
+      "COLUMN_NAME": "company_description",
+      "COLUMN_TYPE": "text",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "clients",
+      "COLUMN_NAME": "location",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "contract_reviews",
+      "COLUMN_NAME": "contract_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "contract_reviews",
+      "COLUMN_NAME": "rating",
+      "COLUMN_TYPE": "tinyint",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "contract_reviews",
+      "COLUMN_NAME": "review_text",
+      "COLUMN_TYPE": "varchar(1000)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "contract_reviews",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "CURRENT_TIMESTAMP",
+      "COLUMN_KEY": "",
+      "EXTRA": "DEFAULT_GENERATED",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "COLUMN_NAME": "contract_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "COLUMN_NAME": "proposal_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "UNI",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "COLUMN_NAME": "client_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "COLUMN_NAME": "freelancer_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "COLUMN_NAME": "start_date",
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "COLUMN_NAME": "end_date",
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "COLUMN_NAME": "total_amount",
+      "COLUMN_TYPE": "decimal(15,2)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "COLUMN_NAME": "status",
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "ACTIVE",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "freelancer_skills",
+      "COLUMN_NAME": "freelancer_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "freelancer_skills",
+      "COLUMN_NAME": "skill_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "freelancer_skills",
+      "COLUMN_NAME": "skill_level",
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "INTERMEDIATE",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "freelancers",
+      "COLUMN_NAME": "freelancer_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "freelancers",
+      "COLUMN_NAME": "professional_title",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "Not specified",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "freelancers",
+      "COLUMN_NAME": "bio",
+      "COLUMN_TYPE": "text",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "freelancers",
+      "COLUMN_NAME": "hourly_rate",
+      "COLUMN_TYPE": "decimal(10,2)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0.00",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "freelancers",
+      "COLUMN_NAME": "experience_level",
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "INTERMEDIATE",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "job_categories",
+      "COLUMN_NAME": "category_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "job_categories",
+      "COLUMN_NAME": "category_name",
+      "COLUMN_TYPE": "varchar(100)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "UNI",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "job_categories",
+      "COLUMN_NAME": "description",
+      "COLUMN_TYPE": "text",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "COLUMN_NAME": "job_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "COLUMN_NAME": "client_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "COLUMN_NAME": "category_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "COLUMN_NAME": "title",
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "COLUMN_NAME": "description",
+      "COLUMN_TYPE": "text",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "COLUMN_NAME": "budget_min",
+      "COLUMN_TYPE": "decimal(15,2)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0.00",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "COLUMN_NAME": "budget_max",
+      "COLUMN_TYPE": "decimal(15,2)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0.00",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "COLUMN_NAME": "deadline",
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "COLUMN_NAME": "status",
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "OPEN",
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "COLUMN_NAME": "created_at",
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "CURRENT_TIMESTAMP",
+      "COLUMN_KEY": "",
+      "EXTRA": "DEFAULT_GENERATED",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "milestones",
+      "COLUMN_NAME": "milestone_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "milestones",
+      "COLUMN_NAME": "contract_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "milestones",
+      "COLUMN_NAME": "title",
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "milestones",
+      "COLUMN_NAME": "description",
+      "COLUMN_TYPE": "text",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "milestones",
+      "COLUMN_NAME": "amount",
+      "COLUMN_TYPE": "decimal(15,2)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "milestones",
+      "COLUMN_NAME": "due_date",
+      "COLUMN_TYPE": "date",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "milestones",
+      "COLUMN_NAME": "status",
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "PENDING",
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "payments",
+      "COLUMN_NAME": "payment_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "payments",
+      "COLUMN_NAME": "milestone_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "payments",
+      "COLUMN_NAME": "payment_status",
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "PENDING",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "payments",
+      "COLUMN_NAME": "payment_method",
+      "COLUMN_TYPE": "varchar(50)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "COLUMN_NAME": "proposal_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "COLUMN_NAME": "job_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "COLUMN_NAME": "freelancer_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "MUL",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "COLUMN_NAME": "proposed_amount",
+      "COLUMN_TYPE": "decimal(15,2)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "COLUMN_NAME": "cover_letter",
+      "COLUMN_TYPE": "text",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "COLUMN_NAME": "estimated_days",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "COLUMN_NAME": "status",
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "PENDING",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "COLUMN_NAME": "submitted_at",
+      "COLUMN_TYPE": "datetime",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "CURRENT_TIMESTAMP",
+      "COLUMN_KEY": "",
+      "EXTRA": "DEFAULT_GENERATED",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "skills",
+      "COLUMN_NAME": "skill_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "skills",
+      "COLUMN_NAME": "skill_name",
+      "COLUMN_TYPE": "varchar(100)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "UNI",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "user_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "PRI",
+      "EXTRA": "auto_increment",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "email",
+      "COLUMN_TYPE": "varchar(150)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "UNI",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "full_name",
+      "COLUMN_TYPE": "varchar(100)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "password_hash",
+      "COLUMN_TYPE": "varchar(255)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "phone",
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "user_type",
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_client_spend",
+      "COLUMN_NAME": "client_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_client_spend",
+      "COLUMN_NAME": "paid_count",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_client_spend",
+      "COLUMN_NAME": "paid_amount",
+      "COLUMN_TYPE": "decimal(37,2)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0.00",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_contract_overview",
+      "COLUMN_NAME": "contract_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_contract_overview",
+      "COLUMN_NAME": "client_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_contract_overview",
+      "COLUMN_NAME": "freelancer_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_contract_overview",
+      "COLUMN_NAME": "total_amount",
+      "COLUMN_TYPE": "decimal(15,2)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_contract_overview",
+      "COLUMN_NAME": "status",
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "ACTIVE",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_contract_overview",
+      "COLUMN_NAME": "milestone_count",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_contract_overview",
+      "COLUMN_NAME": "allocated_amount",
+      "COLUMN_TYPE": "decimal(37,2)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0.00",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_contract_overview",
+      "COLUMN_NAME": "paid_amount",
+      "COLUMN_TYPE": "decimal(37,2)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0.00",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_contract_overview",
+      "COLUMN_NAME": "outstanding_amount",
+      "COLUMN_TYPE": "decimal(38,2)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0.00",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_freelancer_ratings",
+      "COLUMN_NAME": "freelancer_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_freelancer_ratings",
+      "COLUMN_NAME": "rating_count",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_freelancer_ratings",
+      "COLUMN_NAME": "average_rating",
+      "COLUMN_TYPE": "decimal(6,2)",
+      "IS_NULLABLE": "YES",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_job_proposals",
+      "COLUMN_NAME": "job_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_job_proposals",
+      "COLUMN_NAME": "client_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_job_proposals",
+      "COLUMN_NAME": "title",
+      "COLUMN_TYPE": "varchar(200)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_job_proposals",
+      "COLUMN_NAME": "status",
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "OPEN",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_job_proposals",
+      "COLUMN_NAME": "budget_max",
+      "COLUMN_TYPE": "decimal(15,2)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0.00",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_job_proposals",
+      "COLUMN_NAME": "proposal_count",
+      "COLUMN_TYPE": "bigint",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_job_proposals",
+      "COLUMN_NAME": "selected_count",
+      "COLUMN_TYPE": "decimal(23,0)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_payment_details",
+      "COLUMN_NAME": "payment_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "0",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_payment_details",
+      "COLUMN_NAME": "milestone_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_payment_details",
+      "COLUMN_NAME": "payer_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_payment_details",
+      "COLUMN_NAME": "payee_id",
+      "COLUMN_TYPE": "int",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_payment_details",
+      "COLUMN_NAME": "amount",
+      "COLUMN_TYPE": "decimal(15,2)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_payment_details",
+      "COLUMN_NAME": "payment_status",
+      "COLUMN_TYPE": "varchar(20)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": "PENDING",
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    },
+    {
+      "TABLE_NAME": "v_payment_details",
+      "COLUMN_NAME": "payment_method",
+      "COLUMN_TYPE": "varchar(50)",
+      "IS_NULLABLE": "NO",
+      "COLUMN_DEFAULT": null,
+      "COLUMN_KEY": "",
+      "EXTRA": "",
+      "GENERATION_EXPRESSION": ""
+    }
+  ],
+  "keys": [
+    {
+      "TABLE_NAME": "clients",
+      "COLUMN_NAME": "client_id",
+      "CONSTRAINT_NAME": "fk_clients_user",
+      "REFERENCED_TABLE_NAME": "users",
+      "REFERENCED_COLUMN_NAME": "user_id"
+    },
+    {
+      "TABLE_NAME": "clients",
+      "COLUMN_NAME": "client_id",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "contract_reviews",
+      "COLUMN_NAME": "contract_id",
+      "CONSTRAINT_NAME": "fk_review_contract",
+      "REFERENCED_TABLE_NAME": "contracts",
+      "REFERENCED_COLUMN_NAME": "contract_id"
+    },
+    {
+      "TABLE_NAME": "contract_reviews",
+      "COLUMN_NAME": "contract_id",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "COLUMN_NAME": "client_id",
+      "CONSTRAINT_NAME": "fk_contract_client",
+      "REFERENCED_TABLE_NAME": "clients",
+      "REFERENCED_COLUMN_NAME": "client_id"
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "COLUMN_NAME": "freelancer_id",
+      "CONSTRAINT_NAME": "fk_contract_freelancer",
+      "REFERENCED_TABLE_NAME": "freelancers",
+      "REFERENCED_COLUMN_NAME": "freelancer_id"
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "COLUMN_NAME": "proposal_id",
+      "CONSTRAINT_NAME": "fk_contract_proposal",
+      "REFERENCED_TABLE_NAME": "proposals",
+      "REFERENCED_COLUMN_NAME": "proposal_id"
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "COLUMN_NAME": "contract_id",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "COLUMN_NAME": "proposal_id",
+      "CONSTRAINT_NAME": "uq_contract_proposal",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "freelancer_skills",
+      "COLUMN_NAME": "freelancer_id",
+      "CONSTRAINT_NAME": "fk_fs_freelancer",
+      "REFERENCED_TABLE_NAME": "freelancers",
+      "REFERENCED_COLUMN_NAME": "freelancer_id"
+    },
+    {
+      "TABLE_NAME": "freelancer_skills",
+      "COLUMN_NAME": "skill_id",
+      "CONSTRAINT_NAME": "fk_fs_skill",
+      "REFERENCED_TABLE_NAME": "skills",
+      "REFERENCED_COLUMN_NAME": "skill_id"
+    },
+    {
+      "TABLE_NAME": "freelancer_skills",
+      "COLUMN_NAME": "freelancer_id",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "freelancer_skills",
+      "COLUMN_NAME": "skill_id",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "freelancers",
+      "COLUMN_NAME": "freelancer_id",
+      "CONSTRAINT_NAME": "fk_freelancers_user",
+      "REFERENCED_TABLE_NAME": "users",
+      "REFERENCED_COLUMN_NAME": "user_id"
+    },
+    {
+      "TABLE_NAME": "freelancers",
+      "COLUMN_NAME": "freelancer_id",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "job_categories",
+      "COLUMN_NAME": "category_id",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "job_categories",
+      "COLUMN_NAME": "category_name",
+      "CONSTRAINT_NAME": "uq_categories_name",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "COLUMN_NAME": "category_id",
+      "CONSTRAINT_NAME": "fk_jobs_category",
+      "REFERENCED_TABLE_NAME": "job_categories",
+      "REFERENCED_COLUMN_NAME": "category_id"
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "COLUMN_NAME": "client_id",
+      "CONSTRAINT_NAME": "fk_jobs_client",
+      "REFERENCED_TABLE_NAME": "clients",
+      "REFERENCED_COLUMN_NAME": "client_id"
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "COLUMN_NAME": "job_id",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "milestones",
+      "COLUMN_NAME": "contract_id",
+      "CONSTRAINT_NAME": "fk_milestone_contract",
+      "REFERENCED_TABLE_NAME": "contracts",
+      "REFERENCED_COLUMN_NAME": "contract_id"
+    },
+    {
+      "TABLE_NAME": "milestones",
+      "COLUMN_NAME": "milestone_id",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "payments",
+      "COLUMN_NAME": "milestone_id",
+      "CONSTRAINT_NAME": "fk_payment_milestone",
+      "REFERENCED_TABLE_NAME": "milestones",
+      "REFERENCED_COLUMN_NAME": "milestone_id"
+    },
+    {
+      "TABLE_NAME": "payments",
+      "COLUMN_NAME": "payment_id",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "COLUMN_NAME": "freelancer_id",
+      "CONSTRAINT_NAME": "fk_proposals_freelancer",
+      "REFERENCED_TABLE_NAME": "freelancers",
+      "REFERENCED_COLUMN_NAME": "freelancer_id"
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "COLUMN_NAME": "job_id",
+      "CONSTRAINT_NAME": "fk_proposals_job",
+      "REFERENCED_TABLE_NAME": "jobs",
+      "REFERENCED_COLUMN_NAME": "job_id"
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "COLUMN_NAME": "proposal_id",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "COLUMN_NAME": "job_id",
+      "CONSTRAINT_NAME": "uq_proposal_freelancer_job",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "COLUMN_NAME": "freelancer_id",
+      "CONSTRAINT_NAME": "uq_proposal_freelancer_job",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "skills",
+      "COLUMN_NAME": "skill_id",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "skills",
+      "COLUMN_NAME": "skill_name",
+      "CONSTRAINT_NAME": "uq_skills_name",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "user_id",
+      "CONSTRAINT_NAME": "PRIMARY",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    },
+    {
+      "TABLE_NAME": "users",
+      "COLUMN_NAME": "email",
+      "CONSTRAINT_NAME": "uq_users_email",
+      "REFERENCED_TABLE_NAME": null,
+      "REFERENCED_COLUMN_NAME": null
+    }
+  ],
+  "checks": [
+    {
+      "TABLE_NAME": "users",
+      "CONSTRAINT_NAME": "ck_users_type",
+      "CHECK_CLAUSE": "(`user_type` in (_utf8mb4\\'CLIENT\\',_utf8mb4\\'FREELANCER\\'))"
+    },
+    {
+      "TABLE_NAME": "freelancers",
+      "CONSTRAINT_NAME": "ck_freelancer_rate",
+      "CHECK_CLAUSE": "(`hourly_rate` >= 0)"
+    },
+    {
+      "TABLE_NAME": "freelancers",
+      "CONSTRAINT_NAME": "ck_freelancer_level",
+      "CHECK_CLAUSE": "(`experience_level` in (_utf8mb4\\'BEGINNER\\',_utf8mb4\\'INTERMEDIATE\\',_utf8mb4\\'ADVANCED\\',_utf8mb4\\'EXPERT\\'))"
+    },
+    {
+      "TABLE_NAME": "freelancer_skills",
+      "CONSTRAINT_NAME": "ck_fs_level",
+      "CHECK_CLAUSE": "(`skill_level` in (_utf8mb4\\'BEGINNER\\',_utf8mb4\\'INTERMEDIATE\\',_utf8mb4\\'ADVANCED\\',_utf8mb4\\'EXPERT\\'))"
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "CONSTRAINT_NAME": "ck_proposal_amount",
+      "CHECK_CLAUSE": "(`proposed_amount` > 0)"
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "CONSTRAINT_NAME": "ck_proposal_days",
+      "CHECK_CLAUSE": "(`estimated_days` > 0)"
+    },
+    {
+      "TABLE_NAME": "proposals",
+      "CONSTRAINT_NAME": "ck_proposal_status",
+      "CHECK_CLAUSE": "(`status` in (_utf8mb4\\'PENDING\\',_utf8mb4\\'CLIENT_ACCEPTED\\',_utf8mb4\\'CONFIRMED\\',_utf8mb4\\'REJECTED\\',_utf8mb4\\'WITHDRAWN\\'))"
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "CONSTRAINT_NAME": "ck_contract_amount",
+      "CHECK_CLAUSE": "(`total_amount` > 0)"
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "CONSTRAINT_NAME": "ck_contract_dates",
+      "CHECK_CLAUSE": "((`end_date` is null) or (`end_date` > `start_date`))"
+    },
+    {
+      "TABLE_NAME": "contracts",
+      "CONSTRAINT_NAME": "ck_contract_status",
+      "CHECK_CLAUSE": "(`status` in (_utf8mb4\\'ACTIVE\\',_utf8mb4\\'COMPLETED\\',_utf8mb4\\'CANCELLED\\'))"
+    },
+    {
+      "TABLE_NAME": "payments",
+      "CONSTRAINT_NAME": "ck_payment_status",
+      "CHECK_CLAUSE": "(`payment_status` in (_utf8mb4\\'PENDING\\',_utf8mb4\\'PAID\\',_utf8mb4\\'FAILED\\'))"
+    },
+    {
+      "TABLE_NAME": "payments",
+      "CONSTRAINT_NAME": "ck_payment_method",
+      "CHECK_CLAUSE": "(`payment_method` in (_utf8mb4\\'PAYPAL\\',_utf8mb4\\'CREDIT_CARD\\',_utf8mb4\\'BANK_TRANSFER\\'))"
+    },
+    {
+      "TABLE_NAME": "contract_reviews",
+      "CONSTRAINT_NAME": "ck_review_rating",
+      "CHECK_CLAUSE": "(`rating` between 1 and 5)"
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "CONSTRAINT_NAME": "ck_jobs_budget",
+      "CHECK_CLAUSE": "((`budget_min` >= 0) and (`budget_max` >= `budget_min`))"
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "CONSTRAINT_NAME": "ck_jobs_dates",
+      "CHECK_CLAUSE": "((`deadline` is null) or (`deadline` > cast(`created_at` as date)))"
+    },
+    {
+      "TABLE_NAME": "jobs",
+      "CONSTRAINT_NAME": "ck_jobs_status",
+      "CHECK_CLAUSE": "(`status` in (_utf8mb4\\'OPEN\\',_utf8mb4\\'IN_PROGRESS\\',_utf8mb4\\'COMPLETED\\',_utf8mb4\\'CANCELLED\\'))"
+    },
+    {
+      "TABLE_NAME": "milestones",
+      "CONSTRAINT_NAME": "ck_milestone_amount",
+      "CHECK_CLAUSE": "(`amount` > 0)"
+    },
+    {
+      "TABLE_NAME": "milestones",
+      "CONSTRAINT_NAME": "ck_milestone_status",
+      "CHECK_CLAUSE": "(`status` in (_utf8mb4\\'PENDING\\',_utf8mb4\\'IN_PROGRESS\\',_utf8mb4\\'COMPLETED\\',_utf8mb4\\'APPROVED\\'))"
+    }
+  ],
+  "triggers": [
+    {
+      "TRIGGER_NAME": "tr_users_create_subtype",
+      "EVENT_MANIPULATION": "INSERT",
+      "EVENT_OBJECT_TABLE": "users",
+      "ACTION_TIMING": "AFTER"
+    },
+    {
+      "TRIGGER_NAME": "tr_users_identity_immutable",
+      "EVENT_MANIPULATION": "UPDATE",
+      "EVENT_OBJECT_TABLE": "users",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_clients_type",
+      "EVENT_MANIPULATION": "INSERT",
+      "EVENT_OBJECT_TABLE": "clients",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_clients_identity",
+      "EVENT_MANIPULATION": "UPDATE",
+      "EVENT_OBJECT_TABLE": "clients",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_clients_retain",
+      "EVENT_MANIPULATION": "DELETE",
+      "EVENT_OBJECT_TABLE": "clients",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_freelancers_type",
+      "EVENT_MANIPULATION": "INSERT",
+      "EVENT_OBJECT_TABLE": "freelancers",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_freelancers_identity",
+      "EVENT_MANIPULATION": "UPDATE",
+      "EVENT_OBJECT_TABLE": "freelancers",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_freelancers_retain",
+      "EVENT_MANIPULATION": "DELETE",
+      "EVENT_OBJECT_TABLE": "freelancers",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_proposals_initial",
+      "EVENT_MANIPULATION": "INSERT",
+      "EVENT_OBJECT_TABLE": "proposals",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_proposals_transition",
+      "EVENT_MANIPULATION": "UPDATE",
+      "EVENT_OBJECT_TABLE": "proposals",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_contracts_validate",
+      "EVENT_MANIPULATION": "INSERT",
+      "EVENT_OBJECT_TABLE": "contracts",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_proposals_create_contract",
+      "EVENT_MANIPULATION": "UPDATE",
+      "EVENT_OBJECT_TABLE": "proposals",
+      "ACTION_TIMING": "AFTER"
+    },
+    {
+      "TRIGGER_NAME": "tr_contracts_update",
+      "EVENT_MANIPULATION": "UPDATE",
+      "EVENT_OBJECT_TABLE": "contracts",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_payments_insert",
+      "EVENT_MANIPULATION": "INSERT",
+      "EVENT_OBJECT_TABLE": "payments",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_payments_update",
+      "EVENT_MANIPULATION": "UPDATE",
+      "EVENT_OBJECT_TABLE": "payments",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_payments_delete",
+      "EVENT_MANIPULATION": "DELETE",
+      "EVENT_OBJECT_TABLE": "payments",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_contracts_retain",
+      "EVENT_MANIPULATION": "DELETE",
+      "EVENT_OBJECT_TABLE": "contracts",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_reviews_insert",
+      "EVENT_MANIPULATION": "INSERT",
+      "EVENT_OBJECT_TABLE": "contract_reviews",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_reviews_update",
+      "EVENT_MANIPULATION": "UPDATE",
+      "EVENT_OBJECT_TABLE": "contract_reviews",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_reviews_delete",
+      "EVENT_MANIPULATION": "DELETE",
+      "EVENT_OBJECT_TABLE": "contract_reviews",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_contracts_sync_job",
+      "EVENT_MANIPULATION": "UPDATE",
+      "EVENT_OBJECT_TABLE": "contracts",
+      "ACTION_TIMING": "AFTER"
+    },
+    {
+      "TRIGGER_NAME": "tr_jobs_owner",
+      "EVENT_MANIPULATION": "UPDATE",
+      "EVENT_OBJECT_TABLE": "jobs",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_milestones_insert",
+      "EVENT_MANIPULATION": "INSERT",
+      "EVENT_OBJECT_TABLE": "milestones",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_milestones_update",
+      "EVENT_MANIPULATION": "UPDATE",
+      "EVENT_OBJECT_TABLE": "milestones",
+      "ACTION_TIMING": "BEFORE"
+    },
+    {
+      "TRIGGER_NAME": "tr_milestones_delete",
+      "EVENT_MANIPULATION": "DELETE",
+      "EVENT_OBJECT_TABLE": "milestones",
+      "ACTION_TIMING": "BEFORE"
+    }
+  ],
+  "procedures": [
+    {
+      "ROUTINE_NAME": "sp_add_milestone"
+    },
+    {
+      "ROUTINE_NAME": "sp_advance_milestone"
+    },
+    {
+      "ROUTINE_NAME": "sp_complete_contract"
+    },
+    {
+      "ROUTINE_NAME": "sp_confirm_proposal"
+    },
+    {
+      "ROUTINE_NAME": "sp_post_job"
+    },
+    {
+      "ROUTINE_NAME": "sp_record_payment"
+    },
+    {
+      "ROUTINE_NAME": "sp_select_proposal"
+    },
+    {
+      "ROUTINE_NAME": "sp_submit_proposal"
+    },
+    {
+      "ROUTINE_NAME": "sp_submit_review"
+    }
+  ]
+}
