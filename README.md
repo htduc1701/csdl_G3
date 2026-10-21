@@ -4,6 +4,8 @@ This folder contains the executable database and the Phase 4 web prototype for t
 
 ## Team G3
 
+## Team G3
+
 | MSSV | Họ và tên | Tài khoản GitHub |
 |---|---|---|
 | N25DCAT073 | Huynh Thien Duc | htduc1701 |
