@@ -2,6 +2,14 @@
 
 This folder contains the executable database and the Phase 4 web prototype for the **Freelance Marketplace Ecosystem** project.
 
+## Team G3
+
+| MSSV | Họ và tên | Tài khoản GitHub |
+|---|---|---|
+| N25DCAT073 | Huynh Thien Duc | htduc1701 |
+| N25DCAT076 | Pham Viet Hoang | shinmagicc |
+| N25DCAT079 | Dang Quang Huy | Kurookani |
+
 ## 1. Current baseline
 
 - DBMS: MySQL 8.0 (validated design target: MySQL 8.0.42 or newer compatible 8.0 release)
