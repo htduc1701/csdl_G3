@@ -8,9 +8,10 @@ This folder contains the executable database and the Phase 4 web prototype for t
 
 | MSSV | Họ và tên | Tài khoản GitHub |
 |---|---|---|
-| N25DCAT073 | Huynh Thien Duc | htduc1701 |
-| N25DCAT076 | Pham Viet Hoang | shinmagicc |
-| N25DCAT079 | Dang Quang Huy | Kurookani |
+| N25DCAT073 | Huynh Thien Duc | [htduc1701](https://github.com/htduc1701) |
+| N25DCAT076 | Pham Viet Hoang | [shinmagicc](https://github.com/shinmagicc) |
+| N25DCAT079 | Dang Quang Huy | [Kurookani](https://github.com/Kurookani) |
+
 
 ## 1. Current baseline
 
