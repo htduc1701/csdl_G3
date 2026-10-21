@@ -2,7 +2,6 @@
 
 This folder contains the executable database and the Phase 4 web prototype for the **Freelance Marketplace Ecosystem** project.
 
-## Team G3
 
 ## Team G3
 
