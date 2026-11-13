@@ -1,7 +1,10 @@
+import os
+
 import mysql.connector
 
 from flask import (
     Flask,
+    abort,
     render_template,
     request,
     redirect,
@@ -69,8 +72,11 @@ def client_dashboard():
 
 @app.route("/client/post-job", methods=["GET", "POST"])
 def post_job():
+    client_error = None
+    deadline_error = None
+    budget_error = None
     if request.method == "POST":
-        client_id = int(request.form["client_id"])
+        client_id = request.form.get("client_id", type=int)
         category_id = int(request.form["category_id"])
         title = request.form["title"]
         description = request.form["description"]
@@ -78,28 +84,33 @@ def post_job():
         budget_max = request.form["budget_max"]
         deadline = request.form["deadline"] or None
 
-        conn = get_client_connection(client_id)
-        cursor = conn.cursor()
-
-        try:
-            cursor.callproc(
-                "sp_post_job",
-                [
-                    client_id,
-                    category_id,
-                    title,
-                    description,
-                    budget_min,
-                    budget_max,
-                    deadline
-                ]
-            )
-            conn.commit()
-        finally:
-            cursor.close()
-            conn.close()
-
-        return redirect(url_for("client_dashboard"))
+        if client_id is None or client_id <= 0:
+            client_error = "Enter a valid Client ID. Use 1 for the demo account."
+        else:
+            try:
+                conn = get_client_connection(client_id)
+            except mysql.connector.Error as exc:
+                if exc.errno not in (1045, 3118):
+                    raise
+                client_error = f"Client ID {client_id} cannot sign in. Use 1 for the demo account."
+            else:
+                with conn, conn.cursor() as cursor:
+                    try:
+                        cursor.callproc(
+                            "sp_post_job",
+                            [client_id, category_id, title, description, budget_min, budget_max, deadline],
+                        )
+                        conn.commit()
+                    except mysql.connector.Error as exc:
+                        conn.rollback()
+                        if exc.errno == 3819 and "ck_jobs_dates" in exc.msg:
+                            deadline_error = "Deadline must be after today. Choose a later date or leave it blank."
+                        elif exc.errno == 3819 and "ck_jobs_budget" in exc.msg:
+                            budget_error = "Enter a non-negative budget with maximum greater than or equal to minimum."
+                        else:
+                            raise
+                if not (deadline_error or budget_error):
+                    return redirect(url_for("client_dashboard"))
 
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -111,14 +122,21 @@ def post_job():
     """)
 
     categories = cursor.fetchall()
+    cursor.execute("SELECT CURRENT_DATE + INTERVAL 1 DAY AS minimum_deadline")
+    minimum_deadline = cursor.fetchone()["minimum_deadline"].isoformat()
 
     cursor.close()
     conn.close()
 
     return render_template(
         "post_job.html",
-        categories=categories
-    )
+        categories=categories,
+        minimum_deadline=minimum_deadline,
+        client_error=client_error,
+        deadline_error=deadline_error,
+        budget_error=budget_error,
+        form=request.form,
+    ), 400 if client_error or deadline_error or budget_error else 200
 
 
 @app.route("/freelancer")
@@ -390,6 +408,7 @@ def client_contracts():
 def contract_milestones(contract_id):
 
     client_id = 1
+    milestone_error = None
 
     if request.method == "POST":
 
@@ -414,16 +433,23 @@ def contract_milestones(contract_id):
 
             conn.commit()
 
+        except mysql.connector.Error as exc:
+            conn.rollback()
+            messages = {
+                "Milestone date outside contract": "Choose a due date within the contract dates or leave it blank.",
+                "BR-14 milestone sum exceeds contract": "The amount exceeds the remaining contract budget.",
+                "Milestone requires ACTIVE contract": "You can only add milestones to an active contract.",
+                "Only owning client may allocate milestones": "Only the client who owns this contract can add milestones.",
+            }
+            if exc.sqlstate != "45000" or exc.msg not in messages:
+                raise
+            milestone_error = messages[exc.msg]
         finally:
             cursor.close()
             conn.close()
 
-        return redirect(
-            url_for(
-                "contract_milestones",
-                contract_id=contract_id
-            )
-        )
+        if milestone_error is None:
+            return redirect(url_for("contract_milestones", contract_id=contract_id))
 
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -465,11 +491,17 @@ def contract_milestones(contract_id):
     cursor.close()
     conn.close()
 
+    if contract is None:
+        abort(404)
+
     return render_template(
         "milestones.html",
         contract=contract,
-        milestones=milestones
-    )
+        milestones=milestones,
+        remaining_budget=contract["total_amount"] - sum(row["amount"] for row in milestones),
+        milestone_error=milestone_error,
+        form=request.form,
+    ), 400 if milestone_error else 200
 
 @app.route("/freelancer/milestones")
 def freelancer_milestones():
@@ -766,4 +798,22 @@ def reports():
     )
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    if "DB_PASSWORD" not in os.environ:
+        raise SystemExit("Set DB_PASSWORD to your local MySQL password before starting Mini Upwork.")
+    connections = {
+        "DB_USER": get_connection,
+        "client_1": lambda: get_client_connection(1),
+        "freelancer_4": lambda: get_freelancer_connection(4),
+        "payment_service": get_payment_connection,
+    }
+    for account, connect in connections.items():
+        try:
+            connect().close()
+        except (mysql.connector.Error, ValueError) as exc:
+            fix = (
+                "Check DB_HOST, DB_PORT, DB_USER, DB_PASSWORD and INSTALL_DATABASE.sql."
+                if account == "DB_USER"
+                else "Run SETUP_LOCAL_DEMO.sql on this MySQL server."
+            )
+            raise SystemExit(f"MySQL setup failed for {account}: {exc}\n{fix}") from None
+    app.run(host="127.0.0.1", port=5000)

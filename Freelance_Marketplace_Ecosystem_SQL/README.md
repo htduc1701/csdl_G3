@@ -1,5 +1,7 @@
 # Mini-Upwork G3 — dữ liệu mẫu gần thực tế
 
+Xem [hướng dẫn cài và trình bày trên Windows](HUONG_DAN_DEMO.md) để chạy web Flask và demo đầy đủ luồng Client–Freelancer.
+
 MySQL 8.0.42, InnoDB, READ COMMITTED; giữ nguyên 11 bảng nghiệp vụ.
 
 ## Cài mới bằng MySQL Workbench
@@ -16,7 +18,7 @@ không tự xóa database đang có. Các tài khoản MySQL mẫu đều bị k
 
 ## Đọc và nhập riêng dữ liệu
 
-REALISTIC_SAMPLE_DATA.sql chứa các bản ghi INSERT ... VALUES cụ thể như file
+SAMPLE_DATA.sql chứa các bản ghi INSERT ... VALUES cụ thể như file
 dữ liệu video game: tên người Việt, công ty, chức danh, job, proposal và milestone.
 File này chỉ chạy sau sql/01_schema.sql đến sql/04_procedures.sql trên các bảng
 nghiệp vụ còn trống. Nó đã gồm cả 05 và 08: không chạy thêm seed nếu đã dùng
@@ -65,9 +67,8 @@ Dữ liệu người/công ty hoàn toàn giả lập, email example.test, hash 
   phải tuyên bố chạy lại 104 checks trên seed lớn.
 - Báo cáo Word không nằm trong gói. Nếu dùng dữ liệu lớn để nộp, cập nhật mục
   Synthetic data coverage và Expected/Actual Result theo large_dataset_report.md.
-- PAYMENT vẫn giữ ngoại lệ 3NF đã giải thích trong normalization.md; tăng dữ liệu
-  không thay đổi thiết kế. TLS, encryption at rest, backup/restore, gateway và
-  UI/backend không được triển khai bởi gói này.
+- Tăng dữ liệu không thay đổi thiết kế PAYMENT. Web Flask có trong gói này.
+  Luồng thanh toán chỉ ghi nhận trạng thái mô phỏng.
 - 240 hồ sơ mới không tự tạo 240 tài khoản MySQL; native accounts mẫu vẫn chỉ
   dành cho localhost theo 07_security.sql.
 

@@ -33,11 +33,19 @@
             <form method="POST">
 
                 <div class="mb-3">
-                    <label class="form-label">Client ID</label>
+                    <label class="form-label" for="client-id">Client ID</label>
                     <input type="number"
+                           id="client-id"
                            name="client_id"
-                           class="form-control"
+                           value="{{ form.get('client_id', '1') }}"
+                           min="1"
+                           aria-describedby="client-id-help"
+                           {% if client_error %}aria-invalid="true"{% endif %}
+                           class="form-control{% if client_error %} is-invalid{% endif %}"
                            required>
+                    <div id="client-id-help" class="{{ 'invalid-feedback' if client_error else 'form-text' }}">
+                        {{ client_error or 'Use Client ID 1 for the demo workflow.' }}
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -49,7 +57,8 @@
 
                         {% for category in categories %}
 
-                        <option value="{{ category.category_id }}">
+                        <option value="{{ category.category_id }}"
+                                {% if form.get('category_id') == category.category_id|string %}selected{% endif %}>
                             {{ category.category_name }}
                         </option>
 
@@ -63,6 +72,7 @@
 
                     <input type="text"
                            name="title"
+                           value="{{ form.get('title', '') }}"
                            class="form-control"
                            required>
                 </div>
@@ -73,9 +83,12 @@
                     <textarea name="description"
                               class="form-control"
                               rows="4"
-                              required></textarea>
+                              required>{{ form.get('description', '') }}</textarea>
                 </div>
 
+                {% if budget_error %}
+                <div class="alert alert-danger" role="alert">{{ budget_error }}</div>
+                {% endif %}
                 <div class="row">
 
                     <div class="col-md-6 mb-3">
@@ -86,7 +99,9 @@
 
                         <input type="number"
                                step="0.01"
+                               min="0"
                                name="budget_min"
+                               value="{{ form.get('budget_min', '') }}"
                                class="form-control"
                                required>
 
@@ -100,7 +115,9 @@
 
                         <input type="number"
                                step="0.01"
+                               min="0"
                                name="budget_max"
+                               value="{{ form.get('budget_max', '') }}"
                                class="form-control"
                                required>
 
@@ -109,11 +126,19 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Deadline</label>
+                    <label class="form-label" for="deadline">Deadline</label>
 
                     <input type="date"
+                           id="deadline"
                            name="deadline"
-                           class="form-control">
+                           value="{{ form.get('deadline', '') }}"
+                           min="{{ minimum_deadline }}"
+                           aria-describedby="deadline-help"
+                           {% if deadline_error %}aria-invalid="true"{% endif %}
+                           class="form-control{% if deadline_error %} is-invalid{% endif %}">
+                    <div id="deadline-help" class="{{ 'invalid-feedback' if deadline_error else 'form-text' }}">
+                        {{ deadline_error or 'Optional. Choose a date after today.' }}
+                    </div>
                 </div>
 
                 <button type="submit"

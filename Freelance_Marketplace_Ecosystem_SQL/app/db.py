@@ -1,22 +1,25 @@
+import os
+
 import mysql.connector
 
-def get_connection():
+
+def _connect(user, password):
     return mysql.connector.connect(
-        host="localhost",
-        port=3306,
-        user="root",
-        password="duc170107",
-        database="mini_upwork"
+        host=os.getenv("DB_HOST", "localhost"),
+        port=int(os.getenv("DB_PORT", "3306")),
+        user=user,
+        password=password,
+        database="mini_upwork",
     )
 
+def get_connection():
+    password = os.getenv("DB_PASSWORD")
+    if password is None:
+        raise RuntimeError("Set DB_PASSWORD to your local MySQL password before starting Mini Upwork.")
+    return _connect(os.getenv("DB_USER", "root"), password)
+
 def get_client_connection(client_id):
-    conn = mysql.connector.connect(
-        host="localhost",
-        port=3306,
-        user=f"client_{client_id}",
-        password="Client1@123",
-        database="mini_upwork"
-    )
+    conn = _connect(f"client_{client_id}", "Client1@123")
 
     cursor = conn.cursor()
     cursor.execute(
@@ -27,13 +30,7 @@ def get_client_connection(client_id):
     return conn
 
 def get_freelancer_connection(freelancer_id):
-    conn = mysql.connector.connect(
-        host="localhost",
-        port=3306,
-        user=f"freelancer_{freelancer_id}",
-        password="Freelancer4@123",
-        database="mini_upwork"
-    )
+    conn = _connect(f"freelancer_{freelancer_id}", "Freelancer4@123")
 
     cursor = conn.cursor()
     cursor.execute(
@@ -44,13 +41,7 @@ def get_freelancer_connection(freelancer_id):
     return conn
 
 def get_payment_connection():
-    conn = mysql.connector.connect(
-        host="localhost",
-        port=3306,
-        user="payment_service",
-        password="Payment@123",
-        database="mini_upwork"
-    )
+    conn = _connect("payment_service", "Payment@123")
 
     cursor = conn.cursor()
     cursor.execute(

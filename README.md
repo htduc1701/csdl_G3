@@ -1,5 +1,7 @@
 # Mini-Upwork G3 - MySQL + Flask
 
+Hướng dẫn cài mới trên Windows và trình bày với thầy: [HUONG_DAN_DEMO.md](Freelance_Marketplace_Ecosystem_SQL/HUONG_DAN_DEMO.md).
+
 This folder contains the executable database and the Phase 4 web prototype for the **Freelance Marketplace Ecosystem** project.
 
 
@@ -103,7 +105,7 @@ Use it only after `01_schema.sql` through `04_procedures.sql` have already been 
 
 ## 5. Python environment
 
-From this directory:
+From `Freelance_Marketplace_Ecosystem_SQL`:
 
 ```powershell
 python -m venv .venv
@@ -122,10 +124,14 @@ PyMySQL[rsa]
 
 ## 6. Run the Flask Phase 4 demo
 
-Ensure MySQL is running and the local demo accounts used by `app/db.py` are configured for your machine. Then:
+Start MySQL and run `SETUP_LOCAL_DEMO.sql` as the MySQL administrator after installing the database. Set the connection variables in the PowerShell session that will run Flask:
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
+$env:DB_HOST = "localhost"
+$env:DB_PORT = "3306"
+$env:DB_USER = "root"
+$env:DB_PASSWORD = Read-Host "MySQL password" -MaskInput
 python main.py
 ```
 
