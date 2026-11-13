@@ -19,20 +19,61 @@ File cài tổng hợp đã bao gồm dữ liệu trong `SAMPLE_DATA.sql`. Chọ
 
 ## 3. Cài thư viện và chạy Flask
 
-Mở **PowerShell** tại thư mục chứa `main.py`. Đổi đường dẫn ở dòng đầu nếu bạn chép dự án sang máy khác. Dùng trực tiếp Python trong môi trường ảo để khỏi cần đổi Execution Policy.
+Thực hiện các bước dưới đây trong **cùng một cửa sổ PowerShell**.
+
+### 3.1. Mở thư mục dự án
+
+Chạy từng dòng. Đổi đường dẫn ở dòng đầu nếu bạn chép dự án sang máy khác.
 
 ```powershell
 Set-Location 'D:\csdl\csdl_G3\Freelance_Marketplace_Ecosystem_SQL'
+Get-Item main.py, requirements.txt
+python --version
+```
+
+PowerShell sẽ hiện tên hai file và phiên bản Python. Nếu thiếu file, kiểm tra lại đường dẫn. Nếu lệnh `python` chưa được nhận diện, cài Python hoặc kiểm tra cấu hình PATH rồi mở lại PowerShell.
+
+### 3.2. Tạo môi trường Python và cài thư viện
+
+Chạy hai lệnh này khi cài lần đầu.
+
+```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+Đợi đến khi dấu nhắc `PS ...>` xuất hiện lại. Dòng `Requirement already satisfied` cho biết thư viện đã có. Các lệnh trong hướng dẫn gọi thẳng Python trong `.venv` nên bạn có thể chạy ngay mà không cần kích hoạt môi trường hay đổi Execution Policy.
+
+### 3.3. Nhập thông tin kết nối MySQL
+
+Mở `services.msc` và kiểm tra dịch vụ MySQL đang chạy. Trên máy đã dùng để demo, dịch vụ có tên **MySQL267**. Nếu máy trình bày dùng cổng khác, đặt `DB_PORT` theo cổng trong kết nối Workbench.
+
+```powershell
 $env:DB_HOST = 'localhost'
 $env:DB_PORT = '3306'
 $env:DB_USER = 'root'
 $env:DB_PASSWORD = Read-Host 'Nhap mat khau MySQL root' -MaskInput
+```
+
+Giữ nguyên dòng `Read-Host`. Khi PowerShell hiện `Nhap mat khau MySQL root`, nhập mật khẩu root hiện tại của MySQL rồi nhấn **Enter**. Nhập đúng từng ký tự và tránh thêm dấu cách. Nếu PowerShell báo không hỗ trợ `-MaskInput`, chạy dòng dưới đây. Với cách này, ký tự bạn gõ sẽ hiện trên màn hình, nên hãy nhập trước khi trình chiếu.
+
+```powershell
+$env:DB_PASSWORD = Read-Host 'Nhap mat khau MySQL root'
+```
+
+### 3.4. Chạy Flask và mở web
+
+Vẫn trong cùng cửa sổ PowerShell, chạy lệnh sau.
+
+```powershell
 .\.venv\Scripts\python.exe main.py
 ```
 
-Nếu PowerShell cũ báo không có tham số `-MaskInput`, dùng PowerShell 7 hoặc nhập `$env:DB_PASSWORD = Read-Host 'Nhap mat khau MySQL root'` trong cửa sổ riêng khi chưa chiếu màn hình. Mật khẩu phải khớp với kết nối Workbench. Khi dùng một cửa sổ PowerShell mới, đặt lại các biến kết nối trước khi chạy Flask. Giữ cửa sổ mở và vào [http://127.0.0.1:5000](http://127.0.0.1:5000). Nhấn `Ctrl+C` để dừng.
+Khi thấy `Running on http://127.0.0.1:5000`, mở [Mini Upwork](http://127.0.0.1:5000) trong trình duyệt. Giữ PowerShell mở khi demo. Nhấn `Ctrl+C` để dừng web.
+
+Nếu báo `ModuleNotFoundError`, chạy lại lệnh cài thư viện ở bước 3.2 rồi dùng đúng Python trong `.venv`. Nếu báo `Access denied` cho root, kiểm tra mật khẩu và cổng bằng Workbench, nhập lại thông tin ở bước 3.3 rồi chạy lại Flask.
+
+Sau khi tắt rồi bật máy, nếu đã cài database và còn thư mục `.venv`, làm lại bước 3.1, 3.3 và 3.4. Các biến kết nối cần được đặt lại trong mỗi cửa sổ PowerShell mới.
 
 ## 4. Kịch bản trình bày
 
