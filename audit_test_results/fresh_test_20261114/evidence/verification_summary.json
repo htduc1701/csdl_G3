@@ -1,0 +1,26 @@
+{
+  "run_date": "2026-11-14",
+  "schema": "mini_upwork_codex_test_20261114",
+  "schema_cleanup": "dropped after run",
+  "engine": "MySQL 26.7.0",
+  "transaction_isolation": "READ-COMMITTED",
+  "sql_mode": "ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION",
+  "integrity_workflow_concurrency_invariant_tests": {
+    "passed": 72,
+    "total": 72
+  },
+  "query_assertions": {
+    "passed": 12,
+    "total": 12
+  },
+  "total_passed": 84,
+  "total_failed": 0,
+  "rbac_tests": "NOT RUN",
+  "large_dataset_tests": "NOT RUN",
+  "performance_tests": "NOT RUN",
+  "source": [
+    "test_results.json",
+    "query_results.json",
+    "environment.json"
+  ]
+}

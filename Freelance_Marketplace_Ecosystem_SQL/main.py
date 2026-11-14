@@ -596,6 +596,9 @@ def approve_milestone(milestone_id):
     cursor.close()
     conn.close()
 
+    if milestone is None:
+        abort(404)
+
     contract_id = milestone["contract_id"]
 
     # Approve milestone
@@ -652,6 +655,9 @@ def record_payment(milestone_id):
 
     cursor.close()
     conn.close()
+
+    if milestone is None:
+        abort(404)
 
     if request.method == "POST":
 

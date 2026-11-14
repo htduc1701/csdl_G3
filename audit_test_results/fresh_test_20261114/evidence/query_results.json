@@ -1,0 +1,1907 @@
+[
+  {
+    "id": "Q-01",
+    "question": "Jobs and proposal counts",
+    "sql": "SELECT *\nFROM v_job_proposals\nORDER BY job_id;",
+    "expected": "8 jobs, counts 2,2,2,1,2,1,0,1",
+    "explanation": "LEFT JOIN retains jobs with no proposals.",
+    "actual": [
+      [
+        1,
+        1,
+        "X\u00e2y d\u1ef1ng c\u1ed5ng \u0111\u1eb7t h\u00e0ng cho An Nhi\u00ean Retail",
+        "IN_PROGRESS",
+        "1000.00",
+        2,
+        "1"
+      ],
+      [
+        2,
+        1,
+        "Thi\u1ebft k\u1ebf b\u1ed9 giao di\u1ec7n \u0111\u1eb7t tr\u00e0 cho M\u1ed9c Tr\u00e0 Studio",
+        "IN_PROGRESS",
+        "800.00",
+        2,
+        "1"
+      ],
+      [
+        3,
+        2,
+        "Dashboard theo d\u00f5i giao h\u00e0ng c\u1ee7a M\u1ed9c Tr\u00e0 Studio",
+        "IN_PROGRESS",
+        "1500.00",
+        2,
+        "1"
+      ],
+      [
+        4,
+        2,
+        "API qu\u1ea3n l\u00fd y\u00eau c\u1ea7u cho M\u1ed9c Tr\u00e0 Studio",
+        "IN_PROGRESS",
+        "600.00",
+        1,
+        "1"
+      ],
+      [
+        5,
+        3,
+        "Pipeline \u0111\u1ed1i so\u00e1t \u0111\u01a1n v\u1eadn chuy\u1ec3n c\u1ee7a H\u1ea3i \u0110\u0103ng Logistics",
+        "IN_PROGRESS",
+        "2000.00",
+        2,
+        "1"
+      ],
+      [
+        6,
+        3,
+        "B\u00e1o c\u00e1o chi ph\u00ed tuy\u1ebfn giao h\u00e0ng H\u1ea3i \u0110\u0103ng Logistics",
+        "OPEN",
+        "900.00",
+        1,
+        "1"
+      ],
+      [
+        7,
+        1,
+        "Thi\u1ebft k\u1ebf trang gi\u1edbi thi\u1ec7u b\u1ed9 s\u01b0u t\u1eadp An Nhi\u00ean Retail",
+        "OPEN",
+        "500.00",
+        0,
+        "0"
+      ],
+      [
+        8,
+        2,
+        "T\u1ed1i \u01b0u truy v\u1ea5n b\u00e1o c\u00e1o t\u1ed3n kho M\u1ed9c Tr\u00e0 Studio",
+        "OPEN",
+        "1200.00",
+        1,
+        "0"
+      ]
+    ],
+    "median_ms": 0.31895000029180665,
+    "explain": {
+      "query": "/* select#1 */ select `mini_upwork_codex_test_20261114`.`v_job_proposals`.`job_id` AS `job_id`,`mini_upwork_codex_test_20261114`.`v_job_proposals`.`client_id` AS `client_id`,`mini_upwork_codex_test_20261114`.`v_job_proposals`.`title` AS `title`,`mini_upwork_codex_test_20261114`.`v_job_proposals`.`status` AS `status`,`mini_upwork_codex_test_20261114`.`v_job_proposals`.`budget_max` AS `budget_max`,`mini_upwork_codex_test_20261114`.`v_job_proposals`.`proposal_count` AS `proposal_count`,`mini_upwork_codex_test_20261114`.`v_job_proposals`.`selected_count` AS `selected_count` from `mini_upwork_codex_test_20261114`.`v_job_proposals` order by `mini_upwork_codex_test_20261114`.`v_job_proposals`.`job_id`",
+      "query_plan": {
+        "inputs": [
+          {
+            "inputs": [
+              {
+                "inputs": [
+                  {
+                    "inputs": [
+                      {
+                        "inputs": [
+                          {
+                            "inputs": [
+                              {
+                                "alias": "j",
+                                "operation": "Table scan on j",
+                                "table_name": "jobs",
+                                "access_type": "table",
+                                "schema_name": "mini_upwork_codex_test_20261114",
+                                "used_columns": [
+                                  "job_id",
+                                  "client_id",
+                                  "title",
+                                  "budget_max",
+                                  "status"
+                                ],
+                                "estimated_rows": 8.0,
+                                "estimated_total_cost": 1.05
+                              },
+                              {
+                                "alias": "p",
+                                "heading": "Hash",
+                                "operation": "Table scan on p",
+                                "table_name": "proposals",
+                                "access_type": "table",
+                                "schema_name": "mini_upwork_codex_test_20261114",
+                                "used_columns": [
+                                  "proposal_id",
+                                  "job_id",
+                                  "status"
+                                ],
+                                "estimated_rows": 11.0,
+                                "estimated_total_cost": 0.16960639953613282
+                              }
+                            ],
+                            "join_type": "left join",
+                            "operation": "Left hash join (p.job_id = j.job_id)",
+                            "access_type": "join",
+                            "join_columns": [
+                              "j.job_id",
+                              "p.job_id"
+                            ],
+                            "estimated_rows": 88.0,
+                            "hash_condition": [
+                              "(p.job_id = j.job_id)"
+                            ],
+                            "join_algorithm": "hash",
+                            "estimated_total_cost": 9.226457595825195
+                          }
+                        ],
+                        "operation": "Aggregate using temporary table",
+                        "access_type": "temp_table_aggregate"
+                      }
+                    ],
+                    "operation": "Table scan on <temporary>",
+                    "table_name": "<temporary>",
+                    "access_type": "table"
+                  }
+                ],
+                "operation": "Materialize",
+                "access_type": "materialize",
+                "estimated_rows": 0.0,
+                "estimated_total_cost": 0.0,
+                "estimated_first_row_cost": 0.0
+              }
+            ],
+            "operation": "Table scan on v_job_proposals",
+            "table_name": "v_job_proposals",
+            "access_type": "table",
+            "used_columns": [
+              "job_id",
+              "client_id",
+              "title",
+              "status",
+              "budget_max",
+              "proposal_count",
+              "selected_count"
+            ],
+            "estimated_rows": 0.0,
+            "estimated_total_cost": 2.5,
+            "estimated_first_row_cost": 2.5
+          }
+        ],
+        "operation": "Sort: v_job_proposals.job_id",
+        "access_type": "sort",
+        "sort_fields": [
+          "v_job_proposals.job_id"
+        ],
+        "estimated_rows": 0.0,
+        "estimated_total_cost": 2.845622119815668,
+        "estimated_first_row_cost": 2.845622119815668
+      },
+      "query_type": "select",
+      "json_schema_version": "2.0"
+    },
+    "explain_analyze": "-> Sort: v_job_proposals.job_id  (cost=2.85..2.85 rows=0) (actual time=0.0527..0.0532 rows=8 loops=1)\n    -> Table scan on v_job_proposals  (cost=2.5..2.5 rows=0) (actual time=0.0474..0.048 rows=8 loops=1)\n        -> Materialize  (cost=0..0 rows=0) (actual time=0.0471..0.0471 rows=8 loops=1)\n            -> Table scan on <temporary>  (actual time=0.0393..0.0402 rows=8 loops=1)\n                -> Aggregate using temporary table  (actual time=0.0387..0.0387 rows=8 loops=1)\n                    -> Left hash join (p.job_id = j.job_id)  (cost=9.23 rows=88) (actual time=0.0147..0.0179 rows=12 loops=1)\n                        -> Table scan on j  (cost=1.05 rows=8) (actual time=0.0048..0.0065 rows=8 loops=1)\n                        -> Hash\n                            -> Table scan on p  (cost=0.17 rows=11) (actual time=0.0025..0.0042 rows=11 loops=1)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-02",
+    "question": "Freelancers with at least two proposals",
+    "sql": "SELECT freelancer_id,\n       COUNT(*) AS proposals\nFROM proposals\nGROUP BY freelancer_id\nHAVING COUNT(*) >= 2\nORDER BY freelancer_id;",
+    "expected": "IDs 4:3, 6:3, 7:2, 8:2",
+    "explanation": "HAVING filters aggregate groups.",
+    "actual": [
+      [
+        4,
+        3
+      ],
+      [
+        6,
+        3
+      ],
+      [
+        7,
+        2
+      ],
+      [
+        8,
+        2
+      ]
+    ],
+    "median_ms": 0.10870000005525071,
+    "explain": {
+      "query": "/* select#1 */ select `mini_upwork_codex_test_20261114`.`proposals`.`freelancer_id` AS `freelancer_id`,count(0) AS `proposals` from `mini_upwork_codex_test_20261114`.`proposals` group by `mini_upwork_codex_test_20261114`.`proposals`.`freelancer_id` having (count(0) >= 2) order by `mini_upwork_codex_test_20261114`.`proposals`.`freelancer_id`",
+      "query_plan": {
+        "inputs": [
+          {
+            "inputs": [
+              {
+                "covering": true,
+                "operation": "Covering index scan on proposals using fk_proposals_freelancer",
+                "index_name": "fk_proposals_freelancer",
+                "table_name": "proposals",
+                "access_type": "index",
+                "schema_name": "mini_upwork_codex_test_20261114",
+                "used_columns": [
+                  "proposal_id",
+                  "freelancer_id"
+                ],
+                "estimated_rows": 11.0,
+                "index_access_type": "index_scan",
+                "estimated_total_cost": 1.35
+              }
+            ],
+            "group_by": true,
+            "functions": [
+              "count(0)",
+              "count(0)"
+            ],
+            "operation": "Group aggregate: count(0), count(0)",
+            "access_type": "aggregate",
+            "estimated_rows": 1.0,
+            "estimated_total_cost": 3.884562211981567
+          }
+        ],
+        "condition": "(count(0) >= 2)",
+        "operation": "Filter: (count(0) >= 2)",
+        "access_type": "filter",
+        "estimated_rows": 1.0,
+        "filter_columns": [],
+        "estimated_total_cost": 3.884562211981567
+      },
+      "query_type": "select",
+      "json_schema_version": "2.0"
+    },
+    "explain_analyze": "-> Filter: (count(0) >= 2)  (cost=3.88 rows=1) (actual time=0.0094..0.0124 rows=4 loops=1)\n    -> Group aggregate: count(0), count(0)  (cost=3.88 rows=1) (actual time=0.0085..0.0111 rows=5 loops=1)\n        -> Covering index scan on proposals using fk_proposals_freelancer  (cost=1.35 rows=11) (actual time=0.0066..0.0088 rows=11 loops=1)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-03",
+    "question": "Jobs with no proposals",
+    "sql": "SELECT j.job_id,\n       j.title\nFROM jobs AS j\nWHERE NOT EXISTS\n        (SELECT 1\n         FROM proposals AS p\n         WHERE p.job_id = j.job_id)\nORDER BY j.job_id;",
+    "expected": "Job 7",
+    "explanation": "Correlated anti-existence test.",
+    "actual": [
+      [
+        7,
+        "Thi\u1ebft k\u1ebf trang gi\u1edbi thi\u1ec7u b\u1ed9 s\u01b0u t\u1eadp An Nhi\u00ean Retail"
+      ]
+    ],
+    "median_ms": 0.1420499993400881,
+    "explain": {
+      "query": "/* select#1 */ select `j`.`job_id` AS `job_id`,`j`.`title` AS `title` from `mini_upwork_codex_test_20261114`.`jobs` `j` anti join (`mini_upwork_codex_test_20261114`.`proposals` `p`) on((`<subquery2>`.`job_id` = `j`.`job_id`)) where true order by `j`.`job_id`",
+      "query_plan": {
+        "inputs": [
+          {
+            "alias": "j",
+            "covering": false,
+            "operation": "Index scan on j using PRIMARY",
+            "index_name": "PRIMARY",
+            "table_name": "jobs",
+            "access_type": "index",
+            "schema_name": "mini_upwork_codex_test_20261114",
+            "used_columns": [
+              "job_id",
+              "title"
+            ],
+            "estimated_rows": 8.0,
+            "index_access_type": "index_scan",
+            "estimated_total_cost": 1.05
+          },
+          {
+            "inputs": [
+              {
+                "inputs": [
+                  {
+                    "inputs": [
+                      {
+                        "alias": "p",
+                        "covering": true,
+                        "operation": "Covering index scan on p using uq_proposal_freelancer_job",
+                        "index_name": "uq_proposal_freelancer_job",
+                        "table_name": "proposals",
+                        "access_type": "index",
+                        "schema_name": "mini_upwork_codex_test_20261114",
+                        "used_columns": [
+                          "proposal_id",
+                          "job_id"
+                        ],
+                        "estimated_rows": 11.0,
+                        "index_access_type": "index_scan",
+                        "estimated_total_cost": 1.35
+                      }
+                    ],
+                    "condition": "(p.job_id is not null)",
+                    "operation": "Filter: (p.job_id is not null)",
+                    "access_type": "filter",
+                    "estimated_rows": 11.0,
+                    "filter_columns": [
+                      "p.job_id"
+                    ],
+                    "estimated_total_cost": 1.35
+                  }
+                ],
+                "operation": "Materialize with deduplication",
+                "access_type": "materialize",
+                "deduplication": true,
+                "estimated_rows": 11.0,
+                "estimated_total_cost": 3.884562211981567,
+                "estimated_first_row_cost": 3.884562211981567
+              }
+            ],
+            "covering": false,
+            "operation": "Single-row index lookup on <subquery2> using <auto_distinct_key> (job_id = j.job_id)",
+            "index_name": "<auto_distinct_key>",
+            "table_name": "<subquery2>",
+            "access_type": "index",
+            "key_columns": [
+              "job_id"
+            ],
+            "used_columns": [
+              "job_id"
+            ],
+            "estimated_rows": 1.0,
+            "lookup_condition": "job_id = j.job_id",
+            "index_access_type": "index_lookup",
+            "lookup_references": [
+              "mini_upwork_codex_test_20261114.j.job_id"
+            ],
+            "estimated_total_cost": 3.966380393799749,
+            "estimated_first_row_cost": 3.966380393799749
+          }
+        ],
+        "join_type": "antijoin",
+        "operation": "Nested loop antijoin",
+        "access_type": "join",
+        "estimated_rows": 88.0,
+        "join_algorithm": "nested_loop",
+        "estimated_total_cost": 10.65
+      },
+      "query_type": "select",
+      "json_schema_version": "2.0"
+    },
+    "explain_analyze": "-> Nested loop antijoin  (cost=10.7 rows=88) (actual time=0.0175..0.0187 rows=1 loops=1)\n    -> Index scan on j using PRIMARY  (cost=1.05 rows=8) (actual time=0.0055..0.0072 rows=8 loops=1)\n    -> Single-row index lookup on <subquery2> using <auto_distinct_key> (job_id = j.job_id)  (cost=3.97..3.97 rows=1) (actual time=0.00124..0.00124 rows=0.875 loops=8)\n        -> Materialize with deduplication  (cost=3.88..3.88 rows=11) (actual time=0.0075..0.0075 rows=7 loops=1)\n            -> Filter: (p.job_id is not null)  (cost=1.35 rows=11) (actual time=0.0026..0.0046 rows=11 loops=1)\n                -> Covering index scan on p using uq_proposal_freelancer_job  (cost=1.35 rows=11) (actual time=0.0022..0.0037 rows=11 loops=1)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-04",
+    "question": "Rank freelancer contract value",
+    "sql": "WITH totals AS\n    (SELECT freelancer_id,\n            SUM(total_amount) AS value\n     FROM contracts\n     WHERE status <> 'CANCELLED'\n     GROUP BY freelancer_id)\nSELECT freelancer_id,\n       value,\n       DENSE_RANK() OVER (\n                          ORDER BY value DESC) AS value_rank\nFROM totals\nORDER BY value_rank,\n         freelancer_id;",
+    "expected": "4:3000 rank1; 6:1500 rank2; 5:800 rank3; 7:600 rank4",
+    "explanation": "CTE and window ranking.",
+    "actual": [
+      [
+        4,
+        "3000.00",
+        1
+      ],
+      [
+        6,
+        "1500.00",
+        2
+      ],
+      [
+        5,
+        "800.00",
+        3
+      ],
+      [
+        7,
+        "600.00",
+        4
+      ]
+    ],
+    "median_ms": 0.28044999817211647,
+    "explain": {
+      "query": "with `totals` as (/* select#2 */ select `mini_upwork_codex_test_20261114`.`contracts`.`freelancer_id` AS `freelancer_id`,sum(`mini_upwork_codex_test_20261114`.`contracts`.`total_amount`) AS `value` from `mini_upwork_codex_test_20261114`.`contracts` where (`mini_upwork_codex_test_20261114`.`contracts`.`status` <> 'CANCELLED') group by `mini_upwork_codex_test_20261114`.`contracts`.`freelancer_id`) /* select#1 */ select `totals`.`freelancer_id` AS `freelancer_id`,`totals`.`value` AS `value`,dense_rank() OVER (ORDER BY `totals`.`value` desc )  AS `value_rank` from `totals` order by `value_rank`,`totals`.`freelancer_id`",
+      "query_plan": {
+        "inputs": [
+          {
+            "inputs": [
+              {
+                "inputs": [
+                  {
+                    "inputs": [
+                      {
+                        "inputs": [
+                          {
+                            "inputs": [
+                              {
+                                "cte": true,
+                                "inputs": [
+                                  {
+                                    "inputs": [
+                                      {
+                                        "inputs": [
+                                          {
+                                            "covering": false,
+                                            "operation": "Index scan on contracts using fk_contract_freelancer",
+                                            "index_name": "fk_contract_freelancer",
+                                            "table_name": "contracts",
+                                            "access_type": "index",
+                                            "schema_name": "mini_upwork_codex_test_20261114",
+                                            "used_columns": [
+                                              "contract_id",
+                                              "freelancer_id",
+                                              "total_amount",
+                                              "status"
+                                            ],
+                                            "estimated_rows": 5.0,
+                                            "index_access_type": "index_scan",
+                                            "estimated_total_cost": 0.75
+                                          }
+                                        ],
+                                        "condition": "(contracts.`status` <> 'CANCELLED')",
+                                        "operation": "Filter: (contracts.`status` <> 'CANCELLED')",
+                                        "access_type": "filter",
+                                        "estimated_rows": 4.000000059604645,
+                                        "filter_columns": [
+                                          "mini_upwork_codex_test_20261114.contracts.`status`"
+                                        ],
+                                        "estimated_total_cost": 0.75
+                                      }
+                                    ],
+                                    "group_by": true,
+                                    "functions": [
+                                      "sum(contracts.total_amount)"
+                                    ],
+                                    "operation": "Group aggregate: sum(contracts.total_amount)",
+                                    "access_type": "aggregate",
+                                    "estimated_rows": 2.000000014901161,
+                                    "estimated_total_cost": 1.6716589999089044
+                                  }
+                                ],
+                                "operation": "Materialize CTE totals",
+                                "access_type": "materialize",
+                                "estimated_rows": 2.000000014901161,
+                                "estimated_total_cost": 2.132488496429909,
+                                "estimated_first_row_cost": 2.132488496429909
+                              }
+                            ],
+                            "operation": "Table scan on totals",
+                            "table_name": "totals",
+                            "access_type": "table",
+                            "used_columns": [
+                              "freelancer_id",
+                              "value"
+                            ],
+                            "estimated_rows": 2.000000014901161,
+                            "estimated_total_cost": 4.6574884964299095,
+                            "estimated_first_row_cost": 3.3949884870235514
+                          }
+                        ],
+                        "operation": "Sort: totals.`value` DESC",
+                        "access_type": "sort",
+                        "sort_fields": [
+                          "totals.`value` DESC"
+                        ],
+                        "estimated_rows": 2.000000014901161,
+                        "estimated_total_cost": 5.413248871417836,
+                        "estimated_first_row_cost": 5.413248871417836
+                      }
+                    ],
+                    "functions": [
+                      "dense_rank() OVER (ORDER BY totals.`value` desc ) "
+                    ],
+                    "operation": "Window aggregate: dense_rank() OVER (ORDER BY totals.`value` desc ) ",
+                    "access_type": "window",
+                    "estimated_rows": 2.000000014901161,
+                    "estimated_total_cost": 0.0
+                  }
+                ],
+                "operation": "Temporary table",
+                "temp_table": true,
+                "access_type": "materialize",
+                "estimated_rows": 2.000000014901161,
+                "estimated_total_cost": 0.4608294965210049,
+                "estimated_first_row_cost": 0.4608294965210049
+              }
+            ],
+            "operation": "Table scan on <temporary>",
+            "table_name": "<temporary>",
+            "access_type": "table",
+            "estimated_rows": 2.000000014901161,
+            "estimated_total_cost": 2.9858294965210046,
+            "estimated_first_row_cost": 1.7233294871146467
+          }
+        ],
+        "operation": "Sort: value_rank, totals.freelancer_id",
+        "access_type": "sort",
+        "sort_fields": [
+          "value_rank",
+          "totals.freelancer_id"
+        ]
+      },
+      "query_type": "select",
+      "json_schema_version": "2.0"
+    },
+    "explain_analyze": "-> Sort: value_rank, totals.freelancer_id  (actual time=0.0503..0.0505 rows=4 loops=1)\n    -> Table scan on <temporary>  (cost=1.72..2.99 rows=2) (actual time=0.0459..0.0463 rows=4 loops=1)\n        -> Temporary table  (cost=0.461..0.461 rows=2) (actual time=0.0457..0.0457 rows=4 loops=1)\n            -> Window aggregate: dense_rank() OVER (ORDER BY totals.`value` desc )   (cost=0 rows=2) (actual time=0.0385..0.0395 rows=4 loops=1)\n                -> Sort: totals.`value` DESC  (cost=5.41..5.41 rows=2) (actual time=0.0354..0.0357 rows=4 loops=1)\n                    -> Table scan on totals  (cost=3.39..4.66 rows=2) (actual time=0.0296..0.0301 rows=4 loops=1)\n                        -> Materialize CTE totals  (cost=2.13..2.13 rows=2) (actual time=0.029..0.029 rows=4 loops=1)\n                            -> Group aggregate: sum(contracts.total_amount)  (cost=1.67 rows=2) (actual time=0.0209..0.0225 rows=4 loops=1)\n                                -> Filter: (contracts.`status` <> 'CANCELLED')  (cost=0.75 rows=4) (actual time=0.0159..0.0181 rows=5 loops=1)\n                                    -> Index scan on contracts using fk_contract_freelancer  (cost=0.75 rows=5) (actual time=0.0145..0.0162 rows=5 loops=1)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-05",
+    "question": "Client successful payment totals",
+    "sql": "SELECT *\nFROM v_client_spend\nORDER BY client_id;",
+    "expected": "Client1 700; client2 200; client3 0",
+    "explanation": "Only PAID attempts contribute.",
+    "actual": [
+      [
+        1,
+        2,
+        "700.00"
+      ],
+      [
+        2,
+        1,
+        "200.00"
+      ],
+      [
+        3,
+        0,
+        "0.00"
+      ]
+    ],
+    "median_ms": 0.24730000041017774,
+    "explain": {
+      "query": "/* select#1 */ select `mini_upwork_codex_test_20261114`.`v_client_spend`.`client_id` AS `client_id`,`mini_upwork_codex_test_20261114`.`v_client_spend`.`paid_count` AS `paid_count`,`mini_upwork_codex_test_20261114`.`v_client_spend`.`paid_amount` AS `paid_amount` from `mini_upwork_codex_test_20261114`.`v_client_spend` order by `mini_upwork_codex_test_20261114`.`v_client_spend`.`client_id`",
+      "query_plan": {
+        "inputs": [
+          {
+            "inputs": [
+              {
+                "inputs": [
+                  {
+                    "inputs": [
+                      {
+                        "inputs": [
+                          {
+                            "inputs": [
+                              {
+                                "inputs": [
+                                  {
+                                    "inputs": [
+                                      {
+                                        "alias": "c",
+                                        "covering": true,
+                                        "operation": "Covering index scan on c using PRIMARY",
+                                        "index_name": "PRIMARY",
+                                        "table_name": "clients",
+                                        "access_type": "index",
+                                        "schema_name": "mini_upwork_codex_test_20261114",
+                                        "used_columns": [
+                                          "client_id"
+                                        ],
+                                        "estimated_rows": 3.0,
+                                        "index_access_type": "index_scan",
+                                        "estimated_total_cost": 0.55
+                                      },
+                                      {
+                                        "alias": "ct",
+                                        "covering": true,
+                                        "operation": "Covering index lookup on ct using fk_contract_client (client_id = c.client_id)",
+                                        "index_name": "fk_contract_client",
+                                        "table_name": "contracts",
+                                        "access_type": "index",
+                                        "key_columns": [
+                                          "client_id"
+                                        ],
+                                        "schema_name": "mini_upwork_codex_test_20261114",
+                                        "used_columns": [
+                                          "contract_id",
+                                          "client_id"
+                                        ],
+                                        "estimated_rows": 5.0,
+                                        "lookup_condition": "client_id = c.client_id",
+                                        "index_access_type": "index_lookup",
+                                        "lookup_references": [
+                                          "mini_upwork_codex_test_20261114.c.client_id"
+                                        ],
+                                        "estimated_total_cost": 0.41764227642276425
+                                      }
+                                    ],
+                                    "join_type": "left join",
+                                    "operation": "Nested loop left join",
+                                    "access_type": "join",
+                                    "estimated_rows": 15.0,
+                                    "join_algorithm": "nested_loop",
+                                    "estimated_total_cost": 2.8029268292682925
+                                  },
+                                  {
+                                    "alias": "m",
+                                    "heading": "Hash",
+                                    "operation": "Table scan on m",
+                                    "table_name": "milestones",
+                                    "access_type": "table",
+                                    "schema_name": "mini_upwork_codex_test_20261114",
+                                    "used_columns": [
+                                      "milestone_id",
+                                      "contract_id",
+                                      "amount"
+                                    ],
+                                    "estimated_rows": 10.0,
+                                    "estimated_total_cost": 0.08334573109944661
+                                  }
+                                ],
+                                "join_type": "left join",
+                                "operation": "Left hash join (m.contract_id = ct.contract_id)",
+                                "access_type": "join",
+                                "join_columns": [
+                                  "ct.contract_id",
+                                  "m.contract_id"
+                                ],
+                                "estimated_rows": 150.0,
+                                "hash_condition": [
+                                  "(m.contract_id = ct.contract_id)"
+                                ],
+                                "join_algorithm": "hash",
+                                "estimated_total_cost": 15.333531697591146
+                              },
+                              {
+                                "inputs": [
+                                  {
+                                    "alias": "p",
+                                    "operation": "Table scan on p",
+                                    "table_name": "payments",
+                                    "access_type": "table",
+                                    "schema_name": "mini_upwork_codex_test_20261114",
+                                    "used_columns": [
+                                      "payment_id",
+                                      "milestone_id",
+                                      "payment_status"
+                                    ],
+                                    "estimated_rows": 6.0,
+                                    "estimated_total_cost": 0.005694323221842448
+                                  }
+                                ],
+                                "heading": "Hash",
+                                "condition": "(p.payment_status = 'PAID')",
+                                "operation": "Filter: (p.payment_status = 'PAID')",
+                                "access_type": "filter",
+                                "estimated_rows": 6.0,
+                                "filter_columns": [
+                                  "p.payment_status"
+                                ],
+                                "estimated_total_cost": 0.005694323221842448
+                              }
+                            ],
+                            "join_type": "left join",
+                            "operation": "Left hash join (p.milestone_id = m.milestone_id)",
+                            "access_type": "join",
+                            "join_columns": [
+                              "m.milestone_id",
+                              "p.milestone_id"
+                            ],
+                            "estimated_rows": 900.0,
+                            "hash_condition": [
+                              "(p.milestone_id = m.milestone_id)"
+                            ],
+                            "join_algorithm": "hash",
+                            "estimated_total_cost": 90.25984280649821
+                          }
+                        ],
+                        "operation": "Aggregate using temporary table",
+                        "access_type": "temp_table_aggregate"
+                      }
+                    ],
+                    "operation": "Table scan on <temporary>",
+                    "table_name": "<temporary>",
+                    "access_type": "table"
+                  }
+                ],
+                "operation": "Materialize",
+                "access_type": "materialize",
+                "estimated_rows": 0.0,
+                "estimated_total_cost": 0.0,
+                "estimated_first_row_cost": 0.0
+              }
+            ],
+            "operation": "Table scan on v_client_spend",
+            "table_name": "v_client_spend",
+            "access_type": "table",
+            "used_columns": [
+              "client_id",
+              "paid_count",
+              "paid_amount"
+            ],
+            "estimated_rows": 0.0,
+            "estimated_total_cost": 2.5,
+            "estimated_first_row_cost": 2.5
+          }
+        ],
+        "operation": "Sort: v_client_spend.client_id",
+        "access_type": "sort",
+        "sort_fields": [
+          "v_client_spend.client_id"
+        ],
+        "estimated_rows": 0.0,
+        "estimated_total_cost": 2.845622119815668,
+        "estimated_first_row_cost": 2.845622119815668
+      },
+      "query_type": "select",
+      "json_schema_version": "2.0"
+    },
+    "explain_analyze": "-> Sort: v_client_spend.client_id  (cost=2.85..2.85 rows=0) (actual time=0.0459..0.0461 rows=3 loops=1)\n    -> Table scan on v_client_spend  (cost=2.5..2.5 rows=0) (actual time=0.042..0.0423 rows=3 loops=1)\n        -> Materialize  (cost=0..0 rows=0) (actual time=0.0419..0.0419 rows=3 loops=1)\n            -> Table scan on <temporary>  (actual time=0.0366..0.0369 rows=3 loops=1)\n                -> Aggregate using temporary table  (actual time=0.0362..0.0362 rows=3 loops=1)\n                    -> Left hash join (p.milestone_id = m.milestone_id)  (cost=90.3 rows=900) (actual time=0.0218..0.0284 rows=10 loops=1)\n                        -> Left hash join (m.contract_id = ct.contract_id)  (cost=15.3 rows=150) (actual time=0.015..0.0203 rows=10 loops=1)\n                            -> Nested loop left join  (cost=2.8 rows=15) (actual time=0.0067..0.0106 rows=5 loops=1)\n                                -> Covering index scan on c using PRIMARY  (cost=0.55 rows=3) (actual time=0.0038..0.0045 rows=3 loops=1)\n                                -> Covering index lookup on ct using fk_contract_client (client_id = c.client_id)  (cost=0.418 rows=5) (actual time=0.0013..0.00177 rows=1.67 loops=3)\n                            -> Hash\n                                -> Table scan on m  (cost=0.0833 rows=10) (actual time=0.0019..0.0039 rows=10 loops=1)\n                        -> Hash\n                            -> Filter: (p.payment_status = 'PAID')  (cost=0.00569 rows=6) (actual time=0.0029..0.0039 rows=3 loops=1)\n                                -> Table scan on p  (cost=0.00569 rows=6) (actual time=0.002..0.0029 rows=6 loops=1)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-06",
+    "question": "Contracts not fully paid",
+    "sql": "SELECT contract_id,\n       total_amount,\n       paid_amount,\n       outstanding_amount\nFROM v_contract_overview\nWHERE outstanding_amount > 0\nORDER BY contract_id;",
+    "expected": "Outstanding 600,500,1500,400,2000",
+    "explanation": "Pre-aggregation prevents payment retry fan-out.",
+    "actual": [
+      [
+        1,
+        "1000.00",
+        "400.00",
+        "600.00"
+      ],
+      [
+        2,
+        "800.00",
+        "300.00",
+        "500.00"
+      ],
+      [
+        3,
+        "1500.00",
+        "0.00",
+        "1500.00"
+      ],
+      [
+        4,
+        "600.00",
+        "200.00",
+        "400.00"
+      ],
+      [
+        5,
+        "2000.00",
+        "0.00",
+        "2000.00"
+      ]
+    ],
+    "median_ms": 0.3101500005868729,
+    "explain": {
+      "query": "/* select#1 */ select `c`.`contract_id` AS `contract_id`,`c`.`total_amount` AS `total_amount`,coalesce(`p`.`paid_amount`,0) AS `paid_amount`,(`c`.`total_amount` - coalesce(`p`.`paid_amount`,0)) AS `outstanding_amount` from `mini_upwork_codex_test_20261114`.`contracts` `c` left join (/* select#4 */ select `mini_upwork_codex_test_20261114`.`milestones`.`contract_id` AS `contract_id`,count(0) AS `milestone_count`,sum(`mini_upwork_codex_test_20261114`.`milestones`.`amount`) AS `allocated_amount` from `mini_upwork_codex_test_20261114`.`milestones` group by `mini_upwork_codex_test_20261114`.`milestones`.`contract_id`) `m` on((`m`.`contract_id` = `c`.`contract_id`)) left join (/* select#3 */ select `m`.`contract_id` AS `contract_id`,sum(`m`.`amount`) AS `paid_amount` from `mini_upwork_codex_test_20261114`.`milestones` `m` join `mini_upwork_codex_test_20261114`.`payments` `p` where ((`m`.`milestone_id` = `p`.`milestone_id`) and (`p`.`payment_status` = 'PAID')) group by `m`.`contract_id`) `p` on((`p`.`contract_id` = `c`.`contract_id`)) where ((`c`.`total_amount` - coalesce(`p`.`paid_amount`,0)) > 0) order by `c`.`contract_id`",
+      "query_plan": {
+        "inputs": [
+          {
+            "inputs": [
+              {
+                "inputs": [
+                  {
+                    "inputs": [
+                      {
+                        "inputs": [
+                          {
+                            "alias": "c",
+                            "operation": "Table scan on c",
+                            "table_name": "contracts",
+                            "access_type": "table",
+                            "schema_name": "mini_upwork_codex_test_20261114",
+                            "used_columns": [
+                              "contract_id",
+                              "total_amount"
+                            ],
+                            "estimated_rows": 5.0,
+                            "estimated_total_cost": 0.75
+                          },
+                          {
+                            "inputs": [
+                              {
+                                "inputs": [
+                                  {
+                                    "inputs": [
+                                      {
+                                        "covering": false,
+                                        "operation": "Index scan on milestones using fk_milestone_contract",
+                                        "index_name": "fk_milestone_contract",
+                                        "table_name": "milestones",
+                                        "access_type": "index",
+                                        "schema_name": "mini_upwork_codex_test_20261114",
+                                        "used_columns": [
+                                          "milestone_id",
+                                          "contract_id",
+                                          "amount"
+                                        ],
+                                        "estimated_rows": 10.0,
+                                        "index_access_type": "index_scan",
+                                        "estimated_total_cost": 1.25
+                                      }
+                                    ],
+                                    "group_by": true,
+                                    "functions": [
+                                      "count(0)",
+                                      "sum(milestones.amount)"
+                                    ],
+                                    "operation": "Group aggregate: count(0), sum(milestones.amount)",
+                                    "access_type": "aggregate",
+                                    "estimated_rows": 3.1622776601683795,
+                                    "estimated_total_cost": 3.5541474654377883
+                                  }
+                                ],
+                                "operation": "Materialize",
+                                "access_type": "materialize",
+                                "estimated_rows": 3.1622776601683795,
+                                "estimated_total_cost": 4.282782871006539,
+                                "estimated_first_row_cost": 4.282782871006539
+                              }
+                            ],
+                            "covering": false,
+                            "operation": "Index lookup on m using <auto_key0> (contract_id = c.contract_id)",
+                            "index_name": "<auto_key0>",
+                            "table_name": "m",
+                            "access_type": "index",
+                            "key_columns": [
+                              "contract_id"
+                            ],
+                            "used_columns": [
+                              "contract_id",
+                              "milestone_count",
+                              "allocated_amount"
+                            ],
+                            "estimated_rows": 2.0,
+                            "lookup_condition": "contract_id = c.contract_id",
+                            "index_access_type": "index_lookup",
+                            "lookup_references": [
+                              "mini_upwork_codex_test_20261114.c.contract_id"
+                            ],
+                            "estimated_total_cost": 4.822782871006539,
+                            "estimated_first_row_cost": 4.552782871006539
+                          }
+                        ],
+                        "join_type": "left join",
+                        "operation": "Nested loop left join",
+                        "access_type": "join",
+                        "estimated_rows": 15.811388300841898,
+                        "join_algorithm": "nested_loop",
+                        "estimated_total_cost": 4.83113883008419
+                      },
+                      {
+                        "inputs": [
+                          {
+                            "inputs": [
+                              {
+                                "inputs": [
+                                  {
+                                    "inputs": [
+                                      {
+                                        "inputs": [
+                                          {
+                                            "inputs": [
+                                              {
+                                                "alias": "p",
+                                                "operation": "Table scan on p",
+                                                "table_name": "payments",
+                                                "access_type": "table",
+                                                "schema_name": "mini_upwork_codex_test_20261114",
+                                                "used_columns": [
+                                                  "payment_id",
+                                                  "milestone_id",
+                                                  "payment_status"
+                                                ],
+                                                "estimated_rows": 6.0,
+                                                "estimated_total_cost": 0.85
+                                              }
+                                            ],
+                                            "condition": "(p.payment_status = 'PAID')",
+                                            "operation": "Filter: (p.payment_status = 'PAID')",
+                                            "access_type": "filter",
+                                            "estimated_rows": 1.0000000298023224,
+                                            "filter_columns": [
+                                              "p.payment_status"
+                                            ],
+                                            "estimated_total_cost": 0.85
+                                          },
+                                          {
+                                            "alias": "m",
+                                            "covering": false,
+                                            "operation": "Single-row index lookup on m using PRIMARY (milestone_id = p.milestone_id)",
+                                            "index_name": "PRIMARY",
+                                            "table_name": "milestones",
+                                            "access_type": "index",
+                                            "key_columns": [
+                                              "milestone_id"
+                                            ],
+                                            "schema_name": "mini_upwork_codex_test_20261114",
+                                            "used_columns": [
+                                              "milestone_id",
+                                              "contract_id",
+                                              "amount"
+                                            ],
+                                            "estimated_rows": 1.0,
+                                            "lookup_condition": "milestone_id = p.milestone_id",
+                                            "index_access_type": "index_lookup",
+                                            "lookup_references": [
+                                              "mini_upwork_codex_test_20261114.p.milestone_id"
+                                            ],
+                                            "estimated_total_cost": 0.3499999970197678
+                                          }
+                                        ],
+                                        "join_type": "inner join",
+                                        "operation": "Nested loop inner join",
+                                        "access_type": "join",
+                                        "estimated_rows": 1.0000000298023224,
+                                        "join_algorithm": "nested_loop",
+                                        "estimated_total_cost": 1.2000000104308128
+                                      }
+                                    ],
+                                    "operation": "Aggregate using temporary table",
+                                    "access_type": "temp_table_aggregate"
+                                  }
+                                ],
+                                "operation": "Table scan on <temporary>",
+                                "table_name": "<temporary>",
+                                "access_type": "table"
+                              }
+                            ],
+                            "operation": "Materialize",
+                            "access_type": "materialize",
+                            "estimated_rows": 0.0,
+                            "estimated_total_cost": 0.0,
+                            "estimated_first_row_cost": 0.0
+                          }
+                        ],
+                        "heading": "Hash",
+                        "operation": "Table scan on p",
+                        "table_name": "p",
+                        "access_type": "table",
+                        "used_columns": [
+                          "contract_id",
+                          "paid_amount"
+                        ],
+                        "estimated_rows": 0.0,
+                        "estimated_total_cost": 2.5,
+                        "estimated_first_row_cost": 2.5
+                      }
+                    ],
+                    "join_type": "left join",
+                    "operation": "Left hash join (p.contract_id = c.contract_id)",
+                    "access_type": "join",
+                    "join_columns": [
+                      "c.contract_id",
+                      "p.contract_id"
+                    ],
+                    "estimated_rows": 0.0,
+                    "hash_condition": [
+                      "(p.contract_id = c.contract_id)"
+                    ],
+                    "join_algorithm": "hash",
+                    "estimated_total_cost": 5.029045486450196
+                  }
+                ],
+                "condition": "((c.total_amount - coalesce(p.paid_amount,0)) > 0)",
+                "operation": "Filter: ((c.total_amount - coalesce(p.paid_amount,0)) > 0)",
+                "access_type": "filter",
+                "estimated_rows": 0.0,
+                "filter_columns": [
+                  "c.total_amount",
+                  "p.paid_amount"
+                ],
+                "estimated_total_cost": 5.029045486450196
+              }
+            ],
+            "operation": "Stream results",
+            "access_type": "stream",
+            "estimated_rows": 0.0,
+            "estimated_total_cost": 5.029045486450196
+          }
+        ],
+        "operation": "Sort: contract_id",
+        "access_type": "sort",
+        "sort_fields": [
+          "contract_id"
+        ]
+      },
+      "query_type": "select",
+      "json_schema_version": "2.0"
+    },
+    "explain_analyze": "-> Sort: v_contract_overview.contract_id  (actual time=0.0626..0.0629 rows=5 loops=1)\n    -> Stream results  (cost=5.03 rows=0) (actual time=0.0508..0.0583 rows=5 loops=1)\n        -> Filter: ((c.total_amount - coalesce(p.paid_amount,0)) > 0)  (cost=5.03 rows=0) (actual time=0.0497..0.0552 rows=5 loops=1)\n            -> Left hash join (p.contract_id = c.contract_id)  (cost=5.03 rows=0) (actual time=0.0486..0.0532 rows=5 loops=1)\n                -> Nested loop left join  (cost=4.83 rows=15.8) (actual time=0.0304..0.0338 rows=5 loops=1)\n                    -> Table scan on c  (cost=0.75 rows=5) (actual time=0.0042..0.005 rows=5 loops=1)\n                    -> Index lookup on m using <auto_key0> (contract_id = c.contract_id)  (cost=4.55..4.82 rows=2) (actual time=0.0054..0.00556 rows=1 loops=5)\n                        -> Materialize  (cost=4.28..4.28 rows=3.16) (actual time=0.0248..0.0248 rows=5 loops=1)\n                            -> Group aggregate: count(0), sum(milestones.amount)  (cost=3.55 rows=3.16) (actual time=0.0143..0.0192 rows=5 loops=1)\n                                -> Index scan on milestones using fk_milestone_contract  (cost=1.25 rows=10) (actual time=0.0125..0.0164 rows=10 loops=1)\n                -> Hash\n                    -> Table scan on p  (cost=2.5..2.5 rows=0) (actual time=0.0144..0.0146 rows=3 loops=1)\n                        -> Materialize  (cost=0..0 rows=0) (actual time=0.0142..0.0142 rows=3 loops=1)\n                            -> Table scan on <temporary>  (actual time=0.0119..0.0121 rows=3 loops=1)\n                                -> Aggregate using temporary table  (actual time=0.0115..0.0115 rows=3 loops=1)\n                                    -> Nested loop inner join  (cost=1.2 rows=1) (actual time=0.0049..0.0081 rows=3 loops=1)\n                                        -> Filter: (p.payment_status = 'PAID')  (cost=0.85 rows=1) (actual time=0.0029..0.0042 rows=3 loops=1)\n                                            -> Table scan on p  (cost=0.85 rows=6) (actual time=0.0021..0.003 rows=6 loops=1)\n                                        -> Single-row index lookup on m using PRIMARY (milestone_id = p.milestone_id)  (cost=0.35 rows=1) (actual time=0.001..0.00103 rows=1 loops=3)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-07",
+    "question": "Completed work not yet paid",
+    "sql": "SELECT m.milestone_id,\n       m.status,\n       m.amount\nFROM milestones AS m\nWHERE m.status IN ('COMPLETED',\n                   'APPROVED')\n    AND NOT EXISTS\n        (SELECT 1\n         FROM payments AS p\n         WHERE p.milestone_id=m.milestone_id\n             AND p.payment_status='PAID')\nORDER BY m.milestone_id;",
+    "expected": "Milestones 2,5,9",
+    "explanation": "COMPLETED still needs approval; pending and failed are unpaid.",
+    "actual": [
+      [
+        2,
+        "COMPLETED",
+        "600.00"
+      ],
+      [
+        5,
+        "APPROVED",
+        "500.00"
+      ],
+      [
+        9,
+        "APPROVED",
+        "500.00"
+      ]
+    ],
+    "median_ms": 0.18760000057227444,
+    "explain": {
+      "query": "/* select#1 */ select `m`.`milestone_id` AS `milestone_id`,`m`.`status` AS `status`,`m`.`amount` AS `amount` from `mini_upwork_codex_test_20261114`.`milestones` `m` anti join (`mini_upwork_codex_test_20261114`.`payments` `p`) on(((`<subquery2>`.`milestone_id` = `m`.`milestone_id`) and (`p`.`payment_status` = 'PAID'))) where (`m`.`status` in ('COMPLETED','APPROVED')) order by `m`.`milestone_id`",
+      "query_plan": {
+        "inputs": [
+          {
+            "inputs": [
+              {
+                "alias": "m",
+                "covering": false,
+                "operation": "Index scan on m using PRIMARY",
+                "index_name": "PRIMARY",
+                "table_name": "milestones",
+                "access_type": "index",
+                "schema_name": "mini_upwork_codex_test_20261114",
+                "used_columns": [
+                  "milestone_id",
+                  "amount",
+                  "status"
+                ],
+                "estimated_rows": 10.0,
+                "index_access_type": "index_scan",
+                "estimated_total_cost": 1.25
+              }
+            ],
+            "condition": "(m.`status` in ('COMPLETED','APPROVED'))",
+            "operation": "Filter: (m.`status` in ('COMPLETED','APPROVED'))",
+            "access_type": "filter",
+            "estimated_rows": 10.0,
+            "filter_columns": [
+              "m.`status`"
+            ],
+            "estimated_total_cost": 1.25
+          },
+          {
+            "inputs": [
+              {
+                "inputs": [
+                  {
+                    "inputs": [
+                      {
+                        "inputs": [
+                          {
+                            "alias": "p",
+                            "operation": "Table scan on p",
+                            "table_name": "payments",
+                            "access_type": "table",
+                            "schema_name": "mini_upwork_codex_test_20261114",
+                            "used_columns": [
+                              "payment_id",
+                              "milestone_id",
+                              "payment_status"
+                            ],
+                            "estimated_rows": 6.0,
+                            "estimated_total_cost": 0.8500000000000001
+                          }
+                        ],
+                        "condition": "(p.payment_status = 'PAID')",
+                        "operation": "Filter: (p.payment_status = 'PAID')",
+                        "access_type": "filter",
+                        "estimated_rows": 6.0,
+                        "filter_columns": [
+                          "p.payment_status"
+                        ],
+                        "estimated_total_cost": 0.8500000000000001
+                      }
+                    ],
+                    "condition": "(p.milestone_id is not null)",
+                    "operation": "Filter: (p.milestone_id is not null)",
+                    "access_type": "filter",
+                    "estimated_rows": 6.0,
+                    "filter_columns": [
+                      "p.milestone_id"
+                    ],
+                    "estimated_total_cost": 0.8500000000000001
+                  }
+                ],
+                "operation": "Materialize with deduplication",
+                "access_type": "materialize",
+                "deduplication": true,
+                "estimated_rows": 6.0,
+                "estimated_total_cost": 2.232488479262673,
+                "estimated_first_row_cost": 2.232488479262673
+              }
+            ],
+            "covering": false,
+            "operation": "Single-row index lookup on <subquery2> using <auto_distinct_key> (milestone_id = m.milestone_id)",
+            "index_name": "<auto_distinct_key>",
+            "table_name": "<subquery2>",
+            "access_type": "index",
+            "key_columns": [
+              "milestone_id"
+            ],
+            "used_columns": [
+              "milestone_id"
+            ],
+            "estimated_rows": 1.0,
+            "lookup_condition": "milestone_id = m.milestone_id",
+            "index_access_type": "index_lookup",
+            "lookup_references": [
+              "mini_upwork_codex_test_20261114.m.milestone_id"
+            ],
+            "estimated_total_cost": 2.4158218125960067,
+            "estimated_first_row_cost": 2.4158218125960067
+          }
+        ],
+        "join_type": "antijoin",
+        "operation": "Nested loop antijoin",
+        "access_type": "join",
+        "estimated_rows": 60.0,
+        "join_algorithm": "nested_loop",
+        "estimated_total_cost": 8.25
+      },
+      "query_type": "select",
+      "json_schema_version": "2.0"
+    },
+    "explain_analyze": "-> Nested loop antijoin  (cost=8.25 rows=60) (actual time=0.0291..0.034 rows=3 loops=1)\n    -> Filter: (m.`status` in ('COMPLETED','APPROVED'))  (cost=1.25 rows=10) (actual time=0.0115..0.0158 rows=6 loops=1)\n        -> Index scan on m using PRIMARY  (cost=1.25 rows=10) (actual time=0.0105..0.0127 rows=10 loops=1)\n    -> Single-row index lookup on <subquery2> using <auto_distinct_key> (milestone_id = m.milestone_id)  (cost=2.42..2.42 rows=1) (actual time=0.00267..0.00267 rows=0.5 loops=6)\n        -> Materialize with deduplication  (cost=2.23..2.23 rows=6) (actual time=0.0134..0.0134 rows=3 loops=1)\n            -> Filter: (p.milestone_id is not null)  (cost=0.85 rows=6) (actual time=0.0059..0.0086 rows=3 loops=1)\n                -> Filter: (p.payment_status = 'PAID')  (cost=0.85 rows=6) (actual time=0.0058..0.0083 rows=3 loops=1)\n                    -> Table scan on p  (cost=0.85 rows=6) (actual time=0.0042..0.0069 rows=6 loops=1)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-08",
+    "question": "Jobs above mean maximum budget",
+    "sql": "SELECT job_id,\n       budget_max\nFROM jobs\nWHERE budget_max >\n        (SELECT AVG(budget_max)\n         FROM jobs)\nORDER BY job_id;",
+    "expected": "Jobs 3,5,8; mean1062.50",
+    "explanation": "Scalar non-correlated aggregate subquery.",
+    "actual": [
+      [
+        3,
+        "1500.00"
+      ],
+      [
+        5,
+        "2000.00"
+      ],
+      [
+        8,
+        "1200.00"
+      ]
+    ],
+    "median_ms": 0.1993000005313661,
+    "explain": {
+      "query": "/* select#1 */ select `mini_upwork_codex_test_20261114`.`jobs`.`job_id` AS `job_id`,`mini_upwork_codex_test_20261114`.`jobs`.`budget_max` AS `budget_max` from `mini_upwork_codex_test_20261114`.`jobs` where (`mini_upwork_codex_test_20261114`.`jobs`.`budget_max` > (/* select#2 */ select avg(`mini_upwork_codex_test_20261114`.`jobs`.`budget_max`) from `mini_upwork_codex_test_20261114`.`jobs`)) order by `mini_upwork_codex_test_20261114`.`jobs`.`job_id`",
+      "query_plan": {
+        "inputs": [
+          {
+            "covering": false,
+            "operation": "Index scan on jobs using PRIMARY",
+            "index_name": "PRIMARY",
+            "table_name": "jobs",
+            "access_type": "index",
+            "schema_name": "mini_upwork_codex_test_20261114",
+            "used_columns": [
+              "job_id",
+              "budget_max"
+            ],
+            "estimated_rows": 8.0,
+            "index_access_type": "index_scan",
+            "estimated_total_cost": 0.5166399955749512
+          },
+          {
+            "inputs": [
+              {
+                "covering": true,
+                "operation": "Covering index scan on jobs using ix_jobs_status_budget",
+                "index_name": "ix_jobs_status_budget",
+                "table_name": "jobs",
+                "access_type": "index",
+                "schema_name": "mini_upwork_codex_test_20261114",
+                "used_columns": [
+                  "budget_max"
+                ],
+                "estimated_rows": 8.0,
+                "index_access_type": "index_scan",
+                "estimated_total_cost": 1.05
+              }
+            ],
+            "heading": "Select #2 (subquery in condition; run only once)",
+            "subquery": true,
+            "cacheable": true,
+            "functions": [
+              "avg(jobs.budget_max)"
+            ],
+            "operation": "Aggregate: avg(jobs.budget_max)",
+            "access_type": "aggregate",
+            "estimated_rows": 1.0,
+            "subquery_location": "condition",
+            "estimated_total_cost": 2.8933179723502302
+          }
+        ],
+        "condition": "(jobs.budget_max > (select #2))",
+        "operation": "Filter: (jobs.budget_max > (select #2))",
+        "access_type": "filter",
+        "estimated_rows": 2.6663999557495117,
+        "filter_columns": [
+          "mini_upwork_codex_test_20261114.jobs.budget_max"
+        ],
+        "estimated_total_cost": 0.5166399955749512
+      },
+      "query_type": "select",
+      "json_schema_version": "2.0"
+    },
+    "explain_analyze": "-> Filter: (jobs.budget_max > (select #2))  (cost=0.517 rows=2.67) (actual time=0.0036..0.0054 rows=3 loops=1)\n    -> Index scan on jobs using PRIMARY  (cost=0.517 rows=8) (actual time=0.0023..0.0038 rows=8 loops=1)\n    -> Select #2 (subquery in condition; run only once)\n        -> Aggregate: avg(jobs.budget_max)  (cost=2.89 rows=1) (actual time=0.0087..0.0087 rows=1 loops=1)\n            -> Covering index scan on jobs using ix_jobs_status_budget  (cost=1.05 rows=8) (actual time=0.0048..0.007 rows=8 loops=1)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-09",
+    "question": "Freelancers with at least three skills",
+    "sql": "SELECT f.freelancer_id,\n       f.professional_title,\n       COUNT(fs.skill_id) AS skill_count\nFROM freelancers AS f\nINNER JOIN freelancer_skills AS fs ON fs.freelancer_id=f.freelancer_id\nGROUP BY f.freelancer_id,\n         f.professional_title\nHAVING COUNT(fs.skill_id)>=3\nORDER BY f.freelancer_id;",
+    "expected": "Freelancers4,6 each3",
+    "explanation": "INNER JOIN with HAVING.",
+    "actual": [
+      [
+        4,
+        "L\u1eadp tr\u00ecnh vi\u00ean Python v\u00e0 c\u01a1 s\u1edf d\u1eef li\u1ec7u",
+        3
+      ],
+      [
+        6,
+        "Chuy\u00ean vi\u00ean d\u1eef li\u1ec7u v\u00e0 b\u00e1o c\u00e1o",
+        3
+      ]
+    ],
+    "median_ms": 0.2059500002360437,
+    "explain": {
+      "query": "/* select#1 */ select `f`.`freelancer_id` AS `freelancer_id`,`f`.`professional_title` AS `professional_title`,count(`fs`.`skill_id`) AS `skill_count` from `mini_upwork_codex_test_20261114`.`freelancers` `f` join `mini_upwork_codex_test_20261114`.`freelancer_skills` `fs` where (`f`.`freelancer_id` = `fs`.`freelancer_id`) group by `f`.`freelancer_id`,`f`.`professional_title` having (count(`fs`.`skill_id`) >= 3) order by `f`.`freelancer_id`",
+      "query_plan": {
+        "inputs": [
+          {
+            "inputs": [
+              {
+                "inputs": [
+                  {
+                    "inputs": [
+                      {
+                        "inputs": [
+                          {
+                            "alias": "fs",
+                            "covering": true,
+                            "operation": "Covering index scan on fs using fk_fs_skill",
+                            "index_name": "fk_fs_skill",
+                            "table_name": "freelancer_skills",
+                            "access_type": "index",
+                            "schema_name": "mini_upwork_codex_test_20261114",
+                            "used_columns": [
+                              "freelancer_id",
+                              "skill_id"
+                            ],
+                            "estimated_rows": 10.0,
+                            "index_access_type": "index_scan",
+                            "estimated_total_cost": 1.25
+                          },
+                          {
+                            "alias": "f",
+                            "covering": false,
+                            "operation": "Single-row index lookup on f using PRIMARY (freelancer_id = fs.freelancer_id)",
+                            "index_name": "PRIMARY",
+                            "table_name": "freelancers",
+                            "access_type": "index",
+                            "key_columns": [
+                              "freelancer_id"
+                            ],
+                            "schema_name": "mini_upwork_codex_test_20261114",
+                            "used_columns": [
+                              "freelancer_id",
+                              "professional_title"
+                            ],
+                            "estimated_rows": 1.0,
+                            "lookup_condition": "freelancer_id = fs.freelancer_id",
+                            "index_access_type": "index_lookup",
+                            "lookup_references": [
+                              "mini_upwork_codex_test_20261114.fs.freelancer_id"
+                            ],
+                            "estimated_total_cost": 0.26
+                          }
+                        ],
+                        "join_type": "inner join",
+                        "operation": "Nested loop inner join",
+                        "access_type": "join",
+                        "estimated_rows": 10.0,
+                        "join_algorithm": "nested_loop",
+                        "estimated_total_cost": 4.75
+                      }
+                    ],
+                    "operation": "Aggregate using temporary table",
+                    "access_type": "temp_table_aggregate"
+                  }
+                ],
+                "operation": "Table scan on <temporary>",
+                "table_name": "<temporary>",
+                "access_type": "table"
+              }
+            ],
+            "condition": "(count(fs.skill_id) >= 3)",
+            "operation": "Filter: (count(fs.skill_id) >= 3)",
+            "access_type": "filter",
+            "filter_columns": [
+              "fs.skill_id"
+            ]
+          }
+        ],
+        "operation": "Sort: f.freelancer_id, f.professional_title",
+        "access_type": "sort",
+        "sort_fields": [
+          "f.freelancer_id",
+          "f.professional_title"
+        ]
+      },
+      "query_type": "select",
+      "json_schema_version": "2.0"
+    },
+    "explain_analyze": "-> Sort: f.freelancer_id, f.professional_title  (actual time=0.0351..0.0352 rows=2 loops=1)\n    -> Filter: (`count(fs.skill_id)` >= 3)  (actual time=0.0288..0.0299 rows=2 loops=1)\n        -> Table scan on <temporary>  (actual time=0.0279..0.0285 rows=5 loops=1)\n            -> Aggregate using temporary table  (actual time=0.0274..0.0274 rows=5 loops=1)\n                -> Nested loop inner join  (cost=4.75 rows=10) (actual time=0.0072..0.0154 rows=10 loops=1)\n                    -> Covering index scan on fs using fk_fs_skill  (cost=1.25 rows=10) (actual time=0.0044..0.0061 rows=10 loops=1)\n                    -> Single-row index lookup on f using PRIMARY (freelancer_id = fs.freelancer_id)  (cost=0.26 rows=1) (actual time=780e-6..780e-6 rows=1 loops=10)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-10",
+    "question": "Contract milestone payment report",
+    "sql": "SELECT *\nFROM v_contract_overview\nORDER BY contract_id;",
+    "expected": "5 contracts, 2 milestones each; PAID 400,300,0,200,0",
+    "explanation": "Separate aggregation avoids repeated milestone totals.",
+    "actual": [
+      [
+        1,
+        1,
+        4,
+        "1000.00",
+        "ACTIVE",
+        2,
+        "1000.00",
+        "400.00",
+        "600.00"
+      ],
+      [
+        2,
+        1,
+        5,
+        "800.00",
+        "ACTIVE",
+        2,
+        "800.00",
+        "300.00",
+        "500.00"
+      ],
+      [
+        3,
+        2,
+        6,
+        "1500.00",
+        "ACTIVE",
+        2,
+        "1500.00",
+        "0.00",
+        "1500.00"
+      ],
+      [
+        4,
+        2,
+        7,
+        "600.00",
+        "ACTIVE",
+        2,
+        "600.00",
+        "200.00",
+        "400.00"
+      ],
+      [
+        5,
+        3,
+        4,
+        "2000.00",
+        "ACTIVE",
+        2,
+        "2000.00",
+        "0.00",
+        "2000.00"
+      ]
+    ],
+    "median_ms": 0.35989999923913274,
+    "explain": {
+      "query": "/* select#1 */ select `c`.`contract_id` AS `contract_id`,`c`.`client_id` AS `client_id`,`c`.`freelancer_id` AS `freelancer_id`,`c`.`total_amount` AS `total_amount`,`c`.`status` AS `status`,coalesce(`m`.`milestone_count`,0) AS `milestone_count`,coalesce(`m`.`allocated_amount`,0) AS `allocated_amount`,coalesce(`p`.`paid_amount`,0) AS `paid_amount`,(`c`.`total_amount` - coalesce(`p`.`paid_amount`,0)) AS `outstanding_amount` from `mini_upwork_codex_test_20261114`.`contracts` `c` left join (/* select#4 */ select `mini_upwork_codex_test_20261114`.`milestones`.`contract_id` AS `contract_id`,count(0) AS `milestone_count`,sum(`mini_upwork_codex_test_20261114`.`milestones`.`amount`) AS `allocated_amount` from `mini_upwork_codex_test_20261114`.`milestones` group by `mini_upwork_codex_test_20261114`.`milestones`.`contract_id`) `m` on((`m`.`contract_id` = `c`.`contract_id`)) left join (/* select#3 */ select `m`.`contract_id` AS `contract_id`,sum(`m`.`amount`) AS `paid_amount` from `mini_upwork_codex_test_20261114`.`milestones` `m` join `mini_upwork_codex_test_20261114`.`payments` `p` where ((`m`.`milestone_id` = `p`.`milestone_id`) and (`p`.`payment_status` = 'PAID')) group by `m`.`contract_id`) `p` on((`p`.`contract_id` = `c`.`contract_id`)) where true order by `c`.`contract_id`",
+      "query_plan": {
+        "inputs": [
+          {
+            "inputs": [
+              {
+                "inputs": [
+                  {
+                    "inputs": [
+                      {
+                        "alias": "c",
+                        "operation": "Table scan on c",
+                        "table_name": "contracts",
+                        "access_type": "table",
+                        "schema_name": "mini_upwork_codex_test_20261114",
+                        "used_columns": [
+                          "contract_id",
+                          "client_id",
+                          "freelancer_id",
+                          "total_amount",
+                          "status"
+                        ],
+                        "estimated_rows": 5.0,
+                        "estimated_total_cost": 0.75
+                      },
+                      {
+                        "inputs": [
+                          {
+                            "inputs": [
+                              {
+                                "inputs": [
+                                  {
+                                    "covering": false,
+                                    "operation": "Index scan on milestones using fk_milestone_contract",
+                                    "index_name": "fk_milestone_contract",
+                                    "table_name": "milestones",
+                                    "access_type": "index",
+                                    "schema_name": "mini_upwork_codex_test_20261114",
+                                    "used_columns": [
+                                      "milestone_id",
+                                      "contract_id",
+                                      "amount"
+                                    ],
+                                    "estimated_rows": 10.0,
+                                    "index_access_type": "index_scan",
+                                    "estimated_total_cost": 1.25
+                                  }
+                                ],
+                                "group_by": true,
+                                "functions": [
+                                  "count(0)",
+                                  "sum(milestones.amount)"
+                                ],
+                                "operation": "Group aggregate: count(0), sum(milestones.amount)",
+                                "access_type": "aggregate",
+                                "estimated_rows": 3.1622776601683795,
+                                "estimated_total_cost": 3.5541474654377883
+                              }
+                            ],
+                            "operation": "Materialize",
+                            "access_type": "materialize",
+                            "estimated_rows": 3.1622776601683795,
+                            "estimated_total_cost": 4.282782871006539,
+                            "estimated_first_row_cost": 4.282782871006539
+                          }
+                        ],
+                        "covering": false,
+                        "operation": "Index lookup on m using <auto_key0> (contract_id = c.contract_id)",
+                        "index_name": "<auto_key0>",
+                        "table_name": "m",
+                        "access_type": "index",
+                        "key_columns": [
+                          "contract_id"
+                        ],
+                        "used_columns": [
+                          "contract_id",
+                          "milestone_count",
+                          "allocated_amount"
+                        ],
+                        "estimated_rows": 2.0,
+                        "lookup_condition": "contract_id = c.contract_id",
+                        "index_access_type": "index_lookup",
+                        "lookup_references": [
+                          "mini_upwork_codex_test_20261114.c.contract_id"
+                        ],
+                        "estimated_total_cost": 4.822782871006539,
+                        "estimated_first_row_cost": 4.552782871006539
+                      }
+                    ],
+                    "join_type": "left join",
+                    "operation": "Nested loop left join",
+                    "access_type": "join",
+                    "estimated_rows": 15.811388300841898,
+                    "join_algorithm": "nested_loop",
+                    "estimated_total_cost": 4.83113883008419
+                  },
+                  {
+                    "inputs": [
+                      {
+                        "inputs": [
+                          {
+                            "inputs": [
+                              {
+                                "inputs": [
+                                  {
+                                    "inputs": [
+                                      {
+                                        "inputs": [
+                                          {
+                                            "alias": "p",
+                                            "operation": "Table scan on p",
+                                            "table_name": "payments",
+                                            "access_type": "table",
+                                            "schema_name": "mini_upwork_codex_test_20261114",
+                                            "used_columns": [
+                                              "payment_id",
+                                              "milestone_id",
+                                              "payment_status"
+                                            ],
+                                            "estimated_rows": 6.0,
+                                            "estimated_total_cost": 0.85
+                                          }
+                                        ],
+                                        "condition": "(p.payment_status = 'PAID')",
+                                        "operation": "Filter: (p.payment_status = 'PAID')",
+                                        "access_type": "filter",
+                                        "estimated_rows": 1.0000000298023224,
+                                        "filter_columns": [
+                                          "p.payment_status"
+                                        ],
+                                        "estimated_total_cost": 0.85
+                                      },
+                                      {
+                                        "alias": "m",
+                                        "covering": false,
+                                        "operation": "Single-row index lookup on m using PRIMARY (milestone_id = p.milestone_id)",
+                                        "index_name": "PRIMARY",
+                                        "table_name": "milestones",
+                                        "access_type": "index",
+                                        "key_columns": [
+                                          "milestone_id"
+                                        ],
+                                        "schema_name": "mini_upwork_codex_test_20261114",
+                                        "used_columns": [
+                                          "milestone_id",
+                                          "contract_id",
+                                          "amount"
+                                        ],
+                                        "estimated_rows": 1.0,
+                                        "lookup_condition": "milestone_id = p.milestone_id",
+                                        "index_access_type": "index_lookup",
+                                        "lookup_references": [
+                                          "mini_upwork_codex_test_20261114.p.milestone_id"
+                                        ],
+                                        "estimated_total_cost": 0.3499999970197678
+                                      }
+                                    ],
+                                    "join_type": "inner join",
+                                    "operation": "Nested loop inner join",
+                                    "access_type": "join",
+                                    "estimated_rows": 1.0000000298023224,
+                                    "join_algorithm": "nested_loop",
+                                    "estimated_total_cost": 1.2000000104308128
+                                  }
+                                ],
+                                "operation": "Aggregate using temporary table",
+                                "access_type": "temp_table_aggregate"
+                              }
+                            ],
+                            "operation": "Table scan on <temporary>",
+                            "table_name": "<temporary>",
+                            "access_type": "table"
+                          }
+                        ],
+                        "operation": "Materialize",
+                        "access_type": "materialize",
+                        "estimated_rows": 0.0,
+                        "estimated_total_cost": 0.0,
+                        "estimated_first_row_cost": 0.0
+                      }
+                    ],
+                    "heading": "Hash",
+                    "operation": "Table scan on p",
+                    "table_name": "p",
+                    "access_type": "table",
+                    "used_columns": [
+                      "contract_id",
+                      "paid_amount"
+                    ],
+                    "estimated_rows": 0.0,
+                    "estimated_total_cost": 2.5,
+                    "estimated_first_row_cost": 2.5
+                  }
+                ],
+                "join_type": "left join",
+                "operation": "Left hash join (p.contract_id = c.contract_id)",
+                "access_type": "join",
+                "join_columns": [
+                  "c.contract_id",
+                  "p.contract_id"
+                ],
+                "estimated_rows": 0.0,
+                "hash_condition": [
+                  "(p.contract_id = c.contract_id)"
+                ],
+                "join_algorithm": "hash",
+                "estimated_total_cost": 5.0376180648803714
+              }
+            ],
+            "operation": "Stream results",
+            "access_type": "stream",
+            "estimated_rows": 0.0,
+            "estimated_total_cost": 5.0376180648803714
+          }
+        ],
+        "operation": "Sort: contract_id",
+        "access_type": "sort",
+        "sort_fields": [
+          "contract_id"
+        ]
+      },
+      "query_type": "select",
+      "json_schema_version": "2.0"
+    },
+    "explain_analyze": "-> Sort: v_contract_overview.contract_id  (actual time=0.0604..0.0609 rows=5 loops=1)\n    -> Stream results  (cost=5.04 rows=0) (actual time=0.0475..0.0555 rows=5 loops=1)\n        -> Left hash join (p.contract_id = c.contract_id)  (cost=5.04 rows=0) (actual time=0.0453..0.05 rows=5 loops=1)\n            -> Nested loop left join  (cost=4.83 rows=15.8) (actual time=0.0255..0.0293 rows=5 loops=1)\n                -> Table scan on c  (cost=0.75 rows=5) (actual time=0.005..0.0059 rows=5 loops=1)\n                -> Index lookup on m using <auto_key0> (contract_id = c.contract_id)  (cost=4.55..4.82 rows=2) (actual time=0.0042..0.00438 rows=1 loops=5)\n                    -> Materialize  (cost=4.28..4.28 rows=3.16) (actual time=0.019..0.019 rows=5 loops=1)\n                        -> Group aggregate: count(0), sum(milestones.amount)  (cost=3.55 rows=3.16) (actual time=0.0078..0.0128 rows=5 loops=1)\n                            -> Index scan on milestones using fk_milestone_contract  (cost=1.25 rows=10) (actual time=0.006..0.0102 rows=10 loops=1)\n            -> Hash\n                -> Table scan on p  (cost=2.5..2.5 rows=0) (actual time=0.0152..0.0153 rows=3 loops=1)\n                    -> Materialize  (cost=0..0 rows=0) (actual time=0.015..0.015 rows=3 loops=1)\n                        -> Table scan on <temporary>  (actual time=0.0127..0.0131 rows=3 loops=1)\n                            -> Aggregate using temporary table  (actual time=0.0122..0.0122 rows=3 loops=1)\n                                -> Nested loop inner join  (cost=1.2 rows=1) (actual time=0.0052..0.0084 rows=3 loops=1)\n                                    -> Filter: (p.payment_status = 'PAID')  (cost=0.85 rows=1) (actual time=0.0032..0.0044 rows=3 loops=1)\n                                        -> Table scan on p  (cost=0.85 rows=6) (actual time=0.0022..0.0033 rows=6 loops=1)\n                                    -> Single-row index lookup on m using PRIMARY (milestone_id = p.milestone_id)  (cost=0.35 rows=1) (actual time=0.0011..0.00113 rows=1 loops=3)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-11",
+    "question": "Clients posting the most jobs",
+    "sql": "WITH counts AS\n    (SELECT client_id,\n            COUNT(*) AS job_count\n     FROM jobs\n     GROUP BY client_id),\n     ranked AS\n    (SELECT *,\n            DENSE_RANK() OVER (\n                               ORDER BY job_count DESC) AS r\n     FROM counts)\nSELECT client_id,\n       job_count\nFROM ranked\nWHERE r=1\nORDER BY client_id;",
+    "expected": "Clients1,2 each3",
+    "explanation": "Retains ties rather than LIMIT1.",
+    "actual": [
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "median_ms": 0.2623000000312459,
+    "explain": {
+      "query": "with `counts` as (/* select#3 */ select `mini_upwork_codex_test_20261114`.`jobs`.`client_id` AS `client_id`,count(0) AS `job_count` from `mini_upwork_codex_test_20261114`.`jobs` group by `mini_upwork_codex_test_20261114`.`jobs`.`client_id`), `ranked` as (/* select#2 */ select `counts`.`client_id` AS `client_id`,`counts`.`job_count` AS `job_count`,dense_rank() OVER (ORDER BY `counts`.`job_count` desc )  AS `r` from `counts`) /* select#1 */ select `ranked`.`client_id` AS `client_id`,`ranked`.`job_count` AS `job_count` from `ranked` where (`ranked`.`r` = 1) order by `ranked`.`client_id`",
+      "query_plan": {
+        "inputs": [
+          {
+            "inputs": [
+              {
+                "cte": true,
+                "inputs": [
+                  {
+                    "inputs": [
+                      {
+                        "inputs": [
+                          {
+                            "inputs": [
+                              {
+                                "cte": true,
+                                "inputs": [
+                                  {
+                                    "inputs": [
+                                      {
+                                        "covering": true,
+                                        "operation": "Covering index scan on jobs using fk_jobs_client",
+                                        "index_name": "fk_jobs_client",
+                                        "table_name": "jobs",
+                                        "access_type": "index",
+                                        "schema_name": "mini_upwork_codex_test_20261114",
+                                        "used_columns": [
+                                          "job_id",
+                                          "client_id"
+                                        ],
+                                        "estimated_rows": 8.0,
+                                        "index_access_type": "index_scan",
+                                        "estimated_total_cost": 1.05
+                                      }
+                                    ],
+                                    "group_by": true,
+                                    "functions": [
+                                      "count(0)"
+                                    ],
+                                    "operation": "Group aggregate: count(0)",
+                                    "access_type": "aggregate",
+                                    "estimated_rows": 2.8284271247461903,
+                                    "estimated_total_cost": 2.8933179723502302
+                                  }
+                                ],
+                                "operation": "Materialize CTE counts",
+                                "access_type": "materialize",
+                                "estimated_rows": 2.8284271247461903,
+                                "estimated_total_cost": 3.5450292914161725,
+                                "estimated_first_row_cost": 3.5450292914161725
+                              }
+                            ],
+                            "operation": "Table scan on counts",
+                            "table_name": "counts",
+                            "access_type": "table",
+                            "used_columns": [
+                              "client_id",
+                              "job_count"
+                            ],
+                            "estimated_rows": 2.8284271247461903,
+                            "estimated_total_cost": 6.070029291416173,
+                            "estimated_first_row_cost": 4.437751602664189
+                          }
+                        ],
+                        "operation": "Sort: counts.job_count DESC",
+                        "access_type": "sort",
+                        "sort_fields": [
+                          "counts.job_count DESC"
+                        ],
+                        "estimated_rows": 2.8284271247461903,
+                        "estimated_total_cost": 7.184455647018934,
+                        "estimated_first_row_cost": 7.184455647018934
+                      }
+                    ],
+                    "functions": [
+                      "dense_rank() OVER (ORDER BY counts.job_count desc ) "
+                    ],
+                    "operation": "Window aggregate: dense_rank() OVER (ORDER BY counts.job_count desc ) ",
+                    "access_type": "window",
+                    "estimated_rows": 2.8284271247461903,
+                    "estimated_total_cost": 0.0
+                  }
+                ],
+                "operation": "Materialize CTE ranked",
+                "access_type": "materialize",
+                "estimated_rows": 2.8284271247461903,
+                "estimated_total_cost": 0.6517113190659425,
+                "estimated_first_row_cost": 0.6517113190659425
+              }
+            ],
+            "covering": false,
+            "operation": "Index lookup on ranked using <auto_key0> (r = 1)",
+            "index_name": "<auto_key0>",
+            "table_name": "ranked",
+            "access_type": "index",
+            "key_columns": [
+              "r"
+            ],
+            "used_columns": [
+              "client_id",
+              "job_count",
+              "r"
+            ],
+            "estimated_rows": 1.0,
+            "lookup_condition": "r = 1",
+            "index_access_type": "index_lookup",
+            "lookup_references": [
+              "const"
+            ],
+            "estimated_total_cost": 1.0017113190659424,
+            "estimated_first_row_cost": 1.0017113190659424
+          }
+        ],
+        "operation": "Sort: ranked.client_id",
+        "access_type": "sort",
+        "sort_fields": [
+          "ranked.client_id"
+        ],
+        "estimated_rows": 2.8284271247461903,
+        "estimated_total_cost": 2.116137674668704,
+        "estimated_first_row_cost": 2.116137674668704
+      },
+      "query_type": "select",
+      "json_schema_version": "2.0"
+    },
+    "explain_analyze": "-> Sort: ranked.client_id  (cost=2.12..2.12 rows=2.83) (actual time=0.0352..0.0353 rows=2 loops=1)\n    -> Index lookup on ranked using <auto_key0> (r = 1)  (cost=1..1 rows=1) (actual time=0.0321..0.0325 rows=2 loops=1)\n        -> Materialize CTE ranked  (cost=0.652..0.652 rows=2.83) (actual time=0.0311..0.0311 rows=3 loops=1)\n            -> Window aggregate: dense_rank() OVER (ORDER BY counts.job_count desc )   (cost=0 rows=2.83) (actual time=0.0218..0.0223 rows=3 loops=1)\n                -> Sort: counts.job_count DESC  (cost=7.18..7.18 rows=2.83) (actual time=0.0206..0.0206 rows=3 loops=1)\n                    -> Table scan on counts  (cost=4.44..6.07 rows=2.83) (actual time=0.0167..0.017 rows=3 loops=1)\n                        -> Materialize CTE counts  (cost=3.55..3.55 rows=2.83) (actual time=0.0156..0.0156 rows=3 loops=1)\n                            -> Group aggregate: count(0)  (cost=2.89 rows=2.83) (actual time=0.0095..0.0108 rows=3 loops=1)\n                                -> Covering index scan on jobs using fk_jobs_client  (cost=1.05 rows=8) (actual time=0.0077..0.0091 rows=8 loops=1)\n",
+    "passed": true
+  },
+  {
+    "id": "Q-12",
+    "question": "Contracts at risk by a supplied reference date",
+    "sql": "SELECT c.contract_id,\n       COUNT(m.milestone_id) AS overdue_work\nFROM contracts AS c\nJOIN milestones AS m ON m.contract_id=c.contract_id\nWHERE c.status='ACTIVE'\n    AND m.status IN ('PENDING',\n                     'IN_PROGRESS',\n                     'COMPLETED')\n    AND m.due_date < DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY)\nGROUP BY c.contract_id\nORDER BY c.contract_id;",
+    "expected": "Contracts1..5 each1",
+    "explanation": "Reference date is30 days after seed date; excludes approved work.",
+    "actual": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        5,
+        1
+      ]
+    ],
+    "median_ms": 0.2563500001997454,
+    "explain": {
+      "query": "/* select#1 */ select `c`.`contract_id` AS `contract_id`,count(`m`.`milestone_id`) AS `overdue_work` from `mini_upwork_codex_test_20261114`.`contracts` `c` join `mini_upwork_codex_test_20261114`.`milestones` `m` where ((`m`.`contract_id` = `c`.`contract_id`) and (`c`.`status` = 'ACTIVE') and (`m`.`status` in ('PENDING','IN_PROGRESS','COMPLETED')) and (`m`.`due_date` < <cache>((curdate() + interval 30 day)))) group by `c`.`contract_id` order by `c`.`contract_id`",
+      "query_plan": {
+        "inputs": [
+          {
+            "inputs": [
+              {
+                "inputs": [
+                  {
+                    "alias": "c",
+                    "covering": false,
+                    "operation": "Index scan on c using PRIMARY",
+                    "index_name": "PRIMARY",
+                    "table_name": "contracts",
+                    "access_type": "index",
+                    "schema_name": "mini_upwork_codex_test_20261114",
+                    "used_columns": [
+                      "contract_id",
+                      "status"
+                    ],
+                    "estimated_rows": 5.0,
+                    "index_access_type": "index_scan",
+                    "estimated_total_cost": 0.75
+                  }
+                ],
+                "condition": "(c.`status` = 'ACTIVE')",
+                "operation": "Filter: (c.`status` = 'ACTIVE')",
+                "access_type": "filter",
+                "estimated_rows": 1.0000000149011612,
+                "filter_columns": [
+                  "c.`status`"
+                ],
+                "estimated_total_cost": 0.75
+              },
+              {
+                "inputs": [
+                  {
+                    "alias": "m",
+                    "covering": false,
+                    "operation": "Index lookup on m using fk_milestone_contract (contract_id = c.contract_id)",
+                    "index_name": "fk_milestone_contract",
+                    "table_name": "milestones",
+                    "access_type": "index",
+                    "key_columns": [
+                      "contract_id"
+                    ],
+                    "schema_name": "mini_upwork_codex_test_20261114",
+                    "used_columns": [
+                      "milestone_id",
+                      "contract_id",
+                      "due_date",
+                      "status"
+                    ],
+                    "estimated_rows": 10.0,
+                    "lookup_condition": "contract_id = c.contract_id",
+                    "index_access_type": "index_lookup",
+                    "lookup_references": [
+                      "mini_upwork_codex_test_20261114.c.contract_id"
+                    ],
+                    "estimated_total_cost": 1.100000014901161
+                  }
+                ],
+                "condition": "((m.`status` in ('PENDING','IN_PROGRESS','COMPLETED')) and (m.due_date < <cache>((curdate() + interval 30 day))))",
+                "operation": "Filter: ((m.`status` in ('PENDING','IN_PROGRESS','COMPLETED')) and (m.due_date < <cache>((curdate() + interval 30 day))))",
+                "access_type": "filter",
+                "estimated_rows": 6.000000238418579,
+                "filter_columns": [
+                  "m.`status`",
+                  "m.due_date"
+                ],
+                "estimated_total_cost": 1.100000014901161
+              }
+            ],
+            "join_type": "inner join",
+            "operation": "Nested loop inner join",
+            "access_type": "join",
+            "estimated_rows": 6.00000032782555,
+            "join_algorithm": "nested_loop",
+            "estimated_total_cost": 2.250000022351742
+          }
+        ],
+        "group_by": true,
+        "functions": [
+          "count(m.milestone_id)"
+        ],
+        "operation": "Group aggregate: count(m.milestone_id)",
+        "access_type": "aggregate",
+        "estimated_rows": 2.4494898097002875,
+        "estimated_total_cost": 3.6324885771502555
+      },
+      "query_type": "select",
+      "json_schema_version": "2.0"
+    },
+    "explain_analyze": "-> Group aggregate: count(m.milestone_id)  (cost=3.63 rows=2.45) (actual time=0.0197..0.0299 rows=5 loops=1)\n    -> Nested loop inner join  (cost=2.25 rows=6) (actual time=0.0146..0.0274 rows=5 loops=1)\n        -> Filter: (c.`status` = 'ACTIVE')  (cost=0.75 rows=1) (actual time=0.0076..0.009 rows=5 loops=1)\n            -> Index scan on c using PRIMARY  (cost=0.75 rows=5) (actual time=0.0068..0.0076 rows=5 loops=1)\n        -> Filter: ((m.`status` in ('PENDING','IN_PROGRESS','COMPLETED')) and (m.due_date < <cache>((curdate() + interval 30 day))))  (cost=1.1 rows=6) (actual time=0.00292..0.00326 rows=1 loops=5)\n            -> Index lookup on m using fk_milestone_contract (contract_id = c.contract_id)  (cost=1.1 rows=10) (actual time=0.00216..0.00264 rows=2 loops=5)\n",
+    "passed": true
+  }
+]

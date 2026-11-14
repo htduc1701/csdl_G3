@@ -2,7 +2,7 @@
 
 ## 1. Chuẩn bị
 
-- **MySQL Server**. Dự án nhắm tới MySQL 8.0.42. Ghi lại mật khẩu root bạn đặt khi cài và cổng của server, thường là 3306. Nếu máy đã có MySQL, dùng thông tin của dịch vụ đang chạy.
+- **MySQL Server**. Môi trường demo là MySQL Community Server 26.7.0; bộ hồi quy dữ liệu cơ bản đã đạt 84/84 trên phiên bản này. Ghi lại mật khẩu root bạn đặt khi cài và cổng của server, thường là 3306. Nếu máy đã có MySQL, dùng thông tin của dịch vụ đang chạy.
 - **MySQL Workbench** để chạy các file SQL. Kiểm tra kết nối với host `localhost`, cổng của server và user `root`. Mục **Store Password** lưu mật khẩu cho Workbench. Mật khẩu của server được đặt lúc cài MySQL hoặc đổi bằng `ALTER USER`.
 - **Python**. Python 3.13 là phiên bản đã dùng cho bản chạy demo. Trong PowerShell, chạy `python --version` để kiểm tra.
 
@@ -10,10 +10,10 @@ Thực hành trên một MySQL instance mới nếu bạn cần trình bày từ
 
 ## 2. Cài đủ schema và dữ liệu
 
-1. Mở kết nối quản trị trong Workbench. Mở file [INSTALL_DATABASE.sql](INSTALL_DATABASE.sql) bằng **File → Open SQL Script** và chạy toàn bộ file. Dừng tại lỗi đầu tiên nếu Workbench báo lỗi.
-2. Script tạo bảng, trigger, view, index, procedure, tài khoản và nạp cả bộ dữ liệu mẫu. Làm mới **Schemas** để thấy `mini_upwork`. Phần cuối script kiểm đếm **11 bảng nghiệp vụ, 7.223 dòng dữ liệu, 1.008 jobs** trước khi phát sinh dữ liệu demo. Có thể chạy riêng [sql/09_verify_counts.sql](sql/09_verify_counts.sql) để hiện lại kết quả.
-3. Trong cùng kết nối quản trị, chạy toàn bộ [SETUP_LOCAL_DEMO.sql](SETUP_LOCAL_DEMO.sql). File đặt mật khẩu mẫu và mở khóa đúng ba tài khoản dùng trong web demo. Sau bước này, Client ID **1**, Freelancer ID **4** và tài khoản ghi nhận thanh toán có thể thực hiện các thao tác tương ứng.
-4. Khi trình bày phần truy vấn SQL, mở [sql/06_queries.sql](sql/06_queries.sql) và chạy các câu SELECT cần minh họa.
+1. Mở kết nối quản trị trong Workbench. Mở file [INSTALL_DATABASE.sql](Freelance_Marketplace_Ecosystem_SQL/INSTALL_DATABASE.sql) bằng **File → Open SQL Script** và chạy toàn bộ file. Dừng tại lỗi đầu tiên nếu Workbench báo lỗi.
+2. Script tạo bảng, trigger, view, index, procedure, tài khoản và nạp cả bộ dữ liệu mẫu. Làm mới **Schemas** để thấy `mini_upwork`. Phần cuối script kiểm đếm **11 bảng nghiệp vụ, 7.223 dòng dữ liệu, 1.008 jobs** trước khi phát sinh dữ liệu demo. Có thể chạy riêng [sql/09_verify_counts.sql](Freelance_Marketplace_Ecosystem_SQL/sql/09_verify_counts.sql) để hiện lại kết quả.
+3. Trong cùng kết nối quản trị, chạy toàn bộ [SETUP_LOCAL_DEMO.sql](Freelance_Marketplace_Ecosystem_SQL/SETUP_LOCAL_DEMO.sql). File đặt mật khẩu mẫu và mở khóa đúng ba tài khoản dùng trong web demo. Sau bước này, Client ID **1**, Freelancer ID **4** và tài khoản ghi nhận thanh toán có thể thực hiện các thao tác tương ứng.
+4. Khi trình bày phần truy vấn SQL, mở [sql/06_queries.sql](Freelance_Marketplace_Ecosystem_SQL/sql/06_queries.sql) và chạy các câu SELECT cần minh họa.
 
 File cài tổng hợp đã bao gồm dữ liệu trong `SAMPLE_DATA.sql`. Chọn một cách cài để tránh nạp trùng. Nếu gặp lỗi giữa chừng, giữ lại thông báo lỗi và kiểm tra phần đã chạy trước khi thử lại trên instance dùng để thực hành.
 

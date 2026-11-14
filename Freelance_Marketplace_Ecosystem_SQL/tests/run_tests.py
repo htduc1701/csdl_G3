@@ -42,7 +42,7 @@ def test(id,rule,sqls,code=0,contains=None,check=None):
 test('TC-01','BR-02',"INSERT INTO freelancers (freelancer_id) VALUES (1)",1644,'BR-02')
 test('TC-02','BR-08',"INSERT INTO proposals (job_id,freelancer_id,proposed_amount,cover_letter,estimated_days) VALUES (6,6,900,'duplicate',30)",1062)
 test('TC-03','BR-14',"INSERT INTO milestones (contract_id,title,amount) VALUES (1,'excess',1)",1644,'BR-14')
-test('TC-04','email',"INSERT INTO users (email,full_name,password_hash,user_type) VALUES ('DEMO1@example.test','Duplicate','DEMO','CLIENT')",1062)
+test('TC-04','email',"INSERT INTO users (email,full_name,password_hash,user_type) VALUES ('caohonghan.1@example.test','Duplicate','DEMO','CLIENT')",1062)
 test('TC-05','BR-04',"INSERT INTO jobs (client_id,category_id,title,description) VALUES (1,999,'invalid','scope')",1452)
 test('TC-06','positive money',"INSERT INTO proposals (job_id,freelancer_id,proposed_amount,cover_letter,estimated_days) VALUES (7,4,0,'invalid',10)",3819)
 test('TC-07','dates',"INSERT INTO contracts (proposal_id,client_id,freelancer_id,start_date,end_date,total_amount) VALUES (10,3,6,'2026-10-10','2026-10-09',900)",1644,'BR-11')

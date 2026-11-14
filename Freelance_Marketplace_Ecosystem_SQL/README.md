@@ -1,8 +1,8 @@
 # Mini-Upwork G3 — dữ liệu mẫu gần thực tế
 
-Xem [hướng dẫn cài và trình bày trên Windows](HUONG_DAN_DEMO.md) để chạy web Flask và demo đầy đủ luồng Client–Freelancer.
+Xem [hướng dẫn cài và trình bày trên Windows](../tutorial.md) để chạy web Flask và demo đầy đủ luồng Client–Freelancer.
 
-MySQL 8.0.42, InnoDB, READ COMMITTED; giữ nguyên 11 bảng nghiệp vụ.
+Môi trường demo: MySQL Community Server 26.7.0, InnoDB, READ COMMITTED; 11 bảng nghiệp vụ. Bộ test dữ liệu cơ bản đạt 84/84 trên 26.7.0. Compose tùy chọn giữ MySQL 8.0.42 cho môi trường lịch sử.
 
 ## Cài mới bằng MySQL Workbench
 

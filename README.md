@@ -1,6 +1,6 @@
 # Mini-Upwork G3 - MySQL + Flask
 
-Hướng dẫn cài mới trên Windows và trình bày với thầy: [HUONG_DAN_DEMO.md](Freelance_Marketplace_Ecosystem_SQL/HUONG_DAN_DEMO.md).
+Hướng dẫn cài mới trên Windows và trình bày với thầy: [tutorial.md](tutorial.md).
 
 This folder contains the executable database and the Phase 4 web prototype for the **Freelance Marketplace Ecosystem** project.
 
@@ -16,7 +16,7 @@ This folder contains the executable database and the Phase 4 web prototype for t
 
 ## 1. Current baseline
 
-- DBMS: MySQL 8.0 (validated design target: MySQL 8.0.42 or newer compatible 8.0 release)
+- DBMS: local MySQL Community Server 26.7.0 (port 3306). The 84-assertion base-fixture suite passed on this version. Optional Compose still pins the historical MySQL 8.0.42 environment.
 - Storage engine: InnoDB
 - Transaction isolation for supported workflow writes: READ COMMITTED
 - Business tables: 11

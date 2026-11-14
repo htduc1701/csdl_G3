@@ -1,5 +1,5 @@
 SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
--- MySQL 8.0.42; requires >= 8.0.16 for enforced CHECK. Non-destructive install.
+-- Local demo target: MySQL Community Server 26.7.0. Install on a fresh schema.
 CREATE DATABASE IF NOT EXISTS mini_upwork CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 USE mini_upwork;
 SET SESSION sql_mode = 'STRICT_TRANS_TABLES,ONLY_FULL_GROUP_BY,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';

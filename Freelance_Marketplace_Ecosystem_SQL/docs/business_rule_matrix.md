@@ -17,4 +17,4 @@
 | BR-13 | milestones.contract_id NOT NULL FK |
 | BR-14 | amount CHECK; parent lock and current aggregate under supported READ COMMITTED; contract update guard |
 | BR-15 | Ordered completion then approval; payment requires APPROVED; native account ownership checks |
-| BR-16 | Exact payer/payee/amount trigger and method CHECK; one PAID generated UNIQUE |
+| BR-16 | PAYMENT references MILESTONE; payer/payee/amount are derived through CONTRACT and MILESTONE; method/status CHECKs and generated UNIQUE allow many FAILED/PENDING attempts but at most one PAID attempt; trigger requires an APPROVED milestone in an ACTIVE contract |
