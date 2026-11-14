@@ -1,75 +1,78 @@
-# Mini-Upwork G3 — dữ liệu mẫu gần thực tế
+# Mini-Upwork G3 - Synthetic Sample Dataset
 
-Xem [hướng dẫn cài và trình bày trên Windows](../tutorial.md) để chạy web Flask và demo đầy đủ luồng Client–Freelancer.
+See the [main README](../README.md) and the [Windows setup guide](../tutorial.md) to run the Flask application and demonstrate the Client-Freelancer workflow.
 
-Môi trường demo: MySQL Community Server 26.7.0, InnoDB, READ COMMITTED; 11 bảng nghiệp vụ. Bộ test dữ liệu cơ bản đạt 84/84 trên 26.7.0. Compose tùy chọn giữ MySQL 8.0.42 cho môi trường lịch sử.
+Paths below are relative to `Freelance_Marketplace_Ecosystem_SQL`.
 
-## Cài mới bằng MySQL Workbench
+## 1. Environment and Dataset
 
-1. Kết nối MySQL bằng tài khoản quản trị có quyền tạo schema, trigger, view, procedure, role và user.
-2. File > Open SQL Script: mở INSTALL_DATABASE.sql.
-3. Chạy toàn bộ script, dừng nếu có lỗi. Refresh Schemas > mini_upwork > Tables.
-4. Chạy sql/09_verify_counts.sql: cột total_rows = 7223.
-5. Chạy sql/06_queries.sql để xem 12 truy vấn trên dữ liệu mới.
+- MySQL with InnoDB; `READ COMMITTED` isolation for workflow write operations.
+- **11 business tables**, containing **7,223 records**, including **1,008 jobs**.
+- The expanded dataset adds 1,000 jobs to the base sample dataset.
+- People and companies are fictional; email addresses use `example.test`; monetary amounts are in USD. Descriptions and skills are assembled across eight professional categories. This is template-generated data, not real transactions or data collected from real people.
+- The optional Compose configuration uses MySQL `8.0.42` on host port `3307`. A direct local installation typically uses port `3306`.
 
-File cài tổng hợp chỉ dùng với database mới. Không bỏ qua lỗi để import tiếp,
-không tự xóa database đang có. Các tài khoản MySQL mẫu đều bị khóa; DBA phải
-đặt bí mật riêng trước khi dùng. Ứng dụng không nên kết nối bằng root.
+## 2. Fresh Installation with MySQL Workbench
 
-## Đọc và nhập riêng dữ liệu
+1. Connect to MySQL with an administrative account authorized to create schemas, triggers, views, stored procedures, roles, and accounts.
+2. Select **File > Open SQL Script** and open [INSTALL_DATABASE.sql](INSTALL_DATABASE.sql).
+3. Run the entire script, stopping if any error occurs. Refresh **Schemas > mini_upwork > Tables**.
+4. The final section already verifies row counts; you can rerun [sql/09_verify_counts.sql](sql/09_verify_counts.sql). For the original dataset, `total_rows` is **7,223**.
+5. Run [SETUP_LOCAL_DEMO.sql](SETUP_LOCAL_DEMO.sql) as an administrator to use the web application with Client ID **1** and Freelancer ID **4**.
+6. Run [sql/06_queries.sql](sql/06_queries.sql) to view the 12 advanced queries.
 
-SAMPLE_DATA.sql chứa các bản ghi INSERT ... VALUES cụ thể như file
-dữ liệu video game: tên người Việt, công ty, chức danh, job, proposal và milestone.
-File này chỉ chạy sau sql/01_schema.sql đến sql/04_procedures.sql trên các bảng
-nghiệp vụ còn trống. Nó đã gồm cả 05 và 08: không chạy thêm seed nếu đã dùng
-INSTALL_DATABASE.sql. Tổng có 7223 bản ghi, riêng jobs có 1008 công việc tên khác nhau.
-Tên và công ty đều giả lập; email example.test; tiền trong dữ liệu mẫu tính bằng USD.
-Mô tả và kỹ năng được ghép theo 8 nhóm chuyên môn; vẫn là dữ liệu sinh theo mẫu,
-không phải giao dịch thật hay dữ liệu thu thập từ người thật.
+The installation bundle is intended for a fresh database only. Do not ignore errors and continue importing. Sample MySQL accounts are created in a locked state by `07_security.sql`; `SETUP_LOCAL_DEMO.sql` sets sample passwords matching `app/db.py` and unlocks the three accounts used for the local demo.
 
-## Nếu đã cài 01 đến 05 với bộ seed nhỏ
+## 3. Importing Sample Data Separately
 
-Chạy riêng sql/08_seed_1000_jobs.sql, rồi sql/09_verify_counts.sql.
-Không chạy lại INSTALL_DATABASE.sql hoặc 05_seed.sql trên các bảng đã có.
-Extension chạy một lần, giữ seed cũ (không đổi tên Demo trong seed cũ) và rollback dữ liệu thêm khi gặp lỗi.
-Nó từ chối nếu vùng ID sử dụng đã có dữ liệu. Nếu có dữ liệu riêng ngoài seed
-nhỏ, tổng thực tế có thể khác 7223. Chạy bằng phiên DBA độc lập, READ COMMITTED.
+[SAMPLE_DATA.sql](SAMPLE_DATA.sql) contains `INSERT ... VALUES` statements with fictional people, companies, professional titles, jobs, proposals, and milestones.
 
-## Kiểm thử
+Run it only after installing `sql/01_schema.sql` through `sql/04_procedures.sql` while the business tables are empty. It already includes both `05_seed.sql` and `08_seed_1000_jobs.sql`; do not load it again if `INSTALL_DATABASE.sql` has been used.
 
-Cài requirements.txt, đặt DB_HOST, DB_PORT, DB_USER, DB_PASSWORD rồi chạy:
+## 4. Extending the Base Dataset
 
-```bash
-python tests/verify_large_dataset.py
+If `01_schema.sql` through `05_seed.sql` are already installed, run only [sql/08_seed_1000_jobs.sql](sql/08_seed_1000_jobs.sql), followed by [sql/09_verify_counts.sql](sql/09_verify_counts.sql).
+
+Do not rerun `INSTALL_DATABASE.sql` or `05_seed.sql` on populated tables. The extension runs once, preserves the existing dataset, and rolls back added data if an error occurs. It refuses to run if its intended ID ranges are already occupied.
+
+If custom data exists beyond the base dataset, or demo actions have already been performed, the actual total may differ from 7,223. Run the extension in a separate administrative session with `READ COMMITTED` isolation.
+
+## 5. Verifying the Expanded Dataset
+
+Create a Python environment and install dependencies:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-Verifier chỉ đọc database, ghi evidence/large_dataset_results.json: kiểm tra
-11 số đếm, tổng 7223, 9 invariant bằng 0, 5 kiểm tra nội dung dữ liệu và thực thi đủ 12 advanced queries.
-Expected/Actual Result cũ của bộ seed 75 dòng không áp dụng cho dữ liệu lớn.
+Set the connection details and run the verifier. Change the port to `3307` when using the project's Compose configuration.
 
-CẢNH BÁO: tests/run_tests.py --install là bộ kiểm thử seed nhỏ có bước
-DROP/rebuild mini_upwork. Không chạy nó trên database demo lớn hoặc dữ liệu
-cần giữ. Nếu muốn chạy bộ nhỏ, dùng MySQL instance riêng trước khi thêm seed lớn.
+```powershell
+$env:DB_HOST = '127.0.0.1'
+$env:DB_PORT = '3306'
+$env:DB_USER = 'root'
+$mysqlPassword = Read-Host 'Enter the MySQL root password' -AsSecureString
+$env:DB_PASSWORD = [System.Net.NetworkCredential]::new('', $mysqlPassword).Password
+.\.venv\Scripts\python.exe tests\verify_large_dataset.py
+```
 
-## Phạm vi dữ liệu và bằng chứng
+The verifier only reads the database and writes results to `evidence/large_dataset_results.json`. It checks row counts for all 11 tables, the 7,223-row total, nine integrity conditions with zero violations, five data-content checks, and execution of all 12 advanced queries.
 
-Extension thêm 1000 jobs và các tài khoản, skills, proposals, contracts,
-milestones, payments liên quan. Có jobs chưa nhận proposal, đề xuất chờ chọn,
-chờ xác nhận, hợp đồng ACTIVE/COMPLETED, bốn trạng thái milestone và ba trạng
-thái payment. Có FAILED rồi retry PAID, không có hai PAID trên một milestone.
-Subtype và contract vẫn được tạo bởi trigger, không tắt constraints.
-Dữ liệu người/công ty hoàn toàn giả lập, email example.test, hash không đăng nhập.
+Expected and actual results for the 75-row base dataset do not apply to the large dataset. The fixed-count verifier may report a mismatch after demo data has been added.
 
-- docs/large_dataset_report.md và evidence/large_dataset_results.json: kết quả
-  thực thi mới trên 7223 dòng, 9 invariant và 12 query với 10 dòng đầu mỗi query.
-- Các evidence JSON khác và audit/query/test reports ghi lần chạy seed nhỏ:
-  72 integrity/concurrency checks, 20 RBAC checks, 12 query assertions; không
-  phải tuyên bố chạy lại 104 checks trên seed lớn.
-- Báo cáo Word không nằm trong gói. Nếu dùng dữ liệu lớn để nộp, cập nhật mục
-  Synthetic data coverage và Expected/Actual Result theo large_dataset_report.md.
-- Tăng dữ liệu không thay đổi thiết kế PAYMENT. Web Flask có trong gói này.
-  Luồng thanh toán chỉ ghi nhận trạng thái mô phỏng.
-- 240 hồ sơ mới không tự tạo 240 tài khoản MySQL; native accounts mẫu vẫn chỉ
-  dành cho localhost theo 07_security.sql.
+**Warning:** `tests/run_tests.py --install` targets the base dataset and includes dropping and rebuilding the `mini_upwork` schema. Run it only on a separate MySQL instance dedicated to testing. Running without `--install` can still change data during test cases; do not run it on a demo database that must be preserved.
 
-Yêu cầu là ít nhất 1000 bản ghi dữ liệu. Bộ này có 1008 công việc và tổng 7223 bản ghi liên quan; không dùng số dòng văn bản SQL để tính dữ liệu.
+## 6. Data Coverage and Recorded Results
+
+The dataset includes jobs without proposals, proposals awaiting selection or confirmation, contracts in `ACTIVE`/`COMPLETED` states, four milestone states, and three payment states.
+
+It includes a `FAILED` payment followed by a successful `PAID` retry, without two `PAID` payments for the same milestone. Subtype records and contracts are still created by triggers; constraints remain enabled.
+
+- [docs/large_dataset_report.md](docs/large_dataset_report.md) and [evidence/large_dataset_results.json](evidence/large_dataset_results.json) contain evidence from a previous large-dataset verification run.
+- The [test log dated November 14, 2026](../audit_test_results/FRESH_TEST_RUN_2026-11-14.md) records 72 passing integrity, workflow, and concurrency checks plus 12 passing query-result assertions, totaling **84/84**, on a server reporting version `26.7.0` using the base dataset in a disposable schema. That run excludes RBAC, large-dataset, and performance tests and does not certify compatibility with MySQL `8.0.42`.
+- Other evidence files may refer to older datasets or environments; they do not establish that every suite has been rerun on the large dataset.
+- Expanding the dataset does not change the normalized `payments` design. The web payment workflow only records simulated statuses.
+- The 240 additional profiles do not automatically create 240 MySQL accounts. Sample MySQL accounts remain restricted to `localhost` as defined in `sql/07_security.sql`; fictional profiles do not provide actual login access.
+
+Record counts refer to rows stored in tables, not lines of SQL text.

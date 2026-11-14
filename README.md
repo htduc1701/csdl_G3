@@ -1,29 +1,47 @@
-# Mini-Upwork G3 - Cơ sở dữ liệu MySQL và web Flask
+# Mini-Upwork G3 - MySQL Database and Flask Web Application
 
-Dự án **Freelance Marketplace Ecosystem** (hệ sinh thái kết nối khách hàng và người làm việc tự do) gồm cơ sở dữ liệu có thể cài đặt và bản mẫu web giai đoạn 4 viết bằng Flask.
+The **Freelance Marketplace Ecosystem** project includes an installable database and a Flask web application demonstrating the marketplace workflow.
 
-Xem [hướng dẫn cài đặt và trình bày trên Windows](tutorial.md) hoặc [hướng dẫn dữ liệu mẫu](Freelance_Marketplace_Ecosystem_SQL/README.md).
+See the [Windows setup and demonstration guide](tutorial.md) or the [sample dataset guide](Freelance_Marketplace_Ecosystem_SQL/README.md).
 
-## Nhóm G3
+## Project and Repository Information
 
-| MSSV | Họ và tên | Tài khoản GitHub |
-|---|---|---|
-| N25DCAT073 | Huỳnh Thiện Đức | [htduc1701](https://github.com/htduc1701) |
-| N25DCAT076 | Phạm Việt Hoàng | [shinmagicc](https://github.com/shinmagicc) |
-| N25DCAT079 | Đặng Quang Huy | [Kurookani](https://github.com/Kurookani) |
+| Field | Details |
+|---|---|
+| Institution | Posts and Telecommunications Institute of Technology, Ho Chi Minh City Campus (PTITHCM) |
+| Class | D25CQAT02-N |
+| Course | INT1313 - Databases |
+| Semester | Semester 1, academic year 2026-2027 |
+| Project | Project 3 - Mini Upwork: Freelance Marketplace Ecosystem |
+| Team | G3 |
+| Repository | [htduc1701/csdl_G3](https://github.com/htduc1701/csdl_G3) |
+| Default branch | `main` |
+| Instructor contact | `lehathanh@ptithcm.edu.vn` |
 
-## 1. Môi trường và thiết kế hiện tại
+## Team Members
 
-- Hệ quản trị cơ sở dữ liệu: MySQL Community Server cài trên máy, cổng thường dùng là `3306`.
-- Nhật ký [kiểm thử ngày 14/11/2026](audit_test_results/FRESH_TEST_RUN_2026-11-14.md) ghi nhận **84/84 phép kiểm tra đạt** trên máy chủ báo phiên bản `26.7.0`, với bộ dữ liệu cơ bản trong schema tạm. Kết quả này không xác nhận khả năng tương thích với MySQL `8.0.42`.
-- Cấu hình Docker Compose tùy chọn dùng MySQL `8.0.42`, ánh xạ cổng `3307` trên máy vào cổng `3306` trong vùng chứa.
-- Bộ máy lưu trữ: InnoDB.
-- Mức cô lập giao dịch cho các thao tác ghi theo quy trình: `READ COMMITTED`.
-- Số bảng nghiệp vụ: **11**.
-- Phần máy chủ web: Flask.
-- Thư viện kết nối MySQL: `mysql-connector-python` cho Flask và `PyMySQL` cho các công cụ kiểm thử.
+All members are PTITHCM students. Their full names, student IDs, institutional email addresses, and GitHub accounts are listed below.
 
-Bảng `payments` sau chuẩn hóa chỉ lưu thông tin của từng lần ghi nhận thanh toán:
+| Student ID | Full name | PTITHCM student email | GitHub account |
+|---|---|---|---|
+| N25DCAT073 | Huỳnh Thiện Đức | `n25dcat073@student.ptithcm.edu.vn` | [htduc1701](https://github.com/htduc1701) |
+| N25DCAT076 | Phạm Việt Hoàng | `n25dcat076@student.ptithcm.edu.vn` | [shinmagicc](https://github.com/shinmagicc) |
+| N25DCAT079 | Đặng Quang Huy | `n25dcat079@student.ptithcm.edu.vn` | [Kurookani](https://github.com/Kurookani) |
+
+## 1. Current Environment and Design
+
+- DBMS: locally installed MySQL Community Server, typically on port `3306`.
+- The [test log dated November 14, 2026](audit_test_results/FRESH_TEST_RUN_2026-11-14.md) records **84/84 assertions passed** on a server reporting version `26.7.0`, using the base dataset in a disposable schema. This result does not certify compatibility with MySQL `8.0.42`.
+- The optional Docker Compose configuration uses MySQL `8.0.42`, mapping host port `3307` to container port `3306`.
+- Storage engine: InnoDB.
+- Transaction isolation for workflow write operations: `READ COMMITTED`.
+- Business tables: **11**.
+- Web backend: Flask.
+- Python: version `3.13` was used for the local demo; dependencies are listed in `requirements.txt`.
+- SQL installation tool: MySQL Workbench.
+- MySQL drivers: `mysql-connector-python` for Flask and `PyMySQL` for test utilities.
+
+The normalized `payments` table stores only payment-attempt facts:
 
 ```text
 payments(
@@ -31,55 +49,55 @@ payments(
     milestone_id FK,
     payment_status,
     payment_method,
-    paid_milestone_id UQ [cột sinh tự động]
+    paid_milestone_id UQ [generated column]
 )
 ```
 
-`PK` là khóa chính, `FK` là khóa ngoại và `UQ` là ràng buộc duy nhất. Người trả, người nhận và số tiền được xác định qua liên kết `payments -> milestones -> contracts`.
+`PK` denotes a primary key, `FK` a foreign key, and `UQ` a unique constraint. The payer, payee, and amount are derived through `payments -> milestones -> contracts`.
 
-## 2. Các tệp và thư mục quan trọng
+## 2. Important Files and Directories
 
-Mã nguồn và các tệp SQL nằm trong thư mục [Freelance_Marketplace_Ecosystem_SQL](Freelance_Marketplace_Ecosystem_SQL). Các đường dẫn trong bảng dưới đây tính từ thư mục đó.
+Source code and SQL scripts are in [Freelance_Marketplace_Ecosystem_SQL](Freelance_Marketplace_Ecosystem_SQL). Paths in the following table are relative to that directory.
 
-| Đường dẫn | Nội dung |
+| Path | Description |
 |---|---|
-| `app/` | Các mẫu giao diện Flask và hàm hỗ trợ kết nối cơ sở dữ liệu |
-| `main.py` | Tệp khởi chạy ứng dụng Flask |
-| `sql/01_schema.sql` | Bảng, khóa và ràng buộc `CHECK` |
-| `sql/02_triggers.sql` | Trigger kiểm soát quy trình và tính toàn vẹn |
-| `sql/03_views_indexes.sql` | View báo cáo và chỉ mục |
-| `sql/04_procedures.sql` | Các thủ tục lưu trữ phục vụ ứng dụng |
-| `sql/05_seed.sql` | Bộ dữ liệu mẫu cơ bản, giả lập |
-| `sql/06_queries.sql` | 12 truy vấn nâng cao |
-| `sql/07_security.sql` | Vai trò và tài khoản MySQL mẫu |
-| `sql/08_seed_1000_jobs.sql` | Bộ dữ liệu mở rộng thêm 1.000 công việc |
-| `sql/09_verify_counts.sql` | Kiểm đếm số dòng dữ liệu |
-| `INSTALL_DATABASE.sql` | Tệp cài đặt tổng hợp từ các tệp SQL thành phần |
-| `SAMPLE_DATA.sql` | Tệp tổng hợp dữ liệu mẫu cơ bản và mở rộng |
-| `SETUP_LOCAL_DEMO.sql` | Đặt mật khẩu mẫu và mở khóa ba tài khoản dùng để demo |
-| `tests/` | Kiểm thử hồi quy, hiệu năng và dữ liệu lớn |
-| `evidence/` | Bằng chứng kiểm thử đã lưu hoặc được tạo khi chạy kiểm thử |
-| `docs/` | Tài liệu thiết kế và kiểm chứng |
-| `requirements.txt` | Các thư viện Python cho ứng dụng và kiểm thử |
-| `compose.yaml` | Cấu hình MySQL tùy chọn bằng Docker Compose |
+| `app/` | Flask templates and database connection helpers |
+| `main.py` | Flask application entry point |
+| `sql/01_schema.sql` | Tables, keys, and `CHECK` constraints |
+| `sql/02_triggers.sql` | Workflow and integrity triggers |
+| `sql/03_views_indexes.sql` | Reporting views and indexes |
+| `sql/04_procedures.sql` | Stored procedures used by the application |
+| `sql/05_seed.sql` | Base fictional sample dataset |
+| `sql/06_queries.sql` | 12 advanced queries |
+| `sql/07_security.sql` | Roles and sample MySQL accounts |
+| `sql/08_seed_1000_jobs.sql` | Dataset extension adding 1,000 jobs |
+| `sql/09_verify_counts.sql` | Exact row-count verification |
+| `INSTALL_DATABASE.sql` | Full installation bundle assembled from the modular SQL scripts |
+| `SAMPLE_DATA.sql` | Combined base and expanded sample dataset |
+| `SETUP_LOCAL_DEMO.sql` | Sets sample passwords and unlocks the three demo accounts |
+| `tests/` | Regression, performance, and large-dataset tests |
+| `evidence/` | Archived or generated test evidence |
+| `docs/` | Design and verification documentation |
+| `requirements.txt` | Python dependencies for the application and tests |
+| `compose.yaml` | Optional MySQL configuration using Docker Compose |
 
-## 3. Cài đặt cơ sở dữ liệu
+## 3. Database Installation
 
-### Cách A - cài đặt bằng một tệp trong MySQL Workbench
+### Option A - Single-File Installation in MySQL Workbench
 
-Dùng cho cơ sở dữ liệu **mới**, chưa có các bảng nghiệp vụ của dự án.
+Use this option for a **fresh** database without the project's business tables.
 
-1. Mở MySQL Workbench và kết nối bằng tài khoản quản trị.
-2. Mở [INSTALL_DATABASE.sql](Freelance_Marketplace_Ecosystem_SQL/INSTALL_DATABASE.sql).
-3. Chạy toàn bộ tệp; dừng và kiểm tra nếu bất kỳ câu lệnh nào báo lỗi.
-4. Làm mới danh sách **Schemas** để thấy schema `mini_upwork`.
-5. Phần cuối tệp thực hiện nội dung của `sql/09_verify_counts.sql`. Với bộ dữ liệu mở rộng nguyên bản, kết quả dự kiến là **7.223 dòng**, trong đó có **1.008 công việc** trong bảng `jobs`.
+1. Open MySQL Workbench and connect with an administrative account.
+2. Open [INSTALL_DATABASE.sql](Freelance_Marketplace_Ecosystem_SQL/INSTALL_DATABASE.sql).
+3. Run the entire script; stop and investigate if any statement reports an error.
+4. Refresh **Schemas** to see the `mini_upwork` schema.
+5. The final section executes the contents of `sql/09_verify_counts.sql`. For the original expanded dataset, the expected total is **7,223 rows**, including **1,008 jobs** in the `jobs` table.
 
-`INSTALL_DATABASE.sql` được tổng hợp từ các tệp thành phần theo thiết kế đã chuẩn hóa. Bảng `payments` không còn các cột cũ `payer_id`, `payee_id` và `amount`.
+`INSTALL_DATABASE.sql` is assembled from the modular scripts using the normalized design. The `payments` table no longer contains the legacy `payer_id`, `payee_id`, or `amount` columns.
 
-### Cách B - cài đặt từng tệp thành phần
+### Option B - Modular Installation
 
-Trên cơ sở dữ liệu mới, chạy các tệp trong thư mục `sql/` theo thứ tự:
+On a fresh database, run the files in `sql/` in this order:
 
 ```text
 01_schema.sql
@@ -92,24 +110,33 @@ Trên cơ sở dữ liệu mới, chạy các tệp trong thư mục `sql/` theo
 09_verify_counts.sql
 ```
 
-Sau đó chạy `06_queries.sql` khi cần minh họa các truy vấn nâng cao.
+Then run `06_queries.sql` to demonstrate the advanced queries.
 
-**Không nạp lại** `05_seed.sql`, `08_seed_1000_jobs.sql`, `SAMPLE_DATA.sql` hoặc `INSTALL_DATABASE.sql` vào cơ sở dữ liệu demo đã có đầy đủ dữ liệu.
+**Do not reload** `05_seed.sql`, `08_seed_1000_jobs.sql`, `SAMPLE_DATA.sql`, or `INSTALL_DATABASE.sql` into a demo database that already contains the complete dataset.
 
-## 4. Tệp chỉ chứa dữ liệu mẫu
+## 4. Sample-Data-Only Bundle
 
-`SAMPLE_DATA.sql` tổng hợp nội dung của:
+`SAMPLE_DATA.sql` combines the contents of:
 
 ```text
 sql/05_seed.sql
 sql/08_seed_1000_jobs.sql
 ```
 
-Chỉ dùng sau khi đã cài `01_schema.sql` đến `04_procedures.sql` và các bảng nghiệp vụ còn trống. Nếu đã chạy `INSTALL_DATABASE.sql`, không chạy thêm `SAMPLE_DATA.sql`.
+Use it only after installing `01_schema.sql` through `04_procedures.sql` while the business tables are still empty. If `INSTALL_DATABASE.sql` has already been run, do not run `SAMPLE_DATA.sql` as well.
 
-## 5. Chuẩn bị môi trường Python
+## 5. Python Environment Setup
 
-Từ thư mục gốc của kho mã nguồn, mở PowerShell và chạy:
+These steps deploy the application locally on Windows with MySQL and Flask.
+
+If you have not downloaded the repository, open PowerShell and run:
+
+```powershell
+git clone https://github.com/htduc1701/csdl_G3.git
+Set-Location .\csdl_G3
+```
+
+From the repository root, prepare the Python environment:
 
 ```powershell
 Set-Location .\Freelance_Marketplace_Ecosystem_SQL
@@ -117,9 +144,9 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-Nếu đã ở trong `Freelance_Marketplace_Ecosystem_SQL`, bỏ qua lệnh `Set-Location`. Các lệnh bên dưới cũng chạy tại thư mục này. Gọi trực tiếp Python trong `.venv` giúp sử dụng đúng môi trường mà không cần kích hoạt hay đổi chính sách thực thi PowerShell.
+If you are already in `Freelance_Marketplace_Ecosystem_SQL`, skip `Set-Location`. Run the remaining commands from that directory too. Calling Python directly from `.venv` uses the correct environment without activation or changes to the PowerShell execution policy.
 
-Các thư viện trong `requirements.txt`:
+Dependencies in `requirements.txt`:
 
 ```text
 Flask
@@ -127,62 +154,62 @@ mysql-connector-python
 PyMySQL[rsa]==1.1.2
 ```
 
-## 6. Chạy bản demo Flask giai đoạn 4
+## 6. Running the Flask Application
 
-Khởi động dịch vụ MySQL. Sau khi cài cơ sở dữ liệu, chạy [SETUP_LOCAL_DEMO.sql](Freelance_Marketplace_Ecosystem_SQL/SETUP_LOCAL_DEMO.sql) bằng tài khoản quản trị để đặt mật khẩu mẫu và mở khóa các tài khoản demo.
+Start the MySQL service. After installing the database, run [SETUP_LOCAL_DEMO.sql](Freelance_Marketplace_Ecosystem_SQL/SETUP_LOCAL_DEMO.sql) as an administrator to set sample passwords and unlock the demo accounts.
 
-Trong cửa sổ PowerShell dùng để chạy Flask, đặt thông tin kết nối:
+Set the connection details in the PowerShell session used to run Flask:
 
 ```powershell
 $env:DB_HOST = 'localhost'
 $env:DB_PORT = '3306'
 $env:DB_USER = 'root'
-$env:DB_PASSWORD = Read-Host 'Nhập mật khẩu MySQL root' -MaskInput
+$env:DB_PASSWORD = Read-Host 'Enter the MySQL root password' -MaskInput
 .\.venv\Scripts\python.exe main.py
 ```
 
-Nếu PowerShell không hỗ trợ `-MaskInput`, thay dòng nhập mật khẩu bằng đoạn sau trước khi chạy `main.py`:
+If PowerShell does not support `-MaskInput`, replace the password input line with the following before running `main.py`:
 
 ```powershell
-$mysqlPassword = Read-Host 'Nhập mật khẩu MySQL root' -AsSecureString
+$mysqlPassword = Read-Host 'Enter the MySQL root password' -AsSecureString
 $env:DB_PASSWORD = [System.Net.NetworkCredential]::new('', $mysqlPassword).Password
 ```
 
-Ví dụ dùng `root` phù hợp với cấu hình demo hiện có: ứng dụng dùng `DB_USER`/`DB_PASSWORD` cho các kết nối đọc, còn thao tác ghi của Client, Freelancer và dịch vụ thanh toán dùng tài khoản riêng trong `app/db.py`.
+The `root` example matches the current demo configuration: the application uses `DB_USER`/`DB_PASSWORD` for read connections, while Client, Freelancer, and payment-service writes use separate accounts defined in `app/db.py`.
 
-Mở [http://127.0.0.1:5000](http://127.0.0.1:5000). Giữ cửa sổ PowerShell mở trong lúc demo; nhấn `Ctrl+C` để dừng.
+Open [http://127.0.0.1:5000](http://127.0.0.1:5000). Keep PowerShell open during the demonstration; press `Ctrl+C` to stop the application.
 
-Quy trình trình bày chính:
+Main demonstration workflow:
 
-1. Khách hàng (Client) đăng công việc (Job).
-2. Người làm việc tự do (Freelancer) gửi đề xuất (Proposal).
-3. Khách hàng chọn đề xuất.
-4. Freelancer xác nhận; hệ thống tạo hợp đồng (Contract).
-5. Khách hàng tạo mốc công việc (Milestone).
-6. Freelancer bắt đầu và hoàn thành công việc.
-7. Khách hàng phê duyệt mốc công việc.
-8. Ghi nhận thanh toán (Payment) mô phỏng.
-9. Xem kết quả trên trang báo cáo.
+1. The Client posts a Job.
+2. The Freelancer submits a Proposal.
+3. The Client selects the Proposal.
+4. The Freelancer confirms; the system creates a Contract.
+5. The Client creates a Milestone.
+6. The Freelancer starts and completes the work.
+7. The Client approves the Milestone.
+8. A simulated Payment is recorded.
+9. The results appear on the reports page.
 
-Luồng demo chính dùng Client ID **`1`** và Freelancer ID **`4`**. Đây là bản mẫu phục vụ học tập; chức năng thanh toán chỉ ghi nhận trạng thái, không thu tiền thật.
+The main demo uses Client ID **`1`** and Freelancer ID **`4`**. This is an educational prototype; payment functionality records status only and does not charge real money.
 
-## 7. Kiểm tra bộ dữ liệu mở rộng
+## 7. Verifying the Expanded Dataset
 
-Đặt biến kết nối tới MySQL chứa bộ dữ liệu mở rộng. Với MySQL cài trên máy, thường dùng cổng `3306`; với Compose của dự án, dùng cổng `3307`.
+Set the connection variables for the MySQL instance containing the expanded dataset. A local installation typically uses port `3306`; the project's Compose configuration uses port `3307`.
 
 ```powershell
 $env:DB_HOST = '127.0.0.1'
 $env:DB_PORT = '3306'
 $env:DB_USER = 'root'
-$env:DB_PASSWORD = Read-Host 'Nhập mật khẩu MySQL root' -MaskInput
+$env:DB_PASSWORD = Read-Host 'Enter the MySQL root password' -MaskInput
 .\.venv\Scripts\python.exe tests\verify_large_dataset.py
 ```
 
-Nếu PowerShell không hỗ trợ `-MaskInput`, dùng đoạn `-AsSecureString` ở mục 6.
+If PowerShell does not support `-MaskInput`, use the `-AsSecureString` alternative in Section 6.
 
-Số dòng dự kiến của bộ dữ liệu nguyên bản:
+Expected row counts for the original dataset:
 
-| Bảng | Số dòng |
+| Table | Rows |
 |---|---:|
 | `users` | 248 |
 | `clients` | 43 |
@@ -190,86 +217,78 @@ Số dòng dự kiến của bộ dữ liệu nguyên bản:
 | `skills` | 26 |
 | `freelancer_skills` | 610 |
 | `job_categories` | 11 |
-| `jobs` | 1.008 |
-| `proposals` | 1.811 |
+| `jobs` | 1,008 |
+| `proposals` | 1,811 |
 | `contracts` | 605 |
-| `milestones` | 1.810 |
+| `milestones` | 1,810 |
 | `payments` | 846 |
-| **Tổng** | **7.223** |
+| **Total** | **7,223** |
 
-Các số này áp dụng **trước khi phát sinh dữ liệu demo**. Sau khi đăng công việc, gửi đề xuất hoặc ghi nhận thanh toán, số dòng thực tế có thể tăng và chương trình kiểm tra số lượng cố định sẽ báo khác kỳ vọng.
+These counts apply **before adding demo data**. Posting jobs, submitting proposals, or recording payments may increase the actual counts and cause the fixed-count verifier to report a mismatch.
 
-Chương trình kiểm tra dùng bảng `payments` đã chuẩn hóa và đối chiếu trạng thái thanh toán, công việc. Chương trình chỉ đọc cơ sở dữ liệu nhưng ghi kết quả vào `evidence/large_dataset_results.json`.
+The verifier uses the normalized `payments` table and checks payment and work states. It only reads the database, but writes its results to `evidence/large_dataset_results.json`.
 
-## 8. Chạy bộ kiểm thử hồi quy
+## 8. Running the Regression Suite
 
-**Cảnh báo:** `tests/run_tests.py --install` có bước xóa và tạo lại schema `mini_upwork`. Chỉ chạy trên một MySQL instance riêng dùng cho kiểm thử, không chứa dữ liệu cần giữ. Chạy không có `--install` vẫn có thể thay đổi dữ liệu trong các ca kiểm thử; không dùng trên cơ sở dữ liệu demo cần bảo toàn.
+**Warning:** `tests/run_tests.py --install` includes a step that drops and rebuilds the `mini_upwork` schema. Run it only on a separate MySQL instance dedicated to testing, with no data that must be preserved. Running without `--install` can still change data during test cases; do not use it on a demo database that must remain intact.
 
-Ví dụ dưới đây giả sử instance kiểm thử riêng lắng nghe ở cổng `3307`; thay bằng đúng cổng của instance đó. Dùng một cổng khác không tự bảo đảm dữ liệu đã được cô lập.
+The example below assumes a separate test instance listening on port `3307`; replace this with its actual port. A different port alone does not guarantee isolation.
 
 ```powershell
 $env:DB_HOST = '127.0.0.1'
 $env:DB_PORT = '3307'
 $env:DB_USER = 'root'
-$env:DB_PASSWORD = Read-Host 'Nhập mật khẩu MySQL kiểm thử' -MaskInput
+$env:DB_PASSWORD = Read-Host 'Enter the test MySQL password' -MaskInput
 .\.venv\Scripts\python.exe tests\run_tests.py --install
 ```
 
-Nếu PowerShell không hỗ trợ `-MaskInput`, dùng đoạn `-AsSecureString` ở mục 6 với mật khẩu của instance kiểm thử.
+If PowerShell does not support `-MaskInput`, use the `-AsSecureString` alternative in Section 6 with the test instance's password.
 
-Để chạy thêm kiểm tra phân quyền theo vai trò (RBAC) bằng tài khoản MySQL:
+To include role-based access control (RBAC) checks using MySQL accounts:
 
 ```powershell
 .\.venv\Scripts\python.exe tests\run_tests.py --install --security
 ```
 
-Các tệp bằng chứng được ghi lại trong quá trình chạy:
+Evidence files written during the run:
 
-| Tệp | Nội dung |
+| File | Description |
 |---|---|
-| `evidence/test_results.json` | Kết quả kiểm tra tính toàn vẹn và quy trình |
-| `evidence/query_results.json` | Kết quả kiểm tra truy vấn |
-| `evidence/security_results.json` | Kết quả phân quyền khi có `--security` |
-| `evidence/environment.json` | Thông tin môi trường kiểm thử |
+| `evidence/test_results.json` | Integrity and workflow test results |
+| `evidence/query_results.json` | Query test results |
+| `evidence/security_results.json` | Authorization results when `--security` is used |
+| `evidence/environment.json` | Test environment details |
 
-Chỉ đổi trạng thái báo cáo từ **Chưa chạy lại (Not rerun)** sang **Đạt (PASS)** khi lần chạy tương ứng trên phiên bản hiện tại đã thành công và có bằng chứng được lưu. Kết quả 84/84 ở mục 1 không bao gồm bộ RBAC, kiểm thử dữ liệu lớn hay hiệu năng.
+The regression suite uses the base sample dataset. The recorded 84/84 result in Section 1 excludes RBAC, large-dataset, and performance tests.
 
-## 9. Kiểm thử hiệu năng
+## 9. Performance Testing
 
-Sau khi đặt biến kết nối cho instance kiểm thử, chạy chương trình tùy chọn dùng PyMySQL:
+After setting the connection variables for the test instance, run the optional PyMySQL-based script:
 
 ```powershell
 .\.venv\Scripts\python.exe tests\run_performance.py
 ```
 
-Các số đo hiệu năng cũ trong báo cáo là kết quả đã lưu từ lần chạy trước. Cần chạy lại nếu muốn có bằng chứng đo mới.
+Historical performance figures in the report are archived measurements. Rerun the script when fresh benchmark evidence is required.
 
-## 10. Bảo mật và phạm vi đề tài
+## 10. Access Control and Functional Scope
 
-- Các thao tác ghi của ứng dụng sử dụng thủ tục lưu trữ và quy tắc nghiệp vụ trong cơ sở dữ liệu.
-- `payment_service` là tài khoản ứng dụng được thiết kế để gọi `sp_record_payment`.
-- Các vai trò ứng dụng thông thường của Client, Freelancer và dịch vụ thanh toán không được cấp quyền sửa dữ liệu trực tiếp trên bảng.
-- Bản mẫu Flask giai đoạn 4 phục vụ trình bày trên lớp, chưa phải hệ thống xác thực và thanh toán để triển khai thực tế.
-- Các chức năng ngoài phạm vi: ký quỹ, hoàn tiền, thu tiền qua cổng thanh toán thật, bảo đảm yêu cầu thanh toán lặp không bị xử lý trùng tại nhà cung cấp, khôi phục mật khẩu, nhắn tin và thuật toán ghép nối.
-- Không đưa mật khẩu thật hoặc thông tin truy cập dịch vụ thanh toán thực tế lên kho mã nguồn.
+- Client, Freelancer, and payment-service writes use stored procedures; triggers and constraints enforce the business workflow.
+- The corresponding application roles are not granted direct table modification privileges. The `payment_service` account calls `sp_record_payment` to record payments.
+- The application demonstrates job posting, proposal submission and confirmation, contract creation, milestone management, and reporting.
+- Payments are simulated through database records and statuses; real payment gateways, escrow, and refunds are not integrated.
+- Accounts and passwords in `SETUP_LOCAL_DEMO.sql` are for local testing. A complete user authentication mechanism has not been implemented.
 
-## 11. Nội dung đề nghị đưa vào bài nộp
+## 11. Project Documentation and Deliverables
 
-Giữ các thành phần sau trong thư mục mã nguồn:
-
-```text
-app/
-docs/
-evidence/
-sql/
-tests/
-main.py
-requirements.txt
-README.md
-compose.yaml
-INSTALL_DATABASE.sql
-SAMPLE_DATA.sql
-SETUP_LOCAL_DEMO.sql
-```
-
-Kèm README ở thư mục gốc, `tutorial.md` và báo cáo Word khi đóng gói toàn bộ bài nộp. Không đưa `.venv/`, `__pycache__/`, `*.pyc` hoặc `.git/` vào tệp ZIP nộp bài.
+| Resource | Contents |
+|---|---|
+| [Detailed project report](Freelance_Marketplace_Ecosystem_G3.docx) | Project scope, requirements, conceptual and logical design, normalization, data dictionary, SQL implementation, application integration, and verification results |
+| [Windows setup and demonstration guide](tutorial.md) | Database installation, environment configuration, application startup, demo workflow, and troubleshooting |
+| [Sample dataset guide](Freelance_Marketplace_Ecosystem_SQL/README.md) | Synthetic data coverage, import options, expected row counts, and verification commands |
+| [Design and verification documentation](Freelance_Marketplace_Ecosystem_SQL/docs) | Business rules, schema mapping, normalization analysis, query catalog, security, and test documentation |
+| [Sample data bundle](Freelance_Marketplace_Ecosystem_SQL/SAMPLE_DATA.sql) | Base and expanded synthetic datasets |
+| [SQL implementation](Freelance_Marketplace_Ecosystem_SQL/sql) | Schema, triggers, views, indexes, stored procedures, queries, security configuration, and verification scripts |
+| [Application source](Freelance_Marketplace_Ecosystem_SQL/main.py) and [templates and database helpers](Freelance_Marketplace_Ecosystem_SQL/app) | Flask implementation of the demonstrated workflow |
+| [Test scripts](Freelance_Marketplace_Ecosystem_SQL/tests) and [saved evidence](Freelance_Marketplace_Ecosystem_SQL/evidence) | Regression, authorization, performance, and large-dataset verification resources |
+| [Presentation and defense workflow](Workflow_Thuyet_trinh_va_Bao_ve_SQL_G3.docx) | Demonstration sequence and preparation for the oral defense |
