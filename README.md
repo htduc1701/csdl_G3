@@ -32,7 +32,7 @@ All members are PTITHCM students. Their full names, student IDs, institutional e
 ## 1. Current Environment and Design
 =======
 <<<<<<< HEAD
-- DBMS: local MySQL Community Server 26.7.0 (port 3306). The base-fixture suite passed 104/104 checks on this version on 2026-11-15, including 20 RBAC checks. Optional Compose still pins the historical MySQL 8.0.42 environment.
+- DBMS: local MySQL Community Server 26.7.0 (port 3306). The base-fixture suite passed 104/104 checks on this version on 2026-11-15, including 20 RBAC checks. Optional Compose still pins the historical MySQL 26.7.0 environment.
 - Storage engine: InnoDB
 - Transaction isolation for supported workflow writes: READ COMMITTED
 - Business tables: 11
@@ -44,8 +44,8 @@ All members are PTITHCM students. Their full names, student IDs, institutional e
 >>>>>>> Stashed changes
 
 - DBMS: locally installed MySQL Community Server, typically on port `3306`.
-- The [test log dated November 14, 2026](audit_test_results/FRESH_TEST_RUN_2026-11-14.md) records **84/84 assertions passed** on a server reporting version `26.7.0`, using the base dataset in a disposable schema. This result does not certify compatibility with MySQL `8.0.42`.
-- The optional Docker Compose configuration uses MySQL `8.0.42`, mapping host port `3307` to container port `3306`.
+- The [test log dated November 14, 2026](audit_test_results/FRESH_TEST_RUN_2026-11-14.md) records **84/84 assertions passed** on a server reporting version `26.7.0`, using the base dataset in a disposable schema.
+- The optional Docker Compose configuration uses MySQL `26.7.0`, mapping host port `3307` to container port `3306`.
 - Storage engine: InnoDB.
 - Transaction isolation for workflow write operations: `READ COMMITTED`.
 - Business tables: **11**.
@@ -53,7 +53,6 @@ All members are PTITHCM students. Their full names, student IDs, institutional e
 - Python: version `3.13` was used for the local demo; dependencies are listed in `requirements.txt`.
 - SQL installation tool: MySQL Workbench.
 - MySQL drivers: `mysql-connector-python` for Flask and `PyMySQL` for test utilities.
-
 The normalized `payments` table stores only payment-attempt facts:
 
 ```text
