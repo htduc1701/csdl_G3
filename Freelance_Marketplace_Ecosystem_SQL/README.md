@@ -9,7 +9,7 @@ Paths below are relative to `Freelance_Marketplace_Ecosystem_SQL`.
 
 =======
 <<<<<<< HEAD
-Môi trường demo: MySQL Community Server 26.7.0, InnoDB, READ COMMITTED; 11 bảng nghiệp vụ. Bộ test dữ liệu cơ bản đạt 104/104 trên 26.7.0, gồm 20 ca phân quyền. Compose tùy chọn giữ MySQL 8.0.42 cho môi trường lịch sử.
+Môi trường demo: MySQL Community Server 26.7.0 cài local, cổng 3306, InnoDB, READ COMMITTED; 11 bảng nghiệp vụ. Bộ test dữ liệu cơ bản đạt 104/104 trên 26.7.0, gồm 20 ca phân quyền.
 =======
 Paths below are relative to `Freelance_Marketplace_Ecosystem_SQL`.
 >>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
@@ -28,7 +28,7 @@ Paths below are relative to `Freelance_Marketplace_Ecosystem_SQL`.
 - **11 business tables**, containing **7,223 records**, including **1,008 jobs**.
 - The expanded dataset adds 1,000 jobs to the base sample dataset.
 - People and companies are fictional; email addresses use `example.test`; monetary amounts are in USD. Descriptions and skills are assembled across eight professional categories. This is template-generated data, not real transactions or data collected from real people.
-- The optional Compose configuration uses MySQL `8.0.42` on host port `3307`. A direct local installation typically uses port `3306`.
+- The local installation uses MySQL Community Server `26.7.0` on port `3306`.
 <<<<<<< Updated upstream
 =======
 >>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
@@ -105,14 +105,14 @@ python -m venv .venv
 ```
 
 <<<<<<< Updated upstream
-Set the connection details and run the verifier. Change the port to `3307` when using the project's Compose configuration.
+Set the connection details and run the verifier. Use port `3306` for local MySQL `26.7.0`.
 =======
 <<<<<<< HEAD
 Verifier chỉ đọc database và ghi evidence/install_database_results.json khi tất cả kiểm tra đạt. Nó kiểm tra
 11 số đếm, tổng 8223, 9 invariant bằng 0, 5 kiểm tra nội dung dữ liệu và thực thi đủ 12 advanced queries.
 Expected/Actual Result cũ của bộ seed 75 dòng không áp dụng cho dữ liệu lớn.
 =======
-Set the connection details and run the verifier. Change the port to `3307` when using the project's Compose configuration.
+Set the connection details and run the verifier. Use port `3306` for local MySQL `26.7.0`.
 >>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
 >>>>>>> Stashed changes
 
@@ -157,7 +157,7 @@ The dataset includes jobs without proposals, proposals awaiting selection or con
 It includes a `FAILED` payment followed by a successful `PAID` retry, without two `PAID` payments for the same milestone. Subtype records and contracts are still created by triggers; constraints remain enabled.
 
 - [docs/large_dataset_report.md](docs/large_dataset_report.md) and [evidence/large_dataset_results.json](evidence/large_dataset_results.json) contain evidence from a previous large-dataset verification run.
-- The [test log dated November 14, 2026](../audit_test_results/FRESH_TEST_RUN_2026-11-14.md) records 72 passing integrity, workflow, and concurrency checks plus 12 passing query-result assertions, totaling **84/84**, on a server reporting version `26.7.0` using the base dataset in a disposable schema. That run excludes RBAC, large-dataset, and performance tests and does not certify compatibility with MySQL `8.0.42`.
+- The [test log dated November 14, 2026](../audit_test_results/FRESH_TEST_RUN_2026-11-14.md) records 72 passing integrity, workflow, and concurrency checks plus 12 passing query-result assertions, totaling **84/84**, on a server reporting version `26.7.0` using the base dataset in a disposable schema. That run excludes RBAC, large-dataset, and performance tests.
 - Other evidence files may refer to older datasets or environments; they do not establish that every suite has been rerun on the large dataset.
 - Expanding the dataset does not change the normalized `payments` design. The web payment workflow only records simulated statuses.
 - The 240 additional profiles do not automatically create 240 MySQL accounts. Sample MySQL accounts remain restricted to `localhost` as defined in `sql/07_security.sql`; fictional profiles do not provide actual login access.
