@@ -7818,3 +7818,42 @@ END$$
 DELIMITER ;
 CALL seed_g3_large_fixture();
 DROP PROCEDURE seed_g3_large_fixture;
+
+-- BEGIN additional 500 user profiles
+-- If the job fixture is already installed, run only this marked block.
+-- Seed sample user profiles in mini_upwork.
+-- The users insert trigger creates the matching client or freelancer profile.
+SET NAMES utf8mb4;
+
+START TRANSACTION;
+
+INSERT INTO mini_upwork.users (email, full_name, password_hash, user_type)
+WITH RECURSIVE batch_numbers AS (
+    SELECT 1 AS n
+    UNION ALL
+    SELECT n + 1 FROM batch_numbers WHERE n < 500
+),
+batch_users AS (
+    SELECT
+        CONCAT('extra.user.', LPAD(n, 3, '0'), '@example.test') AS email,
+        CONCAT_WS(' ',
+            ELT(1 + (n - 1) DIV 50, 'Nguyễn', 'Trần', 'Lê', 'Phạm', 'Hoàng',
+                'Phan', 'Vũ', 'Đặng', 'Bùi', 'Đỗ'),
+            ELT(1 + ((n - 1) DIV 10) MOD 5, 'Minh', 'Thanh', 'Ngọc', 'Gia', 'Khánh'),
+            ELT(1 + (n - 1) MOD 10, 'An', 'Anh', 'Châu', 'Dương', 'Hà',
+                'Hân', 'Linh', 'Phương', 'Quân', 'Vy')
+        ) AS full_name,
+        CASE WHEN n MOD 5 = 0 THEN 'CLIENT' ELSE 'FREELANCER' END AS user_type
+    FROM batch_numbers
+)
+SELECT b.email, b.full_name, 'DEMO_HASH_NOT_FOR_LOGIN', b.user_type
+FROM batch_users AS b
+WHERE NOT EXISTS (
+    SELECT 1 FROM mini_upwork.users AS u WHERE u.email = b.email
+)
+ORDER BY b.email;
+
+SELECT ROW_COUNT() AS users_added;
+
+COMMIT;
+-- END additional 500 user profiles

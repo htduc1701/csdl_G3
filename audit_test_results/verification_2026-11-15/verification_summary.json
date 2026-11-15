@@ -1,0 +1,10 @@
+{
+  "run_date": "2026-11-15",
+  "engine": "26.7.0",
+  "fixture": "Base fixture on an isolated local server",
+  "integrity_workflow_concurrency_invariant_checks": 72,
+  "query_assertions": 12,
+  "rbac_checks": 20,
+  "total_passed": 104,
+  "total_failed": 0
+}

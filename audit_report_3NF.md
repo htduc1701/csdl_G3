@@ -1,6 +1,6 @@
-# Audit report
+# 3NF audit report
 
-Audited all four supplied files. The two PDFs contain2 pages each. The report contains16 BRs and11 entities. No application source, SQL or DBMS configuration was present. Attachment suffixes differ from prompt names; no supplied file was unreadable.
+Initial review of the four original submissions. The two PDFs contain2 pages each. The report contains16 BRs and11 entities. No application source, SQL or DBMS configuration was present. Attachment suffixes differ from prompt names; no supplied file was unreadable.
 
 | ID | File and location | Severity | Finding | BR | Resolution | Status |
 |---|---|---|---|---|---|---|
@@ -21,16 +21,18 @@ Audited all four supplied files. The two PDFs contain2 pages each. The report co
 | A-15 | Report §2.3 | High | BCNF was previously claimed from surrogate keys without a complete candidate-key and FD analysis. | Normalization | Formal FD/key table added. All 11 business relations satisfy BCNF under the stated business FDs; generated helper columns are treated as implementation-only attributes. | Fixed |
 | A-16 | Report §2.3 PAYMENT with retry design | High | In the previous PAYMENT design, milestone_id -> payer_id, payee_id, amount violated 3NF/BCNF because milestone_id was not unique when retries were allowed. | BR-16/Normalization | Adopt the normalized PAYMENT relation: payments(payment_id PK, milestone_id FK, payment_method, payment_status, paid_milestone_id generated). Derive payer/payee/amount through MILESTONE and CONTRACT while retaining FAILED/PENDING retry history and at most one PAID attempt. | Fixed |
 | A-17 | Report §5.1 test table | Critical | PASS and error outcomes claimed without executable SQL/evidence. | BR-02/08/14 | Replace placeholders with actual measured tests and engine errors. | Fixed |
-| A-18 | Report §4.1/4.2 | High | DDL, seed, views, queries and performance are placeholders. | All | Seven SQL scripts,12 queries with actual output, EXPLAIN ANALYZE, scale benchmark. | Fixed |
+| A-18 | Report §4.1/4.2 | High | DDL, seed, views, queries and performance are placeholders. | All | Nine modular SQL scripts and 12 reporting queries. Archived evidence includes query output, EXPLAIN ANALYZE and a scale benchmark. | Fixed |
 | A-19 | Report §5.2 | High | RBAC placeholder despite template requiring GRANT/REVOKE. | Security | Native DB roles, locked per-actor accounts, definer APIs and actual privilege tests. | Fixed |
 | A-20 | Report schema naming | Low | Uppercase entities vs plural physical names not explicitly mapped. | Style | Use lowercase plural snake_case physical names and an11-entity mapping appendix. | Fixed |
-| A-21 | Workspace initial inventory | Low | Prompt filenames include extra(1) suffixes absent in actual attachments; no SQL/repository DBMS exists. | Scope | Read all four supplied equivalents; choose and actually test MySQL8.0.42. | Resolved |
+| A-21 | Workspace initial inventory | Low | The original materials did not specify the database engine. | Scope | Document the demo environment and regression evidence for MySQL Community Server 26.7.0. | Resolved |
 | A-22 | Implementation operational boundary | Medium | Locking parent tables in trigger can reject INSERT SELECT from that same parent (MySQL1442). | BR-14 | Supported procedures use VALUES; READ COMMITTED standalone transaction boundary documented and tested. | Documented limitation |
+
+## Current schema and seed
+
+All 11 logical business relations satisfy BCNF, and therefore 3NF, under the stated functional dependencies. The analysis projects out the generated columns `proposals.selected_job_id` and `payments.paid_milestone_id`. These columns enforce conditional uniqueness in the physical schema. PAYMENT records one row per attempt and derives payer, payee and amount by joining MILESTONE and CONTRACT. See the [candidate keys and functional dependencies](Freelance_Marketplace_Ecosystem_SQL/docs/normalization.md).
+
+The demo targets MySQL Community Server 26.7.0 with InnoDB and READ COMMITTED. The sample dataset is expected to contain 8,223 rows across 11 tables, including 748 users and 1,008 jobs. Seed `08_seed_1000_jobs.sql` includes 500 additional accounts. The `users` insert trigger creates a matching profile for each account, adding 100 clients and 400 freelancers. See the [expected counts](Freelance_Marketplace_Ecosystem_SQL/evidence/install_database_expected_counts.json).
 
 ## Verification
 
-After the PAYMENT normalization change, the schema, views, procedures, seed data and reporting queries were rerun successfully on MySQL 8.0.42. TC-39 was updated from payment-amount immutability to payment-method immutability and was re-executed successfully with error 1644 ('Payment evidence is immutable'). The full 72-test regression suite should be rerun before final submission if the report continues to claim all 72 checks passed. Existing RBAC/query evidence remains valid only where it does not depend on removed PAYMENT columns.
-
-## Remaining assessment risk
-
-PAYMENT now uses the normalized attempt structure and no longer stores payer_id, payee_id or amount. Under the stated business FDs, all 11 business relations satisfy 3NF/BCNF; paid_milestone_id remains only a generated implementation helper for conditional uniqueness. The remaining assessment risk is regression evidence: the full integrity/workflow/concurrency suite should be rerun after the schema change before retaining the blanket '72 checks passed' claim. Encryption at rest and restore-drill targets are requirements, not demonstrated deployments. Semester Phase 4 UI, defense and peer evaluation remain out of this task scope.
+On 2026-11-15, MySQL 26.7.0 passed [104 checks on the base fixture](audit_test_results/verification_2026-11-15/verification_summary.json), including 20 RBAC checks. A separate [clean installation](Freelance_Marketplace_Ecosystem_SQL/evidence/install_database_results.json) matched all 11 table counts, totaling 8,223 rows. Its verifier found zero violations across nine checks and ran all 12 reporting queries.

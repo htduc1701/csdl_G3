@@ -1,0 +1,27 @@
+{
+  "status": "verified",
+  "target_mysql_version": "26.7.0",
+  "installation": "INSTALL_DATABASE.sql",
+  "seed_scripts": [
+    "sql/05_seed.sql",
+    "sql/08_seed_1000_jobs.sql"
+  ],
+  "verification_query": "sql/09_verify_counts.sql",
+  "baseline_evidence": "large_dataset_results.json",
+  "expected_counts": {
+    "users": 748,
+    "clients": 143,
+    "freelancers": 605,
+    "skills": 26,
+    "freelancer_skills": 610,
+    "job_categories": 11,
+    "jobs": 1008,
+    "proposals": 1811,
+    "contracts": 605,
+    "milestones": 1810,
+    "payments": 846
+  },
+  "expected_total_rows": 8223,
+  "verified_on": "2026-11-15",
+  "verification_evidence": "install_database_results.json"
+}

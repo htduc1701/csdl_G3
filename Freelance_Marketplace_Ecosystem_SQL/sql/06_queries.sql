@@ -108,7 +108,7 @@ FROM ranked
 WHERE r=1
 ORDER BY client_id;
 
--- Q-12 Contracts at risk by a supplied reference date
+-- Q-12 Active contracts with unfinished milestones due before CURRENT_DATE + 30 days
 SELECT c.contract_id,
        COUNT(m.milestone_id) AS overdue_work
 FROM contracts AS c

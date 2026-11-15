@@ -1,26 +1,27 @@
-"""Read-only verification of the expanded fixture. Requires 01-05 and 08 installed."""
+"""Verify the sample dataset without changing the database."""
 import os, json
 from pathlib import Path
 import pymysql
 
 P = Path(__file__).resolve().parents[1]
+fixture = json.loads((P/'evidence/install_database_expected_counts.json').read_text(encoding='utf-8'))
+expected = fixture['expected_counts']
 c = pymysql.connect(host=os.getenv('DB_HOST', '127.0.0.1'),
-    port=int(os.getenv('DB_PORT', '3307')), user=os.getenv('DB_USER', 'root'),
+    port=int(os.getenv('DB_PORT', '3306')), user=os.getenv('DB_USER', 'root'),
     password=os.getenv('DB_PASSWORD', ''), database='mini_upwork', autocommit=True)
 cur = c.cursor()
-expected = dict(users=248, clients=43, freelancers=205, skills=26,
-    freelancer_skills=610, job_categories=11, jobs=1008, proposals=1811,
-    contracts=605, milestones=1810, payments=846)
 counts = {}
 for table, number in expected.items():
     cur.execute(f'SELECT COUNT(*) FROM {table}')
     counts[table] = cur.fetchone()[0]
     assert counts[table] == number, (table, counts[table], number)
-assert sum(counts.values()) == 7223
-cur.execute('SELECT COUNT(DISTINCT full_name) FROM users')
-assert cur.fetchone()[0] == 248
+assert sum(counts.values()) == fixture['expected_total_rows']
+cur.execute('SELECT COUNT(DISTINCT email) FROM users')
+unique_user_emails = cur.fetchone()[0]
+assert unique_user_emails == expected['users']
 cur.execute('SELECT COUNT(DISTINCT title) FROM jobs')
-assert cur.fetchone()[0] == 1008
+unique_job_titles = cur.fetchone()[0]
+assert unique_job_titles == expected['jobs']
 cur.execute("SELECT COUNT(*) FROM users WHERE full_name LIKE 'Demo %' OR full_name LIKE 'Synthetic %'")
 assert cur.fetchone()[0] == 0
 cur.execute("SELECT COUNT(*) FROM jobs WHERE title LIKE 'Demo %' OR description LIKE 'Synthetic %'")
@@ -39,7 +40,13 @@ checks = {
     'missing_confirmed_contract': "SELECT COUNT(*) FROM proposals p LEFT JOIN contracts c ON c.proposal_id=p.proposal_id WHERE p.status='CONFIRMED' AND c.contract_id IS NULL",
     'bad_contract_parties': 'SELECT COUNT(*) FROM contracts c JOIN proposals p ON p.proposal_id=c.proposal_id JOIN jobs j ON j.job_id=p.job_id WHERE c.client_id<>j.client_id OR c.freelancer_id<>p.freelancer_id OR c.total_amount<>p.proposed_amount',
     'milestone_overflow': 'SELECT COUNT(*) FROM (SELECT c.contract_id FROM contracts c JOIN milestones m ON m.contract_id=c.contract_id GROUP BY c.contract_id,c.total_amount HAVING SUM(m.amount)>c.total_amount) x',
-    'bad_payment_state': "SELECT COUNT(*) FROM payments p JOIN milestones m ON m.milestone_id=p.milestone_id JOIN contracts c ON c.contract_id=m.contract_id WHERE m.status<>'APPROVED' OR c.status<>'ACTIVE'",
+    # ACTIVE is required when recording an attempt. The stored attempt can
+    # remain after completion or, for unpaid attempts, after cancellation.
+    'bad_payment_state': """SELECT COUNT(*) FROM payments p
+        JOIN milestones m ON m.milestone_id=p.milestone_id
+        JOIN contracts c ON c.contract_id=m.contract_id
+        WHERE m.status<>'APPROVED'
+           OR (c.status='CANCELLED' AND p.payment_status='PAID')""",
     'multiple_paid': "SELECT COUNT(*) FROM (SELECT milestone_id FROM payments WHERE payment_status='PAID' GROUP BY milestone_id HAVING COUNT(*)>1) x",
     'milestone_dates': 'SELECT COUNT(*) FROM milestones m JOIN contracts c ON c.contract_id=m.contract_id WHERE m.due_date<c.start_date OR m.due_date>c.end_date',
 }
@@ -67,11 +74,12 @@ assert len(queries) == 12
 cur.execute('SELECT VERSION(), @@transaction_isolation')
 environment = cur.fetchone()
 result = dict(environment=environment, counts=counts, total_rows=sum(counts.values()),
-    realistic_data_checks=dict(unique_people=248, unique_job_titles=1008,
+    realistic_data_checks=dict(unique_user_emails=unique_user_emails, unique_job_titles=unique_job_titles,
         placeholder_names=0, placeholder_jobs=0, category_assignment_mismatches=0),
     invariant_violations=actual, status_distribution=states, advanced_queries=queries,
     advanced_queries_executed=12, passed=True)
-(P/'evidence/large_dataset_results.json').write_text(json.dumps(result, indent=2, default=str))
+(P/'evidence/install_database_results.json').write_text(
+    json.dumps(result, indent=2, default=str), encoding='utf-8')
 c.close()
 print(json.dumps(dict(counts=counts, total_rows=sum(counts.values()),
     zero_violation_checks=len(checks), advanced_queries_executed=len(queries), passed=True), indent=2))

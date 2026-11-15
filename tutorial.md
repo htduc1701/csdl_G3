@@ -11,7 +11,7 @@ Thực hành trên một MySQL instance mới nếu bạn cần trình bày từ
 ## 2. Cài đủ schema và dữ liệu
 
 1. Mở kết nối quản trị trong Workbench. Mở file [INSTALL_DATABASE.sql](Freelance_Marketplace_Ecosystem_SQL/INSTALL_DATABASE.sql) bằng **File → Open SQL Script** và chạy toàn bộ file. Dừng tại lỗi đầu tiên nếu Workbench báo lỗi.
-2. Script tạo bảng, trigger, view, index, procedure, tài khoản và nạp cả bộ dữ liệu mẫu. Làm mới **Schemas** để thấy `mini_upwork`. Phần cuối script kiểm đếm **11 bảng nghiệp vụ, 7.223 dòng dữ liệu, 1.008 jobs** trước khi phát sinh dữ liệu demo. Có thể chạy riêng [sql/09_verify_counts.sql](Freelance_Marketplace_Ecosystem_SQL/sql/09_verify_counts.sql) để hiện lại kết quả.
+2. Script tạo bảng, trigger, view, index, procedure, tài khoản và nạp các bộ dữ liệu mẫu. Làm mới **Schemas** để thấy `mini_upwork`. Phần cuối script kiểm đếm **11 bảng nghiệp vụ**, dự kiến có **8.223 dòng dữ liệu**, gồm **748 user** và **1.008 jobs**. Có thể chạy riêng [sql/09_verify_counts.sql](Freelance_Marketplace_Ecosystem_SQL/sql/09_verify_counts.sql) để hiện lại kết quả.
 3. Trong cùng kết nối quản trị, chạy toàn bộ [SETUP_LOCAL_DEMO.sql](Freelance_Marketplace_Ecosystem_SQL/SETUP_LOCAL_DEMO.sql). File đặt mật khẩu mẫu và mở khóa đúng ba tài khoản dùng trong web demo. Sau bước này, Client ID **1**, Freelancer ID **4** và tài khoản ghi nhận thanh toán có thể thực hiện các thao tác tương ứng.
 4. Khi trình bày phần truy vấn SQL, mở [sql/06_queries.sql](Freelance_Marketplace_Ecosystem_SQL/sql/06_queries.sql) và chạy các câu SELECT cần minh họa.
 

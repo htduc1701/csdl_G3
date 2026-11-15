@@ -1,8 +1,14 @@
-# Kiểm chứng bộ dữ liệu thực tế giả lập
+# Báo cáo dữ liệu mẫu
 
-Đã nạp thực tế bằng INSTALL_DATABASE.sql trên MySQL 8.0.42, isolation READ-COMMITTED. Tất cả tên người và công ty là giả lập; tiền dùng USD theo giả định của bộ demo.
+Môi trường demo là MySQL Community Server 26.7.0, InnoDB và READ COMMITTED. Tên người và công ty trong dữ liệu mẫu là giả lập. Các giá trị tiền tệ dùng USD.
 
-## Số bản ghi
+Bộ dữ liệu mẫu dự kiến có **8.223 dòng** trên 11 bảng, gồm **748 user** (143 client, 605 freelancer) và **1.008 job**. Xem [số đếm theo bảng](../evidence/install_database_expected_counts.json). Sau khi cài, `sql/09_verify_counts.sql` trả về số đếm thực tế. Seed `05` tạo dữ liệu cơ bản. Seed `08` thêm 1.000 job, dữ liệu liên quan và 500 hồ sơ bổ sung. Verifier ghi số đếm, kiểm tra và kết quả truy vấn vào `evidence/install_database_results.json` khi tất cả kiểm tra đạt. Lượt cài sạch ngày 15/11/2026 trên MySQL 26.7.0 đã xác nhận đủ 8.223 dòng. Cả 9 kiểm tra toàn vẹn đều có 0 vi phạm và cả 12 truy vấn đều chạy thành công. Q-05 trả 143 dòng, mỗi client một dòng. [Kết quả bản cài hiện tại](../evidence/install_database_results.json).
+
+## Kết quả thực thi lưu trữ
+
+Các số đếm, kiểm tra và kết quả truy vấn bên dưới thuộc lần chạy bộ dữ liệu 7.223 dòng trên MySQL 8.0.42. Xem [dữ liệu kiểm chứng của lần chạy đó](../evidence/large_dataset_results.json).
+
+### Số bản ghi
 
 | Bảng | Số bản ghi |
 |---|---:|
@@ -19,7 +25,7 @@
 | payments | 846 |
 | **Tổng** | **7223** |
 
-## Kiểm tra tính nhất quán
+### Kiểm tra tính nhất quán
 
 | Kiểm tra | Số vi phạm |
 |---|---:|
@@ -33,7 +39,7 @@
 | multiple_paid | 0 |
 | milestone_dates | 0 |
 
-## Kiểm tra nội dung dữ liệu
+### Kiểm tra nội dung dữ liệu
 
 | Kiểm tra | Kết quả |
 |---|---:|
@@ -43,7 +49,7 @@
 | placeholder_jobs | 0 |
 | category_assignment_mismatches | 0 |
 
-## Kết quả 12 truy vấn trên dữ liệu mới
+### Kết quả 12 truy vấn
 
 Các bảng bên dưới hiển thị tối đa 10 dòng đầu mỗi truy vấn. Đây là bằng chứng thực thi, không phải kiểm thử đối chiếu độc lập mọi giá trị của bộ dữ liệu lớn. Bộ kiểm thử nhỏ lịch sử được giữ riêng.
 
