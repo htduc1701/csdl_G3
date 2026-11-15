@@ -32,7 +32,7 @@ All members are PTITHCM students. Their full names, student IDs, institutional e
 ## 1. Current Environment and Design
 =======
 <<<<<<< HEAD
-- DBMS: local MySQL Community Server 26.7.0 (port 3306). The base-fixture suite passed 104/104 checks on this version on 2026-11-15, including 20 RBAC checks. Optional Compose still pins the historical MySQL 26.7.0 environment.
+- DBMS: local MySQL Community Server 26.7.0 (port 3306). The base-fixture suite passed 104/104 checks on this version on 2026-11-15, including 20 RBAC checks.
 - Storage engine: InnoDB
 - Transaction isolation for supported workflow writes: READ COMMITTED
 - Business tables: 11
@@ -43,9 +43,8 @@ All members are PTITHCM students. Their full names, student IDs, institutional e
 >>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
 >>>>>>> Stashed changes
 
-- DBMS: locally installed MySQL Community Server, typically on port `3306`.
+- DBMS: local MySQL Community Server `26.7.0`, port `3306`.
 - The [test log dated November 14, 2026](audit_test_results/FRESH_TEST_RUN_2026-11-14.md) records **84/84 assertions passed** on a server reporting version `26.7.0`, using the base dataset in a disposable schema.
-- The optional Docker Compose configuration uses MySQL `26.7.0`, mapping host port `3307` to container port `3306`.
 - Storage engine: InnoDB.
 - Transaction isolation for workflow write operations: `READ COMMITTED`.
 - Business tables: **11**.
@@ -324,7 +323,7 @@ The main demo uses Client ID **`1`** and Freelancer ID **`4`**. This is an educa
 >>>>>>> Stashed changes
 ## 7. Verifying the Expanded Dataset
 
-Set the connection variables for the MySQL instance containing the expanded dataset. A local installation typically uses port `3306`; the project's Compose configuration uses port `3307`.
+Set the connection variables for the MySQL instance containing the expanded dataset. For local MySQL `26.7.0`, use port `3306`.
 
 ```powershell
 $env:DB_HOST = '127.0.0.1'
@@ -361,11 +360,11 @@ The verifier uses the normalized `payments` table and checks payment and work st
 
 **Warning:** `tests/run_tests.py --install` includes a step that drops and rebuilds the `mini_upwork` schema. Run it only on a separate MySQL instance dedicated to testing, with no data that must be preserved. Running without `--install` can still change data during test cases; do not use it on a demo database that must remain intact.
 
-The example below assumes a separate test instance listening on port `3307`; replace this with its actual port. A different port alone does not guarantee isolation.
+The example below uses port `3306` on a separate test instance. If that instance uses another port, set its actual port. A different port alone does not guarantee isolation.
 
 ```powershell
 $env:DB_HOST = '127.0.0.1'
-$env:DB_PORT = '3307'
+$env:DB_PORT = '3306'
 $env:DB_USER = 'root'
 $env:DB_PASSWORD = Read-Host 'Enter the test MySQL password' -MaskInput
 .\.venv\Scripts\python.exe tests\run_tests.py --install
