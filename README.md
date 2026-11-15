@@ -28,7 +28,20 @@ All members are PTITHCM students. Their full names, student IDs, institutional e
 | N25DCAT076 | Phạm Việt Hoàng | `n25dcat076@student.ptithcm.edu.vn` | [shinmagicc](https://github.com/shinmagicc) |
 | N25DCAT079 | Đặng Quang Huy | `n25dcat079@student.ptithcm.edu.vn` | [Kurookani](https://github.com/Kurookani) |
 
+<<<<<<< Updated upstream
 ## 1. Current Environment and Design
+=======
+<<<<<<< HEAD
+- DBMS: local MySQL Community Server 26.7.0 (port 3306). The base-fixture suite passed 104/104 checks on this version on 2026-11-15, including 20 RBAC checks. Optional Compose still pins the historical MySQL 8.0.42 environment.
+- Storage engine: InnoDB
+- Transaction isolation for supported workflow writes: READ COMMITTED
+- Business tables: 11
+- Web backend: Flask
+- Python DB drivers: `mysql-connector-python` for the Flask app and `PyMySQL` for test utilities
+=======
+## 1. Current Environment and Design
+>>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
+>>>>>>> Stashed changes
 
 - DBMS: locally installed MySQL Community Server, typically on port `3306`.
 - The [test log dated November 14, 2026](audit_test_results/FRESH_TEST_RUN_2026-11-14.md) records **84/84 assertions passed** on a server reporting version `26.7.0`, using the base dataset in a disposable schema. This result does not certify compatibility with MySQL `8.0.42`.
@@ -57,7 +70,33 @@ payments(
 
 ## 2. Important Files and Directories
 
+<<<<<<< Updated upstream
 Source code and SQL scripts are in [Freelance_Marketplace_Ecosystem_SQL](Freelance_Marketplace_Ecosystem_SQL). Paths in the following table are relative to that directory.
+=======
+<<<<<<< HEAD
+```text
+app/                         Flask templates and database helpers
+main.py                      Flask application entry point
+sql/01_schema.sql            Tables, keys, CHECK constraints
+sql/02_triggers.sql          Workflow/integrity triggers
+sql/03_views_indexes.sql     Reporting views and indexes
+sql/04_procedures.sql        Stored procedure API
+sql/05_seed.sql              Base fictional seed
+sql/06_queries.sql           12 advanced queries
+sql/07_security.sql          Roles and native demo accounts
+sql/08_seed_1000_jobs.sql    Large-data extension and 500 sample user profiles
+sql/09_verify_counts.sql     Row-count verification
+INSTALL_DATABASE.sql         Synchronized one-file full installation bundle
+SAMPLE_DATA.sql              Synchronized base + large sample-data bundle
+tests/                       Automated regression/performance/large-data checks
+evidence/                    Archived/generated test evidence
+docs/                        Design and verification documentation
+requirements.txt             Python runtime/test dependencies
+```
+=======
+Source code and SQL scripts are in [Freelance_Marketplace_Ecosystem_SQL](Freelance_Marketplace_Ecosystem_SQL). Paths in the following table are relative to that directory.
+>>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
+>>>>>>> Stashed changes
 
 | Path | Description |
 |---|---|
@@ -85,7 +124,19 @@ Source code and SQL scripts are in [Freelance_Marketplace_Ecosystem_SQL](Freelan
 
 ### Option A - Single-File Installation in MySQL Workbench
 
+<<<<<<< Updated upstream
 Use this option for a **fresh** database without the project's business tables.
+=======
+<<<<<<< HEAD
+1. Open MySQL Workbench with an administrative account.
+2. Open `INSTALL_DATABASE.sql`.
+3. Run the whole script and stop if any statement reports an error.
+4. Refresh the `mini_upwork` schema.
+5. The final section runs `sql/09_verify_counts.sql`. A fresh installation is expected to contain **8,223 rows**, including **748 users** and **1,008 jobs**.
+=======
+Use this option for a **fresh** database without the project's business tables.
+>>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
+>>>>>>> Stashed changes
 
 1. Open MySQL Workbench and connect with an administrative account.
 2. Open [INSTALL_DATABASE.sql](Freelance_Marketplace_Ecosystem_SQL/INSTALL_DATABASE.sql).
@@ -112,7 +163,15 @@ On a fresh database, run the files in `sql/` in this order:
 
 Then run `06_queries.sql` to demonstrate the advanced queries.
 
+<<<<<<< Updated upstream
 **Do not reload** `05_seed.sql`, `08_seed_1000_jobs.sql`, `SAMPLE_DATA.sql`, or `INSTALL_DATABASE.sql` into a demo database that already contains the complete dataset.
+=======
+<<<<<<< HEAD
+If the large job fixture is already installed, run only the block marked `BEGIN additional 500 user profiles` through `END additional 500 user profiles` in `08_seed_1000_jobs.sql`. It skips existing emails. Run the full seed scripts only when installing the corresponding fixture for the first time.
+=======
+**Do not reload** `05_seed.sql`, `08_seed_1000_jobs.sql`, `SAMPLE_DATA.sql`, or `INSTALL_DATABASE.sql` into a demo database that already contains the complete dataset.
+>>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
+>>>>>>> Stashed changes
 
 ## 4. Sample-Data-Only Bundle
 
@@ -168,7 +227,40 @@ $env:DB_PASSWORD = Read-Host 'Enter the MySQL root password' -MaskInput
 .\.venv\Scripts\python.exe main.py
 ```
 
+<<<<<<< Updated upstream
 If PowerShell does not support `-MaskInput`, replace the password input line with the following before running `main.py`:
+=======
+<<<<<<< HEAD
+Open:
+
+```text
+http://127.0.0.1:5000
+```
+
+Main demonstration flow:
+
+```text
+Client posts Job
+-> Freelancer submits Proposal
+-> Client selects Proposal
+-> Freelancer confirms
+-> Contract is created
+-> Client creates Milestone
+-> Freelancer starts/completes work
+-> Client approves
+-> Payment is recorded
+-> Reports reflect the result
+```
+
+The classroom demo currently uses Client ID `1` and Freelancer ID `4` for the principal workflow. This is not a production authentication system.
+
+## 7. Verify the expanded fixture
+
+Run the Python verifier from the SQL project folder after installing the full fixture and before adding demo records. It matches the counts in [the expected-counts file](Freelance_Marketplace_Ecosystem_SQL/evidence/install_database_expected_counts.json) and writes `evidence/install_database_results.json` when all checks pass. The [2026-11-15 clean installation](Freelance_Marketplace_Ecosystem_SQL/evidence/install_database_results.json) verified all 8,223 rows on MySQL 26.7.0. Example settings for local MySQL on port 3306:
+=======
+If PowerShell does not support `-MaskInput`, replace the password input line with the following before running `main.py`:
+>>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
+>>>>>>> Stashed changes
 
 ```powershell
 $mysqlPassword = Read-Host 'Enter the MySQL root password' -AsSecureString
@@ -177,6 +269,7 @@ $env:DB_PASSWORD = [System.Net.NetworkCredential]::new('', $mysqlPassword).Passw
 
 The `root` example matches the current demo configuration: the application uses `DB_USER`/`DB_PASSWORD` for read connections, while Client, Freelancer, and payment-service writes use separate accounts defined in `app/db.py`.
 
+<<<<<<< Updated upstream
 Open [http://127.0.0.1:5000](http://127.0.0.1:5000). Keep PowerShell open during the demonstration; press `Ctrl+C` to stop the application.
 
 Main demonstration workflow:
@@ -193,6 +286,43 @@ Main demonstration workflow:
 
 The main demo uses Client ID **`1`** and Freelancer ID **`4`**. This is an educational prototype; payment functionality records status only and does not charge real money.
 
+=======
+<<<<<<< HEAD
+```text
+users               748
+clients             143
+freelancers         605
+skills              26
+freelancer_skills   610
+job_categories      11
+jobs                1008
+proposals           1811
+contracts           605
+milestones          1810
+payments            846
+TOTAL               8223
+```
+
+The verifier checks that every payment attempt belongs to an approved milestone and that cancelled contracts have no successful payments. It runs the 12 reporting queries and records their output.
+=======
+Open [http://127.0.0.1:5000](http://127.0.0.1:5000). Keep PowerShell open during the demonstration; press `Ctrl+C` to stop the application.
+
+Main demonstration workflow:
+>>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
+
+1. The Client posts a Job.
+2. The Freelancer submits a Proposal.
+3. The Client selects the Proposal.
+4. The Freelancer confirms; the system creates a Contract.
+5. The Client creates a Milestone.
+6. The Freelancer starts and completes the work.
+7. The Client approves the Milestone.
+8. A simulated Payment is recorded.
+9. The results appear on the reports page.
+
+The main demo uses Client ID **`1`** and Freelancer ID **`4`**. This is an educational prototype; payment functionality records status only and does not charge real money.
+
+>>>>>>> Stashed changes
 ## 7. Verifying the Expanded Dataset
 
 Set the connection variables for the MySQL instance containing the expanded dataset. A local installation typically uses port `3306`; the project's Compose configuration uses port `3307`.
