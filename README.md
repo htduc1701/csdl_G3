@@ -20,7 +20,7 @@ A MySQL database and Flask web application demonstrating job posting, proposals,
 
 | Student ID | Full name | PTITHCM email | GitHub account |
 |---|---|---|---|
-| Instructor | Lê Hà Thanh | `lehathanh@ptithcm.edu.vn` | [lehathanh@ptithcm.edu.vn] |
+| Instructor | Lê Hà Thanh | `lehathanh@ptithcm.edu.vn` |  |
 | N25DCAT073 | Huỳnh Thiện Đức | `n25dcat073@student.ptithcm.edu.vn` | [htduc1701](https://github.com/htduc1701) |
 | N25DCAT076 | Phạm Việt Hoàng | `n25dcat076@student.ptithcm.edu.vn` | [shinmagicc](https://github.com/shinmagicc) |
 | N25DCAT079 | Đặng Quang Huy | `n25dcat079@student.ptithcm.edu.vn` | [Kurookani](https://github.com/Kurookani) |
