@@ -95,7 +95,7 @@ Start the MySQL service, install the database, and run the account setup script 
 $env:DB_HOST = 'localhost'
 $env:DB_PORT = '3306'
 $env:DB_USER = 'root'
-$mysqlPassword = Read-Host 'Enter the MySQL root password' -AsSecureString
+$env:DB_PASSWORD = Read-Host 'duc170107' 
 $env:DB_PASSWORD = [System.Net.NetworkCredential]::new('', $mysqlPassword).Password
 .\.venv\Scripts\python.exe main.py
 ```
