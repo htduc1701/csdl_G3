@@ -1,152 +1,89 @@
-# Mini-Upwork G3 - MySQL Database and Flask Web Application
+# Mini-Upwork G3 — Freelance Marketplace Ecosystem
 
-The **Freelance Marketplace Ecosystem** project includes an installable database and a Flask web application demonstrating the marketplace workflow.
+A MySQL database and Flask web application demonstrating job posting, proposals, contract creation, milestones, simulated payments, and reporting.
 
-See the [Windows setup and demonstration guide](tutorial.md) or the [sample dataset guide](Freelance_Marketplace_Ecosystem_SQL/README.md).
-
-## Project and Repository Information
+## 1. Project information
 
 | Field | Details |
 |---|---|
 | Institution | Posts and Telecommunications Institute of Technology, Ho Chi Minh City Campus (PTITHCM) |
 | Class | D25CQAT02-N |
-| Course | INT1313 - Databases |
-| Semester | Semester 1, academic year 2026-2027 |
-| Project | Project 3 - Mini Upwork: Freelance Marketplace Ecosystem |
+| Course | INT1313 — Databases |
+| Semester | Semester 1, academic year 2026–2027 |
+| Project | Project 3 — Mini Upwork: Freelance Marketplace Ecosystem |
 | Team | G3 |
 | Repository | [htduc1701/csdl_G3](https://github.com/htduc1701/csdl_G3) |
 | Default branch | `main` |
 | Instructor contact | `lehathanh@ptithcm.edu.vn` |
 
-## Team Members
+### Team members
 
-All members are PTITHCM students. Their full names, student IDs, institutional email addresses, and GitHub accounts are listed below.
-
-| Student ID | Full name | PTITHCM student email | GitHub account |
+| Student ID | Full name | PTITHCM email | GitHub account |
 |---|---|---|---|
+| Instructor | Lê Hà Thanh | `lehathanh@ptithcm.edu.vn` | [lehathanh@ptithcm.edu.vn] |
 | N25DCAT073 | Huỳnh Thiện Đức | `n25dcat073@student.ptithcm.edu.vn` | [htduc1701](https://github.com/htduc1701) |
 | N25DCAT076 | Phạm Việt Hoàng | `n25dcat076@student.ptithcm.edu.vn` | [shinmagicc](https://github.com/shinmagicc) |
 | N25DCAT079 | Đặng Quang Huy | `n25dcat079@student.ptithcm.edu.vn` | [Kurookani](https://github.com/Kurookani) |
 
-<<<<<<< Updated upstream
-## 1. Current Environment and Design
-=======
-<<<<<<< HEAD
-- DBMS: local MySQL Community Server 26.7.0 (port 3306). The base-fixture suite passed 104/104 checks on this version on 2026-11-15, including 20 RBAC checks.
-- Storage engine: InnoDB
-- Transaction isolation for supported workflow writes: READ COMMITTED
-- Business tables: 11
-- Web backend: Flask
-- Python DB drivers: `mysql-connector-python` for the Flask app and `PyMySQL` for test utilities
-=======
-## 1. Current Environment and Design
->>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
->>>>>>> Stashed changes
+## 2. Technology and repository contents
 
-- DBMS: local MySQL Community Server `26.7.0`, port `3306`.
-- The [test log dated November 14, 2026](audit_test_results/FRESH_TEST_RUN_2026-11-14.md) records **84/84 assertions passed** on a server reporting version `26.7.0`, using the base dataset in a disposable schema.
-- Storage engine: InnoDB.
-- Transaction isolation for workflow write operations: `READ COMMITTED`.
-- Business tables: **11**.
-- Web backend: Flask.
-- Python: version `3.13` was used for the local demo; dependencies are listed in `requirements.txt`.
-- SQL installation tool: MySQL Workbench.
-- MySQL drivers: `mysql-connector-python` for Flask and `PyMySQL` for test utilities.
-The normalized `payments` table stores only payment-attempt facts:
+- Database: MySQL with InnoDB, CHECK constraints, triggers, views, indexes, stored procedures, and roles. The optional Docker configuration pins MySQL `8.0.42`.
+- Workflow write connections: `READ COMMITTED` isolation.
+- Backend: Flask; Python `3.13` was used for the local demo.
+- Drivers: `mysql-connector-python` for the web app and `PyMySQL[rsa]==1.1.2` for database test utilities.
+- Database name: `mini_upwork`; 11 business tables.
 
-```text
-payments(
-    payment_id PK,
-    milestone_id FK,
-    payment_status,
-    payment_method,
-    paid_milestone_id UQ [generated column]
-)
-```
+Archived evidence includes runs on servers reporting both `8.0.42` and `26.7.0`; these records do not determine the version currently running on another machine. Check it with `SELECT VERSION();` in Workbench.
 
-`PK` denotes a primary key, `FK` a foreign key, and `UQ` a unique constraint. The payer, payee, and amount are derived through `payments -> milestones -> contracts`.
+Application paths below are relative to [Freelance_Marketplace_Ecosystem_SQL](Freelance_Marketplace_Ecosystem_SQL).
 
-## 2. Important Files and Directories
-
-<<<<<<< Updated upstream
-Source code and SQL scripts are in [Freelance_Marketplace_Ecosystem_SQL](Freelance_Marketplace_Ecosystem_SQL). Paths in the following table are relative to that directory.
-=======
-<<<<<<< HEAD
-```text
-app/                         Flask templates and database helpers
-main.py                      Flask application entry point
-sql/01_schema.sql            Tables, keys, CHECK constraints
-sql/02_triggers.sql          Workflow/integrity triggers
-sql/03_views_indexes.sql     Reporting views and indexes
-sql/04_procedures.sql        Stored procedure API
-sql/05_seed.sql              Base fictional seed
-sql/06_queries.sql           12 advanced queries
-sql/07_security.sql          Roles and native demo accounts
-sql/08_seed_1000_jobs.sql    Large-data extension and 500 sample user profiles
-sql/09_verify_counts.sql     Row-count verification
-INSTALL_DATABASE.sql         Synchronized one-file full installation bundle
-SAMPLE_DATA.sql              Synchronized base + large sample-data bundle
-tests/                       Automated regression/performance/large-data checks
-evidence/                    Archived/generated test evidence
-docs/                        Design and verification documentation
-requirements.txt             Python runtime/test dependencies
-```
-=======
-Source code and SQL scripts are in [Freelance_Marketplace_Ecosystem_SQL](Freelance_Marketplace_Ecosystem_SQL). Paths in the following table are relative to that directory.
->>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
->>>>>>> Stashed changes
-
-| Path | Description |
+| Path | Purpose |
 |---|---|
-| `app/` | Flask templates and database connection helpers |
-| `main.py` | Flask application entry point |
-| `sql/01_schema.sql` | Tables, keys, and `CHECK` constraints |
-| `sql/02_triggers.sql` | Workflow and integrity triggers |
+| `main.py` | Flask routes and Freelancer selection |
+| `app/db.py` | Read, Client, Freelancer, and payment-service connections |
+| `app/templates/` | Web pages and numeric Freelancer ID controls |
+| `sql/01_schema.sql` | Tables, keys, and CHECK constraints |
+| `sql/02_triggers.sql` | Integrity and workflow triggers |
 | `sql/03_views_indexes.sql` | Reporting views and indexes |
-| `sql/04_procedures.sql` | Stored procedures used by the application |
-| `sql/05_seed.sql` | Base fictional sample dataset |
+| `sql/04_procedures.sql` | Stored procedure API |
+| `sql/05_seed.sql` | Base fictional dataset |
 | `sql/06_queries.sql` | 12 advanced queries |
-| `sql/07_security.sql` | Roles and sample MySQL accounts |
-| `sql/08_seed_1000_jobs.sql` | Dataset extension adding 1,000 jobs |
-| `sql/09_verify_counts.sql` | Exact row-count verification |
-| `INSTALL_DATABASE.sql` | Full installation bundle assembled from the modular SQL scripts |
-| `SAMPLE_DATA.sql` | Combined base and expanded sample dataset |
-| `SETUP_LOCAL_DEMO.sql` | Sets sample passwords and unlocks the three demo accounts |
-| `tests/` | Regression, performance, and large-dataset tests |
-| `evidence/` | Archived or generated test evidence |
-| `docs/` | Design and verification documentation |
-| `requirements.txt` | Python dependencies for the application and tests |
-| `compose.yaml` | Optional MySQL configuration using Docker Compose |
+| `sql/07_security.sql` | Roles and initially locked MySQL accounts |
+| `sql/08_seed_1000_jobs.sql` | Expanded jobs and user profiles |
+| `sql/09_verify_counts.sql` | Exact row counts |
+| `INSTALL_DATABASE.sql` | Complete installation bundle |
+| `SAMPLE_DATA.sql` | Base and expanded data bundle, without schema installation |
+| `SETUP_LOCAL_DEMO.sql` | Unlocks 7 demo users and the payment-service account |
+| `tests/` | Database regression, performance, dataset, and web selection tests |
+| `evidence/` | Expected counts and recorded execution results |
+| `docs/` | Modeling, normalization, security, and audit documentation |
+| `requirements.txt` | Python dependencies |
+| `compose.yaml` | Optional MySQL container exposed locally on port `3307` |
 
-## 3. Database Installation
+Additional documents:
 
-### Option A - Single-File Installation in MySQL Workbench
+- [Project report](Freelance_Marketplace_Ecosystem_G3.docx)
+- [Presentation and SQL defense workflow](Workflow_Thuyet_trinh_va_Bao_ve_SQL_G3.docx)
+- [Dataset guide](Freelance_Marketplace_Ecosystem_SQL/README.md)
+- [Windows walkthrough](tutorial.md)
 
-<<<<<<< Updated upstream
-Use this option for a **fresh** database without the project's business tables.
-=======
-<<<<<<< HEAD
-1. Open MySQL Workbench with an administrative account.
-2. Open `INSTALL_DATABASE.sql`.
-3. Run the whole script and stop if any statement reports an error.
-4. Refresh the `mini_upwork` schema.
-5. The final section runs `sql/09_verify_counts.sql`. A fresh installation is expected to contain **8,223 rows**, including **748 users** and **1,008 jobs**.
-=======
-Use this option for a **fresh** database without the project's business tables.
->>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
->>>>>>> Stashed changes
+## 3. Install the database
 
-1. Open MySQL Workbench and connect with an administrative account.
-2. Open [INSTALL_DATABASE.sql](Freelance_Marketplace_Ecosystem_SQL/INSTALL_DATABASE.sql).
-3. Run the entire script; stop and investigate if any statement reports an error.
-4. Refresh **Schemas** to see the `mini_upwork` schema.
-5. The final section executes the contents of `sql/09_verify_counts.sql`. For the original expanded dataset, the expected total is **7,223 rows**, including **1,008 jobs** in the `jobs` table.
+Use MySQL Workbench and an administrative connection with privileges to create schemas, triggers, routines, roles, and accounts.
 
-`INSTALL_DATABASE.sql` is assembled from the modular scripts using the normalized design. The `payments` table no longer contains the legacy `payer_id`, `payee_id`, or `amount` columns.
+For a fresh database:
 
-### Option B - Modular Installation
+1. Select **File → Open SQL Script** and open [INSTALL_DATABASE.sql](Freelance_Marketplace_Ecosystem_SQL/INSTALL_DATABASE.sql).
+2. Run the complete file. Stop and resolve the first error if one occurs.
+3. Refresh **Schemas** and check `mini_upwork`.
+4. The final queries show the row counts. A clean installation of the current fixture is expected to contain **8,223 rows**, including **748 users** and **1,008 jobs**.
+5. Run [SETUP_LOCAL_DEMO.sql](Freelance_Marketplace_Ecosystem_SQL/SETUP_LOCAL_DEMO.sql) in the administrative connection to set demo passwords, unlock accounts, and select their default roles.
 
-On a fresh database, run the files in `sql/` in this order:
+Do not rerun the installation or seed bundles on a populated demo database. The setup script can be rerun to restore demo account passwords; it does not reload the business data.
+
+### Alternative: modular installation
+
+On a fresh database, run these files from `sql/` in order:
 
 ```text
 01_schema.sql
@@ -159,41 +96,13 @@ On a fresh database, run the files in `sql/` in this order:
 09_verify_counts.sql
 ```
 
-Then run `06_queries.sql` to demonstrate the advanced queries.
+Then run `SETUP_LOCAL_DEMO.sql`. Run `sql/06_queries.sql` separately to demonstrate the advanced queries.
 
-<<<<<<< Updated upstream
-**Do not reload** `05_seed.sql`, `08_seed_1000_jobs.sql`, `SAMPLE_DATA.sql`, or `INSTALL_DATABASE.sql` into a demo database that already contains the complete dataset.
-=======
-<<<<<<< HEAD
-If the large job fixture is already installed, run only the block marked `BEGIN additional 500 user profiles` through `END additional 500 user profiles` in `08_seed_1000_jobs.sql`. It skips existing emails. Run the full seed scripts only when installing the corresponding fixture for the first time.
-=======
-**Do not reload** `05_seed.sql`, `08_seed_1000_jobs.sql`, `SAMPLE_DATA.sql`, or `INSTALL_DATABASE.sql` into a demo database that already contains the complete dataset.
->>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
->>>>>>> Stashed changes
+`SAMPLE_DATA.sql` combines `05_seed.sql` and `08_seed_1000_jobs.sql`. Use it only after installing the schema, triggers, views, and procedures while the business tables are empty. Do not also load it after running `INSTALL_DATABASE.sql`.
 
-## 4. Sample-Data-Only Bundle
+## 4. Prepare Python and start the web application
 
-`SAMPLE_DATA.sql` combines the contents of:
-
-```text
-sql/05_seed.sql
-sql/08_seed_1000_jobs.sql
-```
-
-Use it only after installing `01_schema.sql` through `04_procedures.sql` while the business tables are still empty. If `INSTALL_DATABASE.sql` has already been run, do not run `SAMPLE_DATA.sql` as well.
-
-## 5. Python Environment Setup
-
-These steps deploy the application locally on Windows with MySQL and Flask.
-
-If you have not downloaded the repository, open PowerShell and run:
-
-```powershell
-git clone https://github.com/htduc1701/csdl_G3.git
-Set-Location .\csdl_G3
-```
-
-From the repository root, prepare the Python environment:
+From the repository root, open PowerShell:
 
 ```powershell
 Set-Location .\Freelance_Marketplace_Ecosystem_SQL
@@ -201,147 +110,77 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-If you are already in `Freelance_Marketplace_Ecosystem_SQL`, skip `Set-Location`. Run the remaining commands from that directory too. Calling Python directly from `.venv` uses the correct environment without activation or changes to the PowerShell execution policy.
+If already inside the application directory, omit `Set-Location`. If `python` is not found but the Windows Python launcher is available, use `py -3.13 -m venv .venv` instead.
 
-Dependencies in `requirements.txt`:
-
-```text
-Flask
-mysql-connector-python
-PyMySQL[rsa]==1.1.2
-```
-
-## 6. Running the Flask Application
-
-Start the MySQL service. After installing the database, run [SETUP_LOCAL_DEMO.sql](Freelance_Marketplace_Ecosystem_SQL/SETUP_LOCAL_DEMO.sql) as an administrator to set sample passwords and unlock the demo accounts.
-
-Set the connection details in the PowerShell session used to run Flask:
+Start the MySQL service, install the database, and run the account setup script before starting Flask. Set the actual MySQL connection details in the same PowerShell window:
 
 ```powershell
 $env:DB_HOST = 'localhost'
 $env:DB_PORT = '3306'
 $env:DB_USER = 'root'
-$env:DB_PASSWORD = Read-Host 'Enter the MySQL root password' -MaskInput
+$mysqlPassword = Read-Host 'Enter the MySQL root password' -AsSecureString
+$env:DB_PASSWORD = [System.Net.NetworkCredential]::new('', $mysqlPassword).Password
 .\.venv\Scripts\python.exe main.py
 ```
 
-<<<<<<< Updated upstream
-If PowerShell does not support `-MaskInput`, replace the password input line with the following before running `main.py`:
-=======
-<<<<<<< HEAD
-Open:
+Use port `3307` instead if connecting to the container from `compose.yaml`. Calling the virtual environment's Python directly does not require activation or an execution-policy change.
 
-```text
-http://127.0.0.1:5000
-```
+Open [http://127.0.0.1:5000](http://127.0.0.1:5000). Keep PowerShell open. To apply Python/template changes, stop Flask with **Ctrl+C**, run the last command again, and refresh the browser with **Ctrl+F5**.
 
-Main demonstration flow:
+The read connection uses `DB_USER` and `DB_PASSWORD`. Workflow writes use the separate MySQL accounts configured in `app/db.py`; the current classroom demo expects their passwords to match the setup script.
 
-```text
-Client posts Job
--> Freelancer submits Proposal
--> Client selects Proposal
--> Freelancer confirms
--> Contract is created
--> Client creates Milestone
--> Freelancer starts/completes work
--> Client approves
--> Payment is recorded
--> Reports reflect the result
-```
+## 5. Demo accounts and current web scope
 
-The classroom demo currently uses Client ID `1` and Freelancer ID `4` for the principal workflow. This is not a production authentication system.
+[SETUP_LOCAL_DEMO.sql](Freelance_Marketplace_Ecosystem_SQL/SETUP_LOCAL_DEMO.sql) unlocks these accounts, restricted to `localhost`:
 
-## 7. Verify the expanded fixture
+| Purpose | Business IDs | MySQL accounts | Demo password |
+|---|---|---|---|
+| Client | 1, 2, 3 | `client_1`, `client_2`, `client_3` | `Client1@123` |
+| Freelancer | 4, 5, 6, 7 | `freelancer_4` through `freelancer_7` | `Freelancer4@123` |
+| Payment service | Not a business user | `payment_service` | `Payment@123` |
 
-Run the Python verifier from the SQL project folder after installing the full fixture and before adding demo records. It matches the counts in [the expected-counts file](Freelance_Marketplace_Ecosystem_SQL/evidence/install_database_expected_counts.json) and writes `evidence/install_database_results.json` when all checks pass. The [2026-11-15 clean installation](Freelance_Marketplace_Ecosystem_SQL/evidence/install_database_results.json) verified all 8,223 rows on MySQL 26.7.0. Example settings for local MySQL on port 3306:
-=======
-If PowerShell does not support `-MaskInput`, replace the password input line with the following before running `main.py`:
->>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
->>>>>>> Stashed changes
+These are **7 demo users plus 1 service account**, separate from the **748 fictional profiles** in the `users` table. The remaining profiles do not automatically have usable MySQL accounts. This prototype has no complete registration/login system; choosing an ID is a demo control, not authentication.
 
-```powershell
-$mysqlPassword = Read-Host 'Enter the MySQL root password' -AsSecureString
-$env:DB_PASSWORD = [System.Net.NetworkCredential]::new('', $mysqlPassword).Password
-```
+- **Post New Job** accepts a Client ID. Clients 1–3 can post after account setup.
+- **My Contracts**, Client milestone creation, and Client milestone approval still use **Client 1** in `main.py`. Use Client 1 for a complete web demonstration; unlocking Clients 2 and 3 does not make those pages switch users.
+- **Submit Proposal** accepts a numeric Freelancer ID from **4 to 7**.
+- **My Proposals** and **My Milestones** have numeric Freelancer ID controls. Enter the ID and click **View**. The browser session remembers it, and the action forms send the displayed ID to the stored procedures.
+- After submitting as Freelancer 5, for example, My Proposals uses ID 5. You can enter ID 4 and click View to switch back.
 
-The `root` example matches the current demo configuration: the application uses `DB_USER`/`DB_PASSWORD` for read connections, while Client, Freelancer, and payment-service writes use separate accounts defined in `app/db.py`.
+## 6. Demonstration workflow
 
-<<<<<<< Updated upstream
-Open [http://127.0.0.1:5000](http://127.0.0.1:5000). Keep PowerShell open during the demonstration; press `Ctrl+C` to stop the application.
+For a complete web demonstration, post a new job as **Client 1**, then use any unlocked Freelancer from **4 to 7**.
 
-Main demonstration workflow:
+1. **Client Dashboard → Post New Job:** enter Client ID `1`, category, title, description, budgets, and an optional future deadline.
+2. **Freelancer Dashboard → Submit Proposal:** enter the Freelancer ID, proposed amount, estimated days, and cover letter.
+3. **Client Dashboard → View Proposals → Select Proposal:** choose the desired proposal. Its status becomes `CLIENT_ACCEPTED`.
+4. **Freelancer Dashboard → My Proposals:** enter the ID of the selected Freelancer and click **View**. Click **Confirm Proposal** on the `CLIENT_ACCEPTED` row.
+5. Confirmation changes the proposal to `CONFIRMED`; the database trigger creates the Contract.
+6. **Client Dashboard → My Contracts → Milestones:** open the new contract and use **Add Milestone**. The milestone is created by the Client, not automatically by selecting a proposal.
+7. **Freelancer → My Milestones:** use the same Freelancer ID. Click **Start Work**, then **Mark Completed**.
+8. The Client approves the completed milestone, then records a simulated payment.
+9. Open `/reports` to view the reporting summaries.
 
-1. The Client posts a Job.
-2. The Freelancer submits a Proposal.
-3. The Client selects the Proposal.
-4. The Freelancer confirms; the system creates a Contract.
-5. The Client creates a Milestone.
-6. The Freelancer starts and completes the work.
-7. The Client approves the Milestone.
-8. A simulated Payment is recorded.
-9. The results appear on the reports page.
+### If Confirm Proposal or a milestone is missing
 
-The main demo uses Client ID **`1`** and Freelancer ID **`4`**. This is an educational prototype; payment functionality records status only and does not charge real money.
+| Symptom | Check |
+|---|---|
+| No Confirm button | It appears only for `CLIENT_ACCEPTED`; `PENDING` is not yet selected, while `CONFIRMED` is already confirmed. |
+| The selected proposal is absent | In My Proposals, enter the Freelancer ID the Client actually selected and click View. |
+| No Contract after Client selection | The Freelancer must confirm the proposal first. |
+| Contract missing in My Contracts | That page currently filters to Client 1. Jobs posted by another Client are outside that view. |
+| No Freelancer milestone | The Client must create a milestone under the confirmed Contract; then view the assigned Freelancer's ID. |
+| Access denied or account locked | Rerun `SETUP_LOCAL_DEMO.sql` as an administrator on the same MySQL server and check the configured host and port. |
 
-=======
-<<<<<<< HEAD
-```text
-users               748
-clients             143
-freelancers         605
-skills              26
-freelancer_skills   610
-job_categories      11
-jobs                1008
-proposals           1811
-contracts           605
-milestones          1810
-payments            846
-TOTAL               8223
-```
+## 7. Current sample-data counts
 
-The verifier checks that every payment attempt belongs to an approved milestone and that cancelled contracts have no successful payments. It runs the 12 reporting queries and records their output.
-=======
-Open [http://127.0.0.1:5000](http://127.0.0.1:5000). Keep PowerShell open during the demonstration; press `Ctrl+C` to stop the application.
-
-Main demonstration workflow:
->>>>>>> 3553ad1a7c2a8b36807001aa564cc991840e958b
-
-1. The Client posts a Job.
-2. The Freelancer submits a Proposal.
-3. The Client selects the Proposal.
-4. The Freelancer confirms; the system creates a Contract.
-5. The Client creates a Milestone.
-6. The Freelancer starts and completes the work.
-7. The Client approves the Milestone.
-8. A simulated Payment is recorded.
-9. The results appear on the reports page.
-
-The main demo uses Client ID **`1`** and Freelancer ID **`4`**. This is an educational prototype; payment functionality records status only and does not charge real money.
-
->>>>>>> Stashed changes
-## 7. Verifying the Expanded Dataset
-
-Set the connection variables for the MySQL instance containing the expanded dataset. For local MySQL `26.7.0`, use port `3306`.
-
-```powershell
-$env:DB_HOST = '127.0.0.1'
-$env:DB_PORT = '3306'
-$env:DB_USER = 'root'
-$env:DB_PASSWORD = Read-Host 'Enter the MySQL root password' -MaskInput
-.\.venv\Scripts\python.exe tests\verify_large_dataset.py
-```
-
-If PowerShell does not support `-MaskInput`, use the `-AsSecureString` alternative in Section 6.
-
-Expected row counts for the original dataset:
+These are the clean fixture counts from [install_database_expected_counts.json](Freelance_Marketplace_Ecosystem_SQL/evidence/install_database_expected_counts.json), before extra demo actions:
 
 | Table | Rows |
 |---|---:|
-| `users` | 248 |
-| `clients` | 43 |
-| `freelancers` | 205 |
+| `users` | 748 |
+| `clients` | 143 |
+| `freelancers` | 605 |
 | `skills` | 26 |
 | `freelancer_skills` | 610 |
 | `job_categories` | 11 |
@@ -350,59 +189,52 @@ Expected row counts for the original dataset:
 | `contracts` | 605 |
 | `milestones` | 1,810 |
 | `payments` | 846 |
-| **Total** | **7,223** |
+| **Total across all 11 tables** | **8,223** |
 
-These counts apply **before adding demo data**. Posting jobs, submitting proposals, or recording payments may increase the actual counts and cause the fixed-count verifier to report a mismatch.
+People and companies are fictional, emails use `example.test`, and sample amounts are in USD. The total includes subtype rows in `clients` and `freelancers`; it is not a count of distinct people.
 
-The verifier uses the normalized `payments` table and checks payment and work states. It only reads the database, but writes its results to `evidence/large_dataset_results.json`.
+To inspect actual counts in Workbench, run [sql/09_verify_counts.sql](Freelance_Marketplace_Ecosystem_SQL/sql/09_verify_counts.sql). Posting jobs, submitting proposals, and other demo actions increase the counts.
 
-## 8. Running the Regression Suite
-
-**Warning:** `tests/run_tests.py --install` includes a step that drops and rebuilds the `mini_upwork` schema. Run it only on a separate MySQL instance dedicated to testing, with no data that must be preserved. Running without `--install` can still change data during test cases; do not use it on a demo database that must remain intact.
-
-The example below uses port `3306` on a separate test instance. If that instance uses another port, set its actual port. A different port alone does not guarantee isolation.
+With the connection variables from Section 4 set, run the clean-fixture verifier from the application directory:
 
 ```powershell
-$env:DB_HOST = '127.0.0.1'
-$env:DB_PORT = '3306'
-$env:DB_USER = 'root'
-$env:DB_PASSWORD = Read-Host 'Enter the test MySQL password' -MaskInput
-.\.venv\Scripts\python.exe tests\run_tests.py --install
+.\.venv\Scripts\python.exe tests\verify_large_dataset.py
 ```
 
-If PowerShell does not support `-MaskInput`, use the `-AsSecureString` alternative in Section 6 with the test instance's password.
+It reads the database, compares the current expected counts, checks integrity, and executes the 12 advanced queries. On success it writes `evidence/install_database_results.json`. A database containing extra demo records will not match the clean-fixture counts; do not delete demo data just to make that fixed-count check pass.
 
-To include role-based access control (RBAC) checks using MySQL accounts:
+## 8. Tests and recorded evidence
+
+### Web selection regression tests
+
+These use mocked database connections and do not change MySQL data:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m unittest discover -s tests -p test_freelancer_selection.py -v
+```
+
+They cover IDs 4–7, the Confirm button's status condition, remembering the selection, confirming as the displayed Freelancer, and milestone actions. They do not establish that the live MySQL installation or a browser session has been tested.
+
+### Database regression and security tests
+
+Run these only on an isolated test server with a disposable `mini_upwork` database. `--install` drops and rebuilds that schema; test execution without `--install` can also modify data. Keep `DB_HOST`, `DB_PORT`, `DB_USER`, and `DB_PASSWORD` pointed at the test instance.
 
 ```powershell
 .\.venv\Scripts\python.exe tests\run_tests.py --install --security
 ```
 
-Evidence files written during the run:
-
-| File | Description |
-|---|---|
-| `evidence/test_results.json` | Integrity and workflow test results |
-| `evidence/query_results.json` | Query test results |
-| `evidence/security_results.json` | Authorization results when `--security` is used |
-| `evidence/environment.json` | Test environment details |
-
-The regression suite uses the base sample dataset. The recorded 84/84 result in Section 1 excludes RBAC, large-dataset, and performance tests.
-
-## 9. Performance Testing
-
-After setting the connection variables for the test instance, run the optional PyMySQL-based script:
+Optional performance checks on the test instance:
 
 ```powershell
 .\.venv\Scripts\python.exe tests\run_performance.py
 ```
 
-Historical performance figures in the report are archived measurements. Rerun the script when fresh benchmark evidence is required.
+[The verification summary dated 2026-11-15](audit_test_results/verification_2026-11-15/verification_summary.json) records **104 passing checks** on the base fixture, including 20 RBAC checks. [The clean installation evidence](Freelance_Marketplace_Ecosystem_SQL/evidence/install_database_results.json) records the expanded dataset. These are archived results for their stated environments, not a claim that all database suites have been rerun after every web change.
 
-## 10. Access Control and Functional Scope
+## 9. Design and functional limits
 
-- Client, Freelancer, and payment-service writes use stored procedures; triggers and constraints enforce the business workflow.
-- The corresponding application roles are not granted direct table modification privileges. The `payment_service` account calls `sp_record_payment` to record payments.
-- The application demonstrates job posting, proposal submission and confirmation, contract creation, milestone management, and reporting.
-- Payments are simulated through database records and statuses; real payment gateways, escrow, and refunds are not integrated.
-- Accounts and passwords in `SETUP_LOCAL_DEMO.sql` are for local testing. A complete user authentication mechanism has not been implemented.
+Workflow writes call stored procedures through role-specific accounts. The procedures, triggers, and constraints enforce ownership, state transitions, and integrity; the demo roles are not granted direct table modification privileges.
+
+The normalized `payments` table stores `payment_id`, `milestone_id`, `payment_status`, `payment_method`, and a generated unique `paid_milestone_id`. Payer, payee, and amount are derived through milestones and contracts.
+
+Payments record simulated statuses only. Real payment gateways, escrow, refunds, and production user authentication are not implemented. The web server binds to `127.0.0.1:5000` for the local classroom demonstration.
