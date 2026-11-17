@@ -2,23 +2,20 @@
 
 A MySQL database and Flask web application demonstrating job posting, proposals, contract creation, milestones, simulated payments, and reporting.
 
-## 1. Project information
+## 1. Project Identity
 
 | Field | Details |
 |---|---|
 | Institution | Posts and Telecommunications Institute of Technology, Ho Chi Minh City Campus (PTITHCM) |
 | Class | D25CQAT02-N |
 | Course | INT1313 — Databases |
-| Semester | Semester 1, academic year 2026–2027 |
 | Project | Project 3 — Mini Upwork: Freelance Marketplace Ecosystem |
 | Team | G3 |
 | Repository | [htduc1701/csdl_G3](https://github.com/htduc1701/csdl_G3) |
-| Default branch | `main` |
-| Instructor contact | `lehathanh@ptithcm.edu.vn` |
 
 ### Team members
 
-| Student ID | Full name | PTITHCM email | GitHub account |
+| Student ID/Roles | Full name | PTITHCM email | GitHub account |
 |---|---|---|---|
 | Instructor | Lê Hà Thanh | `lehathanh@ptithcm.edu.vn` |  |
 | N25DCAT073 | Huỳnh Thiện Đức | `n25dcat073@student.ptithcm.edu.vn` | [htduc1701](https://github.com/htduc1701) |
@@ -79,26 +76,6 @@ For a fresh database:
 4. The final queries show the row counts. A clean installation of the current fixture is expected to contain **8,223 rows**, including **748 users** and **1,008 jobs**.
 5. Run [SETUP_LOCAL_DEMO.sql](Freelance_Marketplace_Ecosystem_SQL/SETUP_LOCAL_DEMO.sql) in the administrative connection to set demo passwords, unlock accounts, and select their default roles.
 
-Do not rerun the installation or seed bundles on a populated demo database. The setup script can be rerun to restore demo account passwords; it does not reload the business data.
-
-### Alternative: modular installation
-
-On a fresh database, run these files from `sql/` in order:
-
-```text
-01_schema.sql
-02_triggers.sql
-03_views_indexes.sql
-04_procedures.sql
-05_seed.sql
-08_seed_1000_jobs.sql
-07_security.sql
-09_verify_counts.sql
-```
-
-Then run `SETUP_LOCAL_DEMO.sql`. Run `sql/06_queries.sql` separately to demonstrate the advanced queries.
-
-`SAMPLE_DATA.sql` combines `05_seed.sql` and `08_seed_1000_jobs.sql`. Use it only after installing the schema, triggers, views, and procedures while the business tables are empty. Do not also load it after running `INSTALL_DATABASE.sql`.
 
 ## 4. Prepare Python and start the web application
 
@@ -213,7 +190,7 @@ These use mocked database connections and do not change MySQL data:
 .\.venv\Scripts\python.exe -B -m unittest discover -s tests -p test_freelancer_selection.py -v
 ```
 
-They cover IDs 4–7, the Confirm button's status condition, remembering the selection, confirming as the displayed Freelancer, and milestone actions. They do not establish that the live MySQL installation or a browser session has been tested.
+They cover IDs 4–7, the Confirm button's status condition, remembering the selection, confirming as the displayed Freelancer, and milestone actions. 
 
 ### Database regression and security tests
 
@@ -230,11 +207,3 @@ Optional performance checks on the test instance:
 ```
 
 [The verification summary dated 2026-11-15](audit_test_results/verification_2026-11-15/verification_summary.json) records **104 passing checks** on the base fixture, including 20 RBAC checks. [The clean installation evidence](Freelance_Marketplace_Ecosystem_SQL/evidence/install_database_results.json) records the expanded dataset. These are archived results for their stated environments, not a claim that all database suites have been rerun after every web change.
-
-## 9. Design and functional limits
-
-Workflow writes call stored procedures through role-specific accounts. The procedures, triggers, and constraints enforce ownership, state transitions, and integrity; the demo roles are not granted direct table modification privileges.
-
-The normalized `payments` table stores `payment_id`, `milestone_id`, `payment_status`, `payment_method`, and a generated unique `paid_milestone_id`. Payer, payee, and amount are derived through milestones and contracts.
-
-Payments record simulated statuses only. Real payment gateways, escrow, refunds, and production user authentication are not implemented. The web server binds to `127.0.0.1:5000` for the local classroom demonstration.
