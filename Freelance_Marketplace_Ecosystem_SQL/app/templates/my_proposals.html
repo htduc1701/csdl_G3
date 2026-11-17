@@ -24,6 +24,9 @@
 <div class="container mt-4">
 
     <h2>My Proposals</h2>
+    {% include '_freelancer_selector.html' %}
+    <a href="{{ url_for('freelancer_milestones', freelancer_id=freelancer_id) }}"
+       class="btn btn-outline-primary mb-3">My Milestones</a>
 
     <div class="card shadow-sm">
         <div class="card-body">
@@ -65,7 +68,7 @@
 
                             <input type="hidden"
                                    name="freelancer_id"
-                                   value="4">
+                                   value="{{ freelancer_id }}">
 
                             <button type="submit"
                                     class="btn btn-sm btn-success">
@@ -85,6 +88,8 @@
                     </td>
                 </tr>
 
+                {% else %}
+                <tr><td colspan="6">No proposals for Freelancer {{ freelancer_id }}.</td></tr>
                 {% endfor %}
 
                 </tbody>

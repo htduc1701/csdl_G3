@@ -31,6 +31,9 @@
 <div class="container mt-4">
 
     <h2>My Milestones</h2>
+    {% include '_freelancer_selector.html' %}
+    <a href="{{ url_for('my_proposals', freelancer_id=freelancer_id) }}"
+       class="btn btn-outline-success mb-3">My Proposals</a>
 
     <div class="card shadow-sm">
         <div class="card-body">
@@ -74,6 +77,8 @@
                         <form method="POST"
                               action="/freelancer/milestone/{{ milestone.milestone_id }}/advance">
 
+                            <input type="hidden" name="freelancer_id" value="{{ freelancer_id }}">
+
                             <input type="hidden"
                                    name="status"
                                    value="IN_PROGRESS">
@@ -88,6 +93,8 @@
 
                         <form method="POST"
                               action="/freelancer/milestone/{{ milestone.milestone_id }}/advance">
+
+                            <input type="hidden" name="freelancer_id" value="{{ freelancer_id }}">
 
                             <input type="hidden"
                                    name="status"
@@ -117,6 +124,8 @@
 
                 </tr>
 
+                {% else %}
+                <tr><td colspan="7">No milestones yet. Confirm the proposal, then ask the Client to add a milestone.</td></tr>
                 {% endfor %}
 
                 </tbody>

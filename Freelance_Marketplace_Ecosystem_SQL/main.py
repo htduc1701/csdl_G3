@@ -7,6 +7,7 @@ from flask import (
     abort,
     render_template,
     request,
+    session,
     redirect,
     url_for,
     flash
@@ -25,6 +26,21 @@ app = Flask(
 )
 
 app.secret_key = "mini-upwork-g3-demo"
+
+
+def current_freelancer_id():
+    # Account selection for the classroom demo; this is not authentication.
+    source = request.form if request.method == "POST" else request.args
+    raw_id = source.get("freelancer_id", session.get("freelancer_id", 4))
+    try:
+        freelancer_id = int(raw_id)
+    except (TypeError, ValueError):
+        abort(400, description="Enter a Freelancer ID from 4 to 7.")
+    if freelancer_id not in (4, 5, 6, 7):
+        abort(400, description="Enter a Freelancer ID from 4 to 7.")
+    session["freelancer_id"] = freelancer_id
+    return freelancer_id
+
 
 @app.route("/")
 def home():
@@ -177,10 +193,10 @@ def freelancer_dashboard():
     methods=["GET", "POST"]
 )
 def submit_proposal(job_id):
+    freelancer_id = current_freelancer_id()
 
     if request.method == "POST":
 
-        freelancer_id = int(request.form["freelancer_id"])
         proposed_amount = request.form["proposed_amount"]
         cover_letter = request.form["cover_letter"]
         estimated_days = int(request.form["estimated_days"])
@@ -224,7 +240,8 @@ def submit_proposal(job_id):
 
     return render_template(
         "proposal.html",
-        job=job
+        job=job,
+        freelancer_id=freelancer_id
     )
 
 
@@ -302,7 +319,7 @@ def select_proposal(proposal_id):
 @app.route("/freelancer/proposals")
 def my_proposals():
 
-    freelancer_id = 4
+    freelancer_id = current_freelancer_id()
 
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -329,7 +346,8 @@ def my_proposals():
 
     return render_template(
         "my_proposals.html",
-        proposals=proposals
+        proposals=proposals,
+        freelancer_id=freelancer_id
     )
 
 @app.route(
@@ -338,7 +356,7 @@ def my_proposals():
 )
 def confirm_proposal(proposal_id):
 
-    freelancer_id = int(request.form["freelancer_id"])
+    freelancer_id = current_freelancer_id()
 
     conn = get_freelancer_connection(freelancer_id)
     cursor = conn.cursor()
@@ -358,7 +376,7 @@ def confirm_proposal(proposal_id):
         cursor.close()
         conn.close()
 
-    return redirect(url_for("my_proposals"))
+    return redirect(url_for("my_proposals", freelancer_id=freelancer_id))
 
 @app.route("/client/contracts")
 def client_contracts():
@@ -506,7 +524,7 @@ def contract_milestones(contract_id):
 @app.route("/freelancer/milestones")
 def freelancer_milestones():
 
-    freelancer_id = 4
+    freelancer_id = current_freelancer_id()
 
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -538,7 +556,8 @@ def freelancer_milestones():
 
     return render_template(
         "freelancer_milestones.html",
-        milestones=milestones
+        milestones=milestones,
+        freelancer_id=freelancer_id
     )
 
 @app.route(
@@ -547,7 +566,7 @@ def freelancer_milestones():
 )
 def advance_milestone(milestone_id):
 
-    freelancer_id = 4
+    freelancer_id = current_freelancer_id()
     new_status = request.form["status"]
 
     conn = get_freelancer_connection(freelancer_id)
@@ -570,7 +589,7 @@ def advance_milestone(milestone_id):
         conn.close()
 
     return redirect(
-        url_for("freelancer_milestones")
+        url_for("freelancer_milestones", freelancer_id=freelancer_id)
     )
 
 @app.route(
